@@ -5,11 +5,12 @@
 
 pragma solidity ^0.8.0;
 
+
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 
-contract Fiverr is Ownable {
+contract RankNFT is Ownable {
     
     using SafeMath for uint256;
   
@@ -19,17 +20,17 @@ contract Fiverr is Ownable {
   address constant private developer = 0xdD870fA1b7C4700F2BD7f44238821C26f7392148;
   
   uint private costOfSixMonthMemmbership =  0.7 ether;
-  uint private costOfOneDayMemmbership =  0.15 ether;
+  uint private costOfOneMonthMemmbership =  0.15 ether;
   uint private costOfSevenDaysMemmbership =  0.06 ether;
-  uint private costOfOneMonthMemmbership =  0.02 ether;
+  uint private costOfOneDayMemmbership =  0.02 ether;
   
   address[] private whitelistedUsers;
 
 
 //*********** Mappings *****************
 
-  mapping(address => uint256) private whitelisted;
-  mapping(address => uint256) public membership;
+  mapping(address => uint256) public whitelisting_period;
+  mapping(address => uint256) public subscription_period;
   
 
 //*********** Events *****************
@@ -43,7 +44,7 @@ contract Fiverr is Ownable {
   
   
 
-  function setCostOfMemmbership(uint256 _days, uint256 _amount) public onlyOwner{
+  function set_cost_of_subscription(uint256 _days, uint256 _amount) public onlyOwner{
       require(_days == 1 || _days == 7 || _days == 30 || _days == 180);
       
       if(_days == 1){
@@ -61,7 +62,7 @@ contract Fiverr is Ownable {
       
   }
   
-  function getCostOfMemmbership(uint256 _days) view public returns(uint) {
+  function get_cost_of_subscription(uint256 _days) view public returns(uint) {
       require(_days == 1 || _days == 7 || _days == 30 || _days == 180);
       
       if(_days == 1){
@@ -82,138 +83,122 @@ contract Fiverr is Ownable {
 
   }
  
-  function getCurrentTime() view public returns(uint256) {
-      return block.timestamp;
-  }
 
-
-
-
-
-  function assignMembership(address _user, uint256 _days) internal {
+  function assign_subscription(address _user, uint256 _days) internal {
 
     whitelistUser(_user, _days);
 
-    if(membership[_user] > block.timestamp){
-        membership[_user] = membership[_user].add(DAY_IN_SECONDS.mul(_days));
-        emit MembershipAssigned(_user, membership[_user]);
+    if(subscription_period[_user] > block.timestamp){
+        subscription_period[_user] = subscription_period[_user].add(DAY_IN_SECONDS.mul(_days));
+        emit MembershipAssigned(_user, subscription_period[_user]);
     }
     else{
-        membership[_user] = block.timestamp.add(DAY_IN_SECONDS.mul(_days));
-        emit MembershipAssigned(_user, membership[_user]);
+        subscription_period[_user] = block.timestamp.add(DAY_IN_SECONDS.mul(_days));
+        emit MembershipAssigned(_user, subscription_period[_user]);
 
     }
 
-   distributeEquity();
+   distribute_equity();
             
 }
 
   function whitelistUser(address _user, uint256 _days) internal {
 
-    if(whitelisted[_user] > block.timestamp){
-        whitelisted[_user] = whitelisted[_user].add(DAY_IN_SECONDS.mul(_days));
-        emit WhiteListed(_user, whitelisted[_user]);
+    if(whitelisting_period[_user] > block.timestamp){
+        whitelisting_period[_user] = whitelisting_period[_user].add(DAY_IN_SECONDS.mul(_days));
+        emit WhiteListed(_user, whitelisting_period[_user]);
     }
     else {
         whitelistedUsers.push(_user);
-        whitelisted[_user] = block.timestamp.add(DAY_IN_SECONDS.mul(_days));
-        emit WhiteListed(_user, whitelisted[_user]);
+        whitelisting_period[_user] = block.timestamp.add(DAY_IN_SECONDS.mul(_days));
+        emit WhiteListed(_user, whitelisting_period[_user]);
 
     }
     
   }
 
   function blacklistUser(address _user) internal {
-    delete whitelisted[_user];
-    delete membership[_user];
+    delete whitelisting_period[_user];
+    delete subscription_period[_user];
     emit BlackListed(_user);
   }
 
-
-
       // one minute subscription
-  function getSingleMinuteMembership() public payable {
+  function get_single_minute_subscription() public payable {
 
     //   require(msg.value >= 0.01 ether, "not enough money sent");
-    //   require(whitelisted[msg.sender] > block.timestamp, "Not whitelisted, Please contact to Admin");
+    //   require(whitelisting_period[msg.sender] > block.timestamp, "Not whitelisting_period, Please contact to Admin");
 
-    if(whitelisted[msg.sender] > block.timestamp){
-        whitelisted[msg.sender] = whitelisted[msg.sender].add(60);
-        emit WhiteListed(msg.sender, whitelisted[msg.sender]);
+    if(whitelisting_period[msg.sender] > block.timestamp){
+        whitelisting_period[msg.sender] = whitelisting_period[msg.sender].add(60);
+        emit WhiteListed(msg.sender, whitelisting_period[msg.sender]);
     }
     else {
         whitelistedUsers.push(msg.sender);
-        whitelisted[msg.sender] = block.timestamp.add(60);
-        emit WhiteListed(msg.sender, whitelisted[msg.sender]);
+        whitelisting_period[msg.sender] = block.timestamp.add(60);
+        emit WhiteListed(msg.sender, whitelisting_period[msg.sender]);
 
     }      
-      membership[msg.sender] > block.timestamp ?
-            membership[msg.sender] = membership[msg.sender].add(60) :
-            membership[msg.sender] = block.timestamp.add(60);
+      subscription_period[msg.sender] > block.timestamp ?
+            subscription_period[msg.sender] = subscription_period[msg.sender].add(60) :
+            subscription_period[msg.sender] = block.timestamp.add(60);
             
 
-      distributeEquity();
+      distribute_equity();
 
   }    
 
       // Daily subscription
-  function getSingleDayMembership() public payable {
+  function get_single_day_subscription() public payable {
 
       require(msg.value >= costOfOneDayMemmbership, "not enough money sent");
-      require(whitelisted[msg.sender] > block.timestamp, "Not whitelisted, Please contact to Admin");
+      require(whitelisting_period[msg.sender] > block.timestamp, "Not whitelisting_period, Please contact to Admin");
 
-    assignMembership(msg.sender, 1);
+    assign_subscription(msg.sender, 1);
 
   }     
    
       // Weekly subscription
-  function getSevenDayMembership() public payable {
+  function get_seven_days_subscription() public payable {
 
       require(msg.value >= costOfSevenDaysMemmbership, "not enough money sent");
-      require(whitelisted[msg.sender] >block.timestamp, "Not whitelisted, Please contact to Admin");
+      require(whitelisting_period[msg.sender] >block.timestamp, "Not whitelisting_period, Please contact to Admin");
       
-      assignMembership(msg.sender, 7);
+      assign_subscription(msg.sender, 7);
 
 }
 
       // Monthly subscription
-  function getOneMonthMembership() public payable {
+  function get_one_month_subscription() public payable {
 
       require(msg.value >= costOfOneMonthMemmbership, "not enough money sent");
-      require(whitelisted[msg.sender] >block.timestamp, "Not whitelisted, Please contact to Admin");
+      require(whitelisting_period[msg.sender] >block.timestamp, "Not whitelisting_period, Please contact to Admin");
 
-         assignMembership(msg.sender, 30);
+         assign_subscription(msg.sender, 30);
 
 }
 
       // Six Monthl subscription
-  function getSixMonthMembership() public payable {
+  function get_six_month_subscription() public payable {
 
       require(msg.value >= costOfSixMonthMemmbership, "not enough money sent");
-      require(whitelisted[msg.sender] > block.timestamp, "Not whitelisted, Please contact to Admin");
+      require(whitelisting_period[msg.sender] > block.timestamp, "Not whitelisting_period, Please contact to Admin");
 
-      assignMembership(msg.sender, 180);
+      assign_subscription(msg.sender, 180);
 
 }
 
 
-  function isWhitelisted(address _address) public view returns (bool) {
-    return whitelisted[_address] > block.timestamp;
+  function is_whitelisted(address _address) public view returns (bool) {
+    return whitelisting_period[_address] > block.timestamp;
   }
   
-  function isMember(address _address) public view returns (bool) {
-    return membership[_address] > block.timestamp;
+  function is_subscriber(address _address) public view returns (bool) {
+    return subscription_period[_address] > block.timestamp;
   }
-  
-  
-  function whitelistedPeriod(address _address) public view returns (uint) {
-    return whitelisted[_address];
-  }
-  
+   
  
- 
- 
-  function whitelistUsers(address[] memory _users, uint256 _days) public onlyOwner {
+  function whitelist_users(address[] memory _users, uint256 _days) public onlyOwner {
       
     if(_users.length == 1){
         whitelistUser(_users[0], _days);
@@ -226,7 +211,7 @@ contract Fiverr is Ownable {
   }
   
 
-  function blacklistUsers(address[] memory _users) public onlyOwner {
+  function blacklist_users(address[] memory _users) public onlyOwner {
       
     if(_users.length == 1){
         blacklistUser(_users[0]);
@@ -239,33 +224,35 @@ contract Fiverr is Ownable {
   }
   
   
-  function listOfwhitelistedUsers() public returns(address[] memory){
+  function list_of_whitelisted_users() public view returns(address[] memory){
+    return whitelistedUsers;
+  }
+  
+  function refresh_list_of_whitelisted_users() public onlyOwner{
       
     address[] memory allWhitelistedUsers = whitelistedUsers;
 
     whitelistedUsers = new address[](0);
       
     for(uint i = 0; i < allWhitelistedUsers.length; i++){
-        if( whitelistedPeriod(allWhitelistedUsers[i]) >  block.timestamp){
+        if( whitelisting_period[allWhitelistedUsers[i]] >  block.timestamp){
             whitelistedUsers.push(allWhitelistedUsers[i]);
         }
     }
-      
-      return whitelistedUsers;
   }
   
   
-  function totalBalanceAvailable() public view returns(uint256) {
+  function total_balance_available() public view returns(uint256) {
         return  address(this).balance;
-    }
+  }
     
-    
-  function withdraw() public onlyOwner {
-      distributeEquity();
+  
+  function withdraw_total_amount() public onlyOwner {
+      distribute_equity();
   }
  
     
-  function distributeEquity() internal {
+  function distribute_equity() internal {
         
         uint256 totalamount =  address(this).balance;
         require(totalamount > 0, "balance is nill");
