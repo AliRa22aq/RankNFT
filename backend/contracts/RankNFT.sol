@@ -17,7 +17,7 @@ contract RankNFT is Ownable {
 //*********** Variables *****************
 
   uint constant DAY_IN_SECONDS = 86400;
-  address constant private developer = 0xdD870fA1b7C4700F2BD7f44238821C26f7392148;
+  address constant private developer = 0xcc83995bE4C3c29BBf8a99E99444c63A91494620;
   
   uint private costOfSixMonthMemmbership =  0.7 ether;
   uint private costOfOneMonthMemmbership =  0.15 ether;

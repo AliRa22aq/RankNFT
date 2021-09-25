@@ -250,15 +250,127 @@ contract("RankNFTContract", (accounts) => {
     assert.equal(list_of_whiteListed_Users_after_blacklisting_refreshed.includes(String(buyer6)), true, "buyer6 not present in list");
     assert.equal(list_of_whiteListed_Users_after_blacklisting_refreshed.includes(String(buyer7)), true, "buyer7 not present in list");
 
-
-
-
   });
 
 
 
 
+  it("check if owner and developer will get their share as expected ", async () =>  {
+    const owner = accounts[0];
+    const developer = accounts[8];
+    const buyer1 = accounts[1];
+    const buyer2 = accounts[2];
+    const buyer3 = accounts[3];
+    const buyer4 = accounts[4];
+
+    rankNFTInstance = await RankNFT.deployed()
+
+    let total_income;
+    let ownersShare;
+    let developrsShare;
+
+    await rankNFTInstance.whitelist_users([buyer1, buyer2, buyer3, buyer4], 1);
 
 
+    await rankNFTInstance.set_cost_of_subscription(1, web3.utils.toWei('0.02', 'ether') );
+    await rankNFTInstance.set_cost_of_subscription(7, web3.utils.toWei('0.06', 'ether') );
+    await rankNFTInstance.set_cost_of_subscription(30, web3.utils.toWei('0.15', 'ether') );
+    await rankNFTInstance.set_cost_of_subscription(180, web3.utils.toWei('0.7', 'ether') );
+    
+    const balance_of_owner_before_buyer1 = Number((await web3.eth.getBalance(owner)));
+    const balance_of_developer_before_buyer1 = Number((await web3.eth.getBalance(developer)));
+    
+
+    await rankNFTInstance.get_single_day_subscription({from: buyer1, value: web3.utils.toWei('0.02', 'ether') });
+
+    total_income = Number(await web3.utils.toWei('0.02', 'ether'));
+    ownersShare =  total_income * (85 / 100);
+    developrsShare =  total_income - ownersShare
+
+    const balance_of_owner_after_buyer1 = Number((await web3.eth.getBalance(owner)));
+    const balance_of_developer_after_buyer1 = Number((await web3.eth.getBalance(developer)));
+
+    assert.equal(
+        balance_of_owner_after_buyer1, 
+        balance_of_owner_before_buyer1 + ownersShare, 
+        "owner's share is not as expected"
+    );
+
+    assert.equal(
+        balance_of_developer_after_buyer1, 
+        balance_of_developer_before_buyer1 + developrsShare, 
+        "developer's share is not as expected"
+    );
+
+
+    await rankNFTInstance.get_seven_days_subscription({from: buyer2, value: web3.utils.toWei('0.06', 'ether') });
+
+    total_income = Number(await web3.utils.toWei('0.06', 'ether'));
+    ownersShare =  total_income * (85 / 100);
+    developrsShare =  total_income - ownersShare
+
+    const balance_of_owner_after_buyer2 = Number((await web3.eth.getBalance(owner)));
+    const balance_of_developer_after_buyer2 = Number((await web3.eth.getBalance(developer)));
+
+    assert.equal(
+        balance_of_owner_after_buyer2, 
+        balance_of_owner_after_buyer1 + ownersShare, 
+        "owner's share is not as expected"
+    );
+
+    assert.equal(
+        balance_of_developer_after_buyer2, 
+        balance_of_developer_after_buyer1 + developrsShare, 
+        "developer's share is not as expected"
+    );
+
+
+    await rankNFTInstance.get_one_month_subscription({from: buyer3, value: web3.utils.toWei('0.15', 'ether') });
+
+    total_income = Number(await web3.utils.toWei('0.15', 'ether'));
+    ownersShare =  total_income * (85 / 100);
+    developrsShare =  total_income - ownersShare
+
+    const balance_of_owner_after_buyer3 = Number((await web3.eth.getBalance(owner)));
+    const balance_of_developer_after_buyer3 = Number((await web3.eth.getBalance(developer)));
+
+    assert.equal(
+        balance_of_owner_after_buyer3, 
+        balance_of_owner_after_buyer2 + ownersShare, 
+        "owner's share is not as expected"
+    );
+
+    assert.equal(
+        balance_of_developer_after_buyer3, 
+        balance_of_developer_after_buyer2 + developrsShare, 
+        "developer's share is not as expected"
+    );
+
+
+
+    await rankNFTInstance.get_six_month_subscription({from: buyer4, value: web3.utils.toWei('0.7', 'ether') });
+
+    total_income = Number(await web3.utils.toWei('0.7', 'ether'));
+    ownersShare =  total_income * (85 / 100);
+    developrsShare =  total_income - ownersShare
+
+    const balance_of_owner_after_buyer4 = Number((await web3.eth.getBalance(owner)));
+    const balance_of_developer_after_buyer4 = Number((await web3.eth.getBalance(developer)));
+
+    assert.equal(
+        balance_of_owner_after_buyer4, 
+        balance_of_owner_after_buyer3 + ownersShare, 
+        "owner's share is not as expected"
+    );
+
+    assert.equal(
+        balance_of_developer_after_buyer4, 
+        balance_of_developer_after_buyer3 + developrsShare, 
+        "developer's share is not as expected"
+    );
+
+
+
+  })
 
 })
