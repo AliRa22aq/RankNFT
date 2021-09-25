@@ -261,12 +261,11 @@ contract RankNFT is Ownable {
         
         // distribute owner's 85% cut
         uint256 ownersCut =  totalamount.mul(85).div(100);     
-        // balance[owner] = balance[owner].add(ownersCut);
         bool sentOwner = payable(owner).send(ownersCut);
         require(sentOwner, "Failed to send Ether");
         emit PaymentReleased(owner, ownersCut);
         
-        // pay developer remaining 15%
+        // distribute remaining 15% to developer
         uint developersCut = totalamount.sub(ownersCut);
         bool sentDeveloper = payable(developer).send(developersCut);
         require(sentDeveloper, "Failed to send Ether");
