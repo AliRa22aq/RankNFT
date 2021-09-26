@@ -53,8 +53,7 @@ const Header = () => {
               Your address: {data.userAddress}
             </div>  
                :
-            <div onClick={connectWallet}>
-              {/* <Button onClick={onSignin} color="inherit">Login</Button> */}
+              <Button onClick={connectWallet} color="inherit">
               <img
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/2048px-MetaMask_Fox.svg.png"
                 alt="metamask"
@@ -62,8 +61,7 @@ const Header = () => {
                 height="50"
                 // style={{marginLeft: "10px"}}
               />
-              {/* https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/2048px-MetaMask_Fox.svg.png */}
-            </div>
+              </Button>
           }
 
         </Toolbar>
