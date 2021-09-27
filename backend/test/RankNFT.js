@@ -63,7 +63,7 @@ contract("RankNFTContract", (accounts) => {
     try{
         await rankNFTInstance.get_single_day_subscription({from: buyer1, value: web3.utils.toWei('0.02', 'ether') });
     } catch(error){
-        assert.equal(error.reason, "not enough money sent", "Uer is whitelisted and enough money is sent");
+        assert.equal(error.reason, "not enough money sent", "User is whitelisted and enough money is sent");
     }
 
 
