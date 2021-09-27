@@ -1,0 +1,34 @@
+.container {
+    margin: 1rem;
+    width: 97.5%;    
+    /* height: 100%;     */
+
+
+}
+
+.welcome{
+    padding-top: 10rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.notWhiteListed{
+    padding-top: 10rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.notNotSubscriber {
+    padding-top: 10rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: x-large;
+    font-weight: bold;
+}

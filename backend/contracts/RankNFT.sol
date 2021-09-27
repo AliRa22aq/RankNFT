@@ -17,7 +17,8 @@ contract RankNFT is Ownable {
 //*********** Variables *****************
 
   uint constant DAY_IN_SECONDS = 86400;
-  address constant private developer = 0xcc83995bE4C3c29BBf8a99E99444c63A91494620;
+  uint constant MINUTES_IN_SECONDS = 3600;
+  address constant private developer = 0x31D165F1123ad9166cBFAC2b11D2F377e824b08B;
   
   uint private costOfSixMonthMemmbership =  0.7 ether;
   uint private costOfOneMonthMemmbership =  0.15 ether;
@@ -123,30 +124,30 @@ contract RankNFT is Ownable {
     emit BlackListed(_user);
   }
 
-      // one minute subscription
-  function get_single_minute_subscription() public payable {
+      // free one hour subscription
+  function giveaway_subscription(address[] memory _users, uint _hours) public onlyOwner {
+    
+    for(uint i = 0; i < _users.length; i++){
 
-    //   require(msg.value >= 0.01 ether, "not enough money sent");
-    //   require(whitelisting_period[msg.sender] > block.timestamp, "Not whitelisting_period, Please contact to Admin");
-
-    if(whitelisting_period[msg.sender] > block.timestamp){
-        whitelisting_period[msg.sender] = whitelisting_period[msg.sender].add(60);
-        emit WhiteListed(msg.sender, whitelisting_period[msg.sender]);
+        if(whitelisting_period[_users[i]] > block.timestamp){
+            whitelisting_period[_users[i]] = whitelisting_period[_users[i]].add(MINUTES_IN_SECONDS.mul(_hours));
+            emit WhiteListed(_users[i], whitelisting_period[_users[i]]);
+        }
+        else {
+            whitelistedUsers.push(_users[i]);
+            whitelisting_period[_users[i]] = block.timestamp.add(MINUTES_IN_SECONDS.mul(_hours));
+            emit WhiteListed(_users[i], whitelisting_period[_users[i]]);
+    
+        }      
+          subscription_period[_users[i]] > block.timestamp ?
+                subscription_period[_users[i]] = subscription_period[_users[i]].add(MINUTES_IN_SECONDS.mul(_hours)) :
+                subscription_period[_users[i]] = block.timestamp.add(MINUTES_IN_SECONDS.mul(_hours));
+                
     }
-    else {
-        whitelistedUsers.push(msg.sender);
-        whitelisting_period[msg.sender] = block.timestamp.add(60);
-        emit WhiteListed(msg.sender, whitelisting_period[msg.sender]);
+    
+  }
 
-    }      
-      subscription_period[msg.sender] > block.timestamp ?
-            subscription_period[msg.sender] = subscription_period[msg.sender].add(60) :
-            subscription_period[msg.sender] = block.timestamp.add(60);
-            
 
-      distribute_equity();
-
-  }    
 
       // Daily subscription
   function get_single_day_subscription() public payable {

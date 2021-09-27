@@ -96,7 +96,10 @@ export interface RankNFT extends BaseContract {
       _days: number | string | BN
     ): NonPayableTransactionObject<string>;
 
-    get_single_minute_subscription(): PayableTransactionObject<void>;
+    giveaway_subscription(
+      _users: string[],
+      _hours: number | string | BN
+    ): NonPayableTransactionObject<void>;
 
     get_single_day_subscription(): PayableTransactionObject<void>;
 
