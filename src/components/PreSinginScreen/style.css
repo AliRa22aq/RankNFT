@@ -24,11 +24,26 @@
     font-weight: bold;
 }
 
-.notNotSubscriber {
-    padding-top: 10rem;
+.notNotSubscriber-text {
+    padding-top: 5rem;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: x-large;
     font-weight: bold;
+}
+
+.card-container{
+    /* width: 40%;     */
+    height: 100%;    
+    padding: 2rem;
+    margin: 2rem;
+    /* border: 1px solid black */
+
+}
+
+.card {
+    padding: 0.5rem;
+    margin: 0.5rem;
+
 }

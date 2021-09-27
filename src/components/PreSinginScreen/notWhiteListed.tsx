@@ -4,8 +4,10 @@ import './style.css';
 
 const NotWhiteListed = () => {
     return(
-        <div className = "notWhiteListed">
-            Sorry, you are not whiteListed. Please contact Admin to get whitelisted
+        <div className="container">
+            <div className = "notWhiteListed">
+                Sorry, you are not whiteListed. Please contact Admin to get whitelisted
+            </div>
         </div>
     )
 }

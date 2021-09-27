@@ -6,7 +6,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { useDispatch, useSelector } from 'react-redux';
-import { setActiveUser, userWalletconnected, isWhiteListed, isSubscriber, setOwner } from '../store';
+import { clearState, setActiveUser, userWalletconnected, isWhiteListed, isSubscriber, setOwner } from '../store';
 
 // import { RankNFT as RankNFTType } from '../../../types/web3-v1-contracts/RankNFT';
 // const RankNFTABI = require("../../abis/RankNFT.json");
@@ -21,6 +21,8 @@ const Header = () => {
 
   window.ethereum.on('accountsChanged', function (accounts: string[]) {
     dispatch(setActiveUser(accounts[0]))
+    dispatch(clearState())
+    
   })
 
   const signIn = async () => {

@@ -21,7 +21,7 @@ const PostSignInScreen = () => {
     const whitelistingPeriod = await ContractData.methods.whitelisting_period(userAddress).call();
     dispatch(setWhitelistPeriod(whitelistingPeriod));
     
-    const SubscriptionPeriod = await ContractData.methods.whitelisting_period(userAddress).call();
+    const SubscriptionPeriod = await ContractData.methods.subscription_period(userAddress).call();
     dispatch(setSubscriptionPeriod(SubscriptionPeriod));
     
   }

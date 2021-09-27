@@ -42,7 +42,7 @@ contract RankNFT is Ownable {
   event BlackListed(address account);
   event PaymentReleased(address to, uint256 amount);
   event PaymentReceived(address from, uint256 amount);
-  
+   
   
 
   function set_cost_of_subscription(uint256 _days, uint256 _amount) public onlyOwner{
