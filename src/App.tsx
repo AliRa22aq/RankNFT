@@ -16,14 +16,17 @@ const RankNFTABI = require("./abis/RankNFT.json");
 
 const App = () => {
   const dispatch = useDispatch()
-  const { owner, isWaletConnect, isWhiteListed, isSubscriber, ContractData} = useSelector((state: any) => state);
+  const { isWaletConnect, isWhiteListed, isSubscriber} = useSelector((state: any) => state);
   const contractAddress = "0x02b857D07F0405F5724652702807314054f17F49";
 
-
-  useEffect(()=> {
+  const loadContract = async () => {
     const web3 = new Web3(window.ethereum);  
     const ContractData = (new web3.eth.Contract(RankNFTABI.abi, contractAddress) as any) as RankNFTType;
     dispatch(setContractData(ContractData));
+  }
+
+  useEffect(()=> {
+    loadContract()
   }, [])
 
   return (

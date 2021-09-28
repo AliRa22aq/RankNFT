@@ -3,6 +3,8 @@ import './style.css';
 import { intervalToDuration, formatDistanceToNow } from 'date-fns'
 import { useDispatch, useSelector } from 'react-redux';
 import { setSubscriptionPeriod, setWhitelistPeriod } from '../../../store';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 
 
 const Periods = () => {
@@ -69,25 +71,39 @@ const Periods = () => {
   }, [])
   
   return (
-    <div className = "container">
+    <div className = "period-container">
 
-              <div>
+              <Grid container>
 
-                {
-                  time && (
-                    <>
-                    Remaining whiteListing period : {time.whitelistTimeDistance} <br />
-                    {whitelistTime}
-                    <br />
-                    <br />
-                    Remaining subscription period: {time.subscriptionTimeDistance} <br />
-                    {subscriptionTime}
+                <Grid item xs={12}>
+                  <Typography id="keep-mounted-modal-title" variant="h6" component="h2">
+                      Your Subscription
+                  </Typography>
+                </Grid>
 
-                    </>
-                  )
-                }
+                <Grid container>
+                  {
+                    time && (
+                      <Grid container style={{width: '80%', justifyContent: "center", alignItems: "center", margin: "10px" }} >
+                      <Grid item xs={6}>
+                        Remaining whiteListing period : {time.whitelistTimeDistance} <br />
+                      {whitelistTime}
+                      </Grid>
 
-              </div>
+                      <br />
+                      <br />
+
+                      <Grid item xs={6}>
+                        Remaining subscription period: {time.subscriptionTimeDistance} <br />
+                      {subscriptionTime}
+                      </Grid>
+                      </Grid>
+                    )
+                  }
+
+                </Grid>
+                
+              </Grid>
 
     </div>
   );

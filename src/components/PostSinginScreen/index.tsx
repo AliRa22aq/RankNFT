@@ -10,9 +10,9 @@ const PostSignInScreen = () => {
 
   // const { userAddress, whitelistPeriod, subscriptionPeriod, ContractData} = useSelector((state: any) => state);
   
-   
+  
   return (
-    <div className = "container">
+    <div className = "postsignin-container">
 
               <div>
                 You are in

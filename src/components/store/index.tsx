@@ -1,4 +1,3 @@
-import Web3 from "web3";
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RankNFT as RankNFTType } from '../../../types/web3-v1-contracts/RankNFT'
 
@@ -11,6 +10,7 @@ interface DataType {
     contractAddress: string | null,
     isWaletConnect: boolean,
     isWhiteListed: boolean,
+    isSignedIn: boolean,
     isSubscriber: boolean,
     whitelistPeriod: number,
     subscriptionPeriod: number,
@@ -24,6 +24,7 @@ const initialState: DataType = {
     contractAddress: "0x521357d3f95427C189199075a970A7d1355606a4",
     isWaletConnect: false,
     isWhiteListed: false,
+    isSignedIn: false,
     isSubscriber: false,
     whitelistPeriod: 0,
     subscriptionPeriod: 0,
@@ -37,8 +38,7 @@ const dataSlice = createSlice({
     initialState,
     reducers: {
       clearState(state) {
-        // Use a "state machine" approach for loading state instead of booleans
-        state = initialState;
+        return initialState   
       },
       setOwner(state, {payload}:PayloadAction<string> ) {
         // Use a "state machine" approach for loading state instead of booleans
@@ -60,13 +60,24 @@ const dataSlice = createSlice({
         // Use a "state machine" approach for loading state instead of booleans
         state.isSubscriber = payload;
       },
+      setSignedIn(state, {payload}:PayloadAction<boolean> ) {
+        // Use a "state machine" approach for loading state instead of booleans
+        state.isSignedIn = payload;
+      },
+      setLogout(state ) {
+        // Use a "state machine" approach for loading state instead of booleans
+        state.isSignedIn = false;
+        state.isSubscriber = false;
+        state.isWhiteListed = false;
+        state.isWaletConnect = false;
+      },
       setContractData(state, {payload}:PayloadAction<RankNFTType> ) {
         // Use a "state machine" approach for loading state instead of booleans
         state.ContractData = payload;
       },
-      setLoading(state) {
+      setLoading(state, {payload}:PayloadAction<boolean>) {
         // Use a "state machine" approach for loading state instead of booleans
-        state.loading = !state.loading;
+        state.loading = payload;
       },
       setWhitelistPeriod(state, {payload}:PayloadAction<number> ) {
         state.whitelistPeriod = payload
@@ -81,6 +92,6 @@ const dataSlice = createSlice({
 // Extract the action creators object and the reducer
 const { actions, reducer } = dataSlice
 // Extract and export each action creator by name
-export const { clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
+export const { setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
 // Export the reducer, either as a default or named export
 export default reducer

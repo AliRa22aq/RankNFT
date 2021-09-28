@@ -1,17 +1,11 @@
-import React, {useEffect, useState, FC} from "react"
+import React, {FC} from "react"
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-// import {setLoading, setActiveUser, userWalletconnected, isWhiteListed, isSubscriber } from '../../store';
-// import { useSelector, useDispatch } from 'react-redux';
-// import web3 from "web3"
-// import {BN} from 'bn.js';
 
-
-// subscriptionData= {subscriptionData} buySubscription
 interface Data {
   id: number,
   days: string,
@@ -28,7 +22,6 @@ const SubscriptionCard: FC<Props> = ({subscriptionData, buySubscription}) => {
 
 console.log(subscriptionData)
 
-// const priceInString = String(subscriptionData.price);
 
   return (
     <Box sx={{ minWidth: 275 }}>

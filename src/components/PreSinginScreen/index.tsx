@@ -8,9 +8,9 @@ import Welcome from './welcome'
 
 const PreSignInScreen = () => {
 
-    const {userAddress, owner,  isWaletConnect, isWhiteListed, isSubscriber} = useSelector((state: any) => state);
+    const {loading, isWaletConnect, isWhiteListed, isSubscriber} = useSelector((state: any) => state);
 
-    if(userAddress == owner) return <div></div>;
+    if(loading) return <div>Loading . . . </div>
 
     return (
     <div className = "container">

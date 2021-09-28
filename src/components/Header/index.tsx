@@ -6,7 +6,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearState, setActiveUser, userWalletconnected, setWhiteListed, setSubscriber, setOwner } from '../store';
+import { setLoading, setLogout, setSignedIn, clearState, setActiveUser, userWalletconnected, setWhiteListed, setSubscriber, setOwner } from '../store';
 import InfoModal from './InfoModel'
 // import { RankNFT as RankNFTType } from '../../../types/web3-v1-contracts/RankNFT';
 // const RankNFTABI = require("../../abis/RankNFT.json");
@@ -16,9 +16,9 @@ import InfoModal from './InfoModel'
 const Header = () => {
 
   const dispatch = useDispatch()
-  const {isWaletConnect, ContractData, isSubscriber} = useSelector((state: any) => state);
+  const {isSignedIn, isWaletConnect, ContractData, isSubscriber} = useSelector((state: any) => state);
 
-
+  
   window.ethereum.on('accountsChanged', function (accounts: string[]) {
     dispatch(setActiveUser(accounts[0]))
     dispatch(clearState())
@@ -27,6 +27,8 @@ const Header = () => {
 
   const signIn = async () => {
 
+    dispatch(setLoading(true))
+    
     let userCurrentAddress; 
 
     if (window.ethereum) {
@@ -68,24 +70,30 @@ const Header = () => {
 
         if(subscriptionStatus){
           dispatch(setSubscriber(true));
+          dispatch(setSignedIn(true));         
+          dispatch(setLoading(false))
+          
         } else{
           dispatch(setSubscriber(false));
+          dispatch(setSignedIn(false));   
+          dispatch(setLoading(false))
+
         }
     } else {
       dispatch(setWhiteListed(false));
       dispatch(setSubscriber(false));
+      dispatch(setSignedIn(false));     
+      dispatch(setLoading(false))
+
     }
+
+    dispatch(setLoading(false))
 
   }
 
 
   const logOut = async () => {
-    // const web3 = Web3()
-    // await web3.clearCachedProvider()
-    dispatch(setSubscriber(false));
-    dispatch(setWhiteListed(false));
-
-
+    dispatch(setLogout())
   }
 
 

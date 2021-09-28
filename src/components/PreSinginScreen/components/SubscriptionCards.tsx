@@ -58,16 +58,16 @@ const SubscriptionCards = () => {
         }, [])
         
         const buySubscription = async (id: number) => {
-            if(id == 1){
+            if(id === 1){
                 await ContractData.methods.get_single_day_subscription().send({from: userAddress, value: web3.utils.toWei(prices[0], "ether")});
             }
-            if(id == 2){
+            if(id === 2){
                 await ContractData.methods.get_seven_days_subscription().send({from: userAddress, value: web3.utils.toWei(prices[1], "ether")});
             }
-            if(id == 3){
+            if(id === 3){
                 await ContractData.methods.get_seven_days_subscription().send({from: userAddress, value: web3.utils.toWei(prices[2], "ether")});
             }
-            if(id ==4){
+            if(id === 4){
                 await ContractData.methods.get_six_month_subscription().send({from: userAddress, value: web3.utils.toWei(prices[3], "ether")});        
             }
         }

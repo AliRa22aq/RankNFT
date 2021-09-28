@@ -1,15 +1,16 @@
 import React, {useEffect, useState} from "react"
 import './style.css';
 // import { setLoading, setActiveUser, userWalletconnected, setWhiteListed, setSubscriber } from '../store';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 import SubscriptionCard from './card';
 import web3 from "web3"
 
 
 const SubscriptionCards = () => {
 
-    const {ContractData, userAddress, owner,  isWaletConnect, isWhiteListed, isSubscriber} = useSelector((state: any) => state);
+    const {ContractData, userAddress} = useSelector((state: any) => state);
     const [prices, setPrices] = useState<string[]>(["0.03", "0.06", "0.15", "0.7"])
 
     const SubscriptionData = [
@@ -60,16 +61,16 @@ useEffect(()=> {
 const buySubscription = async (id: number) => {
     console.log("buySubscription called")
 
-    if(id == 1){
+    if(id === 1){
         await ContractData.methods.get_single_day_subscription().send({from: userAddress, value: web3.utils.toWei(prices[0], "ether")});
     }
-    if(id == 2){
+    if(id === 2){
         await ContractData.methods.get_seven_days_subscription().send({from: userAddress, value: web3.utils.toWei(prices[1], "ether")});
     }
-    if(id == 3){
+    if(id === 3){
         await ContractData.methods.get_seven_days_subscription().send({from: userAddress, value: web3.utils.toWei(prices[2], "ether")});
     }
-    if(id ==4){
+    if(id === 4){
         await ContractData.methods.get_six_month_subscription().send({from: userAddress, value: web3.utils.toWei(prices[3], "ether")});        
     }
 }
@@ -77,23 +78,34 @@ const buySubscription = async (id: number) => {
 
     return(
 
-        <div className="container">
+        <div>
 
-            <Grid container className="card-container">
+            <Grid container className="model-card-container">
 
-            {
-                SubscriptionData.map((subscriptionData) => {
-                    return ( 
-                        <Grid item xs={3} className="card">
-                            <SubscriptionCard subscriptionData= {subscriptionData} buySubscription={buySubscription}/>
-                        </Grid >
-                    )
-                })
-            }
+                <Grid item xs={12} className="card">
+                <Typography variant="h6" component="h2">
+                    Update your plan
+                </Typography>
+                </Grid>
+            
+
+                <Grid container >
+
+                {
+                    SubscriptionData.map((subscriptionData) => {
+                        return ( 
+                            <Grid item xs={3} className="card">
+                                <SubscriptionCard subscriptionData= {subscriptionData} buySubscription={buySubscription}/>
+                            </Grid >
+                        )
+                    })
+                }
+
+                </Grid>
+
             
             </Grid>
             
-            {/* </Grid> */}
         </div>
 
     )

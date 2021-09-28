@@ -33,15 +33,15 @@ const InfoModal = () => {
             boxShadow: 24,
             p: 4,
         }}>
-          <Typography id="keep-mounted-modal-title" variant="h6" component="h2">
+          {/* <Typography id="keep-mounted-modal-title" variant="h6" component="h2">
           Your Subscription
-          </Typography>
+          </Typography> */}
 
           <Periods />
 
-          <Typography variant="h6" component="h2">
+          {/* <Typography variant="h6" component="h2">
              Update your plan
-          </Typography>
+          </Typography> */}
           
           <SubscriptionCards />
 
