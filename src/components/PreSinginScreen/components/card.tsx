@@ -48,8 +48,7 @@ console.log(subscriptionData)
               {
                 subscriptionData.id === 1 || subscriptionData.id === 3 ?
                 "Buy" :
-                "Comming Soon"
-
+                "Coming Soon"
               }
             
             </Button>

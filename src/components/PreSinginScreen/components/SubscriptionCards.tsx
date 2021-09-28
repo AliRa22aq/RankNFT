@@ -1,133 +1,141 @@
-import React, {useEffect, useState} from "react"
-import '../style.css';
-import { setSubscriber } from '../../store';
-import { useSelector, useDispatch } from 'react-redux';
-import Grid from '@mui/material/Grid';
-import SubscriptionCard from './card';
-import web3 from "web3"
+import React, { useEffect } from "react";
+import "../style.css";
+import { setSubscriber } from "../../store";
+import { useSelector, useDispatch } from "react-redux";
+import Grid from "@mui/material/Grid";
+import SubscriptionCard from "./card";
+import web3 from "web3";
 
+interface Data {
+  id: number;
+  days: string;
+  price: string;
+  day: string;
+}
+
+let subscriptionData: Data[] = [
+  {
+    id: 1,
+    days: "One Day",
+    price: "0.03",
+    day: "1 day",
+  },
+  {
+    id: 2,
+    days: "Seven Days",
+    price: "0.06",
+    day: "7 days",
+  },
+  {
+    id: 3,
+    days: "One Month",
+    price: "0.15",
+    day: "30 days",
+  },
+  {
+    id: 4,
+    days: "Six Months",
+    price: "0.7",
+    day: "180 days",
+  },
+];
 
 const SubscriptionCards = () => {
-    const dispatch = useDispatch()
-    const {ContractData, userAddress } = useSelector((state: any) => state);
-    const [prices, setPrices] = useState<string[]>(["0.03", "0.06", "0.15", "0.7"])
+  const dispatch = useDispatch();
+  const { ContractData, userAddress } = useSelector((state: any) => state);
 
-    const SubscriptionData = [
-        {
-          id: 1,
-          days: "One Day",
-          price: prices[0],
-          day: "1 day",
-        },
-        {
-          id: 2,
-          days: "Seven Days",
-          price: prices[1],
-          day: "7 days",
-        },
-        {
-          id: 3,
-          days: "One Month",
-          price: prices[2],
-          day: "30 days",
-        },
-        {
-          id: 4,
-          days: "Six Months",
-          price: prices[3],
-          day: "180 days",
-        },
-      
-      ]
+  const getSubscriptionData = async () => {
+    const days: number[] = [1, 7, 30, 180];
+    days.map(async (day: number, key: number) => {
+      let cost = await ContractData.methods
+        .get_cost_of_subscription(day)
+        .call();
+      cost = web3.utils.fromWei(cost, "ether");
+      subscriptionData[key].price = cost;
+    });
+  };
 
-    const getSubscriptionData = async () => {
-      
-        const days: number[] = [1,7,30,180];
-        setPrices([])
-      
-        days.map(async (day: number) => {
-          let cost = await ContractData.methods.get_cost_of_subscription(day).call();
-          cost = web3.utils.fromWei(cost, "ether")
-          setPrices(pre => {return [...pre, cost]})
+  useEffect(() => {
+    getSubscriptionData();
+  }, []);
+
+  const buySubscription = async (id: number) => {
+    if (id === 1) {
+      const subscription = await ContractData.methods
+        .get_single_day_subscription()
+        .send({
+          from: userAddress,
+          value: web3.utils.toWei(subscriptionData[0].price, "ether"),
         })
-      }
-  
-      
-      useEffect(()=> {
-          getSubscriptionData();
-        }, [])
-        
-        const buySubscription = async (id: number) => {
-          // dispatch(setTransectionProgress(true))
-            if(id === 1){
-                await ContractData.methods.get_single_day_subscription().send({from: userAddress, value: web3.utils.toWei(prices[0], "ether")})
-                .on('confirmation', (confirmationNumber: any, receipt: any) => {
-                  console.log(confirmationNumber)
-                  console.log(receipt)
-                  dispatch(setSubscriber(true));
-                  // dispatch(setTransectionProgress(false))
-                })
-                .on('error', (error: any) => {
-                  alert(error.message)
-                  // dispatch(setTransectionProgress(false))
-                });
-            }
-            if(id === 2){
-                await ContractData.methods.get_seven_days_subscription().send({from: userAddress, value: web3.utils.toWei(prices[1], "ether")})
-                .on('confirmation', (confirmationNumber: any, receipt: any) => {
-                  console.log(confirmationNumber)
-                  console.log(receipt)
-                  dispatch(setSubscriber(true));
-                  // dispatch(setTransectionProgress(false))
-                });
-            }
-            if(id === 3){
-                await ContractData.methods.get_seven_days_subscription().send({from: userAddress, value: web3.utils.toWei(prices[2], "ether")})
-                .on('confirmation', (confirmationNumber: any, receipt: any) => {
-                  console.log(confirmationNumber)
-                  console.log(receipt)
-                  dispatch(setSubscriber(true));
-                  // dispatch(setTransectionProgress(false))
-                });
-            }
-            if(id === 4){
-                await ContractData.methods.get_six_month_subscription().send({from: userAddress, value: web3.utils.toWei(prices[3], "ether")})
-                .on('confirmation', (confirmationNumber: any, receipt: any) => {
-                  console.log(confirmationNumber)
-                  console.log(receipt)
-                  dispatch(setSubscriber(true));
-                  // dispatch(setTransectionProgress(false))
-                });        
-            }
+        .on("confirmation", () => {
+          dispatch(setSubscriber(true));
+        })
+        .on("error", (error: any) => {
+          alert(error.message);
+        });
+    }
+    if (id === 2) {
+      await ContractData.methods
+        .get_seven_days_subscription()
+        .send({
+          from: userAddress,
+          value: web3.utils.toWei(subscriptionData[1].price, "ether"),
+        })
+        .on("confirmation", () => {
+          dispatch(setSubscriber(true));
+        })
+        .on("error", (error: any) => {
+          alert(error.message);
+        });
+    }
+    if (id === 3) {
+      await ContractData.methods
+        .get_seven_days_subscription()
+        .send({
+          from: userAddress,
+          value: web3.utils.toWei(subscriptionData[2].price, "ether"),
+        })
+        .on("confirmation", () => {
+          dispatch(setSubscriber(true));
+        })
+        .on("error", (error: any) => {
+          alert(error.message);
+        });
+    }
+    if (id === 4) {
+      await ContractData.methods
+        .get_six_month_subscription()
+        .send({
+          from: userAddress,
+          value: web3.utils.toWei(subscriptionData[3].price, "ether"),
+        })
+        .on("confirmation", () => {
+          dispatch(setSubscriber(true));
+        })
+        .on("error", (error: any) => {
+          alert(error.message);
+        });
+    }
+  };
 
-          // dispatch(setTransectionProgress(false))
-
-        }
-
-    // if (loading) return <div>Transection in progress</div> 
-    
-    return(
-
-        <div className="container">
-
-            <Grid container className="card-container">
-
-            {
-                SubscriptionData.map((subscriptionData) => {
-                    return ( 
-                        <Grid item xs={3} className="card">
-                            <SubscriptionCard subscriptionData= {subscriptionData} buySubscription={buySubscription}/>
-                        </Grid >
-                    )
-                })
-            }
-            
+  return (
+    <div className="container">
+      <Grid container className="card-container">
+        {subscriptionData.map((data: Data) => {
+          return (
+            <Grid item xs={3} className="card">
+              <SubscriptionCard
+                subscriptionData={data}
+                buySubscription={buySubscription}
+              />
             </Grid>
-            
-            {/* </Grid> */}
-        </div>
+          );
+        })}
+      </Grid>
 
-    )
-}
+      {/* </Grid> */}
+    </div>
+  );
+};
 
 export default SubscriptionCards;
