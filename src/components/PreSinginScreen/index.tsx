@@ -10,8 +10,9 @@ const PreSignInScreen = () => {
 
     const {loading, isWaletConnect, isWhiteListed, isSubscriber} = useSelector((state: any) => state);
 
+    
     if(loading) return <div>Loading . . . </div>
-
+    
     return (
     <div className = "container">
 
@@ -28,10 +29,6 @@ const PreSignInScreen = () => {
                 null
 
         }
-
-
-
-
 
     </div>
   );

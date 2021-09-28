@@ -5,8 +5,9 @@ import { RankNFT as RankNFTType } from '../../../types/web3-v1-contracts/RankNFT
 interface DataType {
     userAddress: string,
     owner: string,
-    ContractData: RankNFTType | null
-    loading: boolean
+    ContractData: RankNFTType | null,
+    loading: boolean,
+    transectionProgress: boolean,
     contractAddress: string | null,
     isWaletConnect: boolean,
     isWhiteListed: boolean,
@@ -21,6 +22,7 @@ const initialState: DataType = {
     owner: "",
     ContractData: null,
     loading: false,
+    transectionProgress: false,
     contractAddress: "0x521357d3f95427C189199075a970A7d1355606a4",
     isWaletConnect: false,
     isWhiteListed: false,
@@ -79,6 +81,10 @@ const dataSlice = createSlice({
         // Use a "state machine" approach for loading state instead of booleans
         state.loading = payload;
       },
+      setTransectionProgress(state, {payload}:PayloadAction<boolean>) {
+        // Use a "state machine" approach for loading state instead of booleans
+        state.loading = payload;
+      },
       setWhitelistPeriod(state, {payload}:PayloadAction<number> ) {
         state.whitelistPeriod = payload
       },
@@ -92,6 +98,6 @@ const dataSlice = createSlice({
 // Extract the action creators object and the reducer
 const { actions, reducer } = dataSlice
 // Extract and export each action creator by name
-export const { setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
+export const { setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
 // Export the reducer, either as a default or named export
 export default reducer

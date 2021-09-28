@@ -16,7 +16,7 @@ import InfoModal from './InfoModel'
 const Header = () => {
 
   const dispatch = useDispatch()
-  const {isSignedIn, isWaletConnect, ContractData, isSubscriber} = useSelector((state: any) => state);
+  const {isWaletConnect, ContractData, isSubscriber} = useSelector((state: any) => state);
 
   
   window.ethereum.on('accountsChanged', function (accounts: string[]) {
@@ -103,12 +103,16 @@ const Header = () => {
         <Toolbar>
 
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            RankNFTs
+              NFT Sniper
           </Typography>
 
           {
             !isWaletConnect ?
-              <Button onClick={signIn} color="inherit"> Sign In </Button>
+              <Button onClick={signIn} color="inherit">
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    Sign In
+                </Typography>
+              </Button>
                :
                null
           }
@@ -118,7 +122,13 @@ const Header = () => {
           }
 
           {
-            isSubscriber && (<Button onClick= {logOut} color="inherit"> Logout </Button>)
+            isSubscriber && (
+              <Button onClick= {logOut} color="inherit"> 
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    Logout
+                </Typography>
+              </Button>
+              )
           }
 
         </Toolbar>
@@ -128,17 +138,3 @@ const Header = () => {
 }
 
 export default Header;
-
-
-
-
-
-// <Button onClick={connectWallet} color="inherit">
-// <img
-//   src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/2048px-MetaMask_Fox.svg.png"
-//   alt="metamask"
-//   width="50"
-//   height="50"
-//   // style={{marginLeft: "10px"}}
-// />
-// </Button>

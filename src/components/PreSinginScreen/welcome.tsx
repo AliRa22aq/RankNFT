@@ -6,7 +6,7 @@ const Welcome = () => {
     return(
         <div className="container">
             <div className = "welcome">
-                Welcome to Snipe NFTS, Please sign in
+                Welcome to NFT Sniper, Please sign in
             </div>
         </div>
     )

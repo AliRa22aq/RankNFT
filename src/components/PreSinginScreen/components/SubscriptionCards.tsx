@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from "react"
 import '../style.css';
-// import { setLoading, setActiveUser, userWalletconnected, setWhiteListed, setSubscriber } from '../store';
-import { useSelector } from 'react-redux';
+import { setSubscriber } from '../../store';
+import { useSelector, useDispatch } from 'react-redux';
 import Grid from '@mui/material/Grid';
 import SubscriptionCard from './card';
 import web3 from "web3"
 
 
 const SubscriptionCards = () => {
-    // const dispatch = useDispatch()
+    const dispatch = useDispatch()
     const {ContractData, userAddress } = useSelector((state: any) => state);
     const [prices, setPrices] = useState<string[]>(["0.03", "0.06", "0.15", "0.7"])
 
@@ -58,21 +58,54 @@ const SubscriptionCards = () => {
         }, [])
         
         const buySubscription = async (id: number) => {
+          // dispatch(setTransectionProgress(true))
             if(id === 1){
-                await ContractData.methods.get_single_day_subscription().send({from: userAddress, value: web3.utils.toWei(prices[0], "ether")});
+                await ContractData.methods.get_single_day_subscription().send({from: userAddress, value: web3.utils.toWei(prices[0], "ether")})
+                .on('confirmation', (confirmationNumber: any, receipt: any) => {
+                  console.log(confirmationNumber)
+                  console.log(receipt)
+                  dispatch(setSubscriber(true));
+                  // dispatch(setTransectionProgress(false))
+                })
+                .on('error', (error: any) => {
+                  alert(error.message)
+                  // dispatch(setTransectionProgress(false))
+                });
             }
             if(id === 2){
-                await ContractData.methods.get_seven_days_subscription().send({from: userAddress, value: web3.utils.toWei(prices[1], "ether")});
+                await ContractData.methods.get_seven_days_subscription().send({from: userAddress, value: web3.utils.toWei(prices[1], "ether")})
+                .on('confirmation', (confirmationNumber: any, receipt: any) => {
+                  console.log(confirmationNumber)
+                  console.log(receipt)
+                  dispatch(setSubscriber(true));
+                  // dispatch(setTransectionProgress(false))
+                });
             }
             if(id === 3){
-                await ContractData.methods.get_seven_days_subscription().send({from: userAddress, value: web3.utils.toWei(prices[2], "ether")});
+                await ContractData.methods.get_seven_days_subscription().send({from: userAddress, value: web3.utils.toWei(prices[2], "ether")})
+                .on('confirmation', (confirmationNumber: any, receipt: any) => {
+                  console.log(confirmationNumber)
+                  console.log(receipt)
+                  dispatch(setSubscriber(true));
+                  // dispatch(setTransectionProgress(false))
+                });
             }
             if(id === 4){
-                await ContractData.methods.get_six_month_subscription().send({from: userAddress, value: web3.utils.toWei(prices[3], "ether")});        
+                await ContractData.methods.get_six_month_subscription().send({from: userAddress, value: web3.utils.toWei(prices[3], "ether")})
+                .on('confirmation', (confirmationNumber: any, receipt: any) => {
+                  console.log(confirmationNumber)
+                  console.log(receipt)
+                  dispatch(setSubscriber(true));
+                  // dispatch(setTransectionProgress(false))
+                });        
             }
+
+          // dispatch(setTransectionProgress(false))
+
         }
 
-
+    // if (loading) return <div>Transection in progress</div> 
+    
     return(
 
         <div className="container">
