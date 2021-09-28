@@ -8,7 +8,7 @@ import Welcome from './welcome'
 
 const PreSignInScreen = () => {
 
-    const {loading, isWaletConnect, isWhiteListed, isSubscriber} = useSelector((state: any) => state);
+    const {isOwner , loading, isWaletConnect, isWhiteListed, isSubscriber} = useSelector((state: any) => state);
 
     
     if(loading) return <div>Loading . . . </div>
@@ -20,6 +20,8 @@ const PreSignInScreen = () => {
             !isWaletConnect ?
                 <Welcome /> :
             
+            isWaletConnect && isOwner ? null :
+
             isWaletConnect && !isWhiteListed ?
                 <NotWhiteListed /> :
 

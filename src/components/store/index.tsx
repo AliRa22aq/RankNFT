@@ -4,7 +4,8 @@ import { RankNFT as RankNFTType } from '../../../types/web3-v1-contracts/RankNFT
 
 interface DataType {
     userAddress: string,
-    owner: string,
+    isOwner: boolean,
+    isDeveloper: boolean,
     ContractData: RankNFTType | null,
     loading: boolean,
     transectionProgress: boolean,
@@ -19,11 +20,12 @@ interface DataType {
 
 const initialState: DataType = {
     userAddress: "",
-    owner: "",
+    isOwner: false,
+    isDeveloper: false,
     ContractData: null,
     loading: false,
     transectionProgress: false,
-    contractAddress: "0x521357d3f95427C189199075a970A7d1355606a4",
+    contractAddress: "",
     isWaletConnect: false,
     isWhiteListed: false,
     isSignedIn: false,
@@ -42,9 +44,17 @@ const dataSlice = createSlice({
       clearState(state) {
         return initialState   
       },
-      setOwner(state, {payload}:PayloadAction<string> ) {
+      setOwner(state, {payload}:PayloadAction<boolean> ) {
         // Use a "state machine" approach for loading state instead of booleans
-        state.owner = payload;
+        state.isOwner = payload;
+      },
+      setDeveloper(state, {payload}:PayloadAction<boolean> ) {
+        // Use a "state machine" approach for loading state instead of booleans
+        state.isDeveloper = payload;
+      },
+      setContractAddress(state, {payload}:PayloadAction<string> ) {
+        // Use a "state machine" approach for loading state instead of booleans
+        state.contractAddress = payload;
       },
       setActiveUser(state, {payload}:PayloadAction<string> ) {
         // Use a "state machine" approach for loading state instead of booleans
@@ -72,6 +82,8 @@ const dataSlice = createSlice({
         state.isSubscriber = false;
         state.isWhiteListed = false;
         state.isWaletConnect = false;
+        state.isOwner = false;
+        state.isDeveloper = false;
       },
       setContractData(state, {payload}:PayloadAction<RankNFTType> ) {
         // Use a "state machine" approach for loading state instead of booleans
@@ -98,6 +110,6 @@ const dataSlice = createSlice({
 // Extract the action creators object and the reducer
 const { actions, reducer } = dataSlice
 // Extract and export each action creator by name
-export const { setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
+export const { setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
 // Export the reducer, either as a default or named export
 export default reducer

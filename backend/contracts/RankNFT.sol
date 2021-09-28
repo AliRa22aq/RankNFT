@@ -44,6 +44,9 @@ contract RankNFT is Ownable {
   event PaymentReceived(address from, uint256 amount);
    
   
+  function developer_address() public pure returns(address){
+    return developer;
+  }
 
   function set_cost_of_subscription(uint256 _days, uint256 _amount) public onlyOwner{
       require(_days == 1 || _days == 7 || _days == 30 || _days == 180);
@@ -124,6 +127,7 @@ contract RankNFT is Ownable {
     emit BlackListed(_user);
   }
 
+  
       // free one hour subscription
   function giveaway_subscription(address[] memory _users, uint _hours) public onlyOwner {
     

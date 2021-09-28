@@ -87,6 +87,8 @@ export interface RankNFT extends BaseContract {
 
     whitelisting_period(arg0: string): NonPayableTransactionObject<string>;
 
+    developer_address(): NonPayableTransactionObject<string>;
+
     set_cost_of_subscription(
       _days: number | string | BN,
       _amount: number | string | BN

@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import Web3 from "web3";
 import { useDispatch, useSelector} from 'react-redux';
-import { setContractData } from './components/store';
+import { setContractData, setContractAddress } from './components/store';
 
 import './App.css';
 import Header from './components/Header';
@@ -16,8 +16,9 @@ const RankNFTABI = require("./abis/RankNFT.json");
 
 const App = () => {
   const dispatch = useDispatch()
-  const { isWaletConnect, isWhiteListed, isSubscriber} = useSelector((state: any) => state);
-  const contractAddress = "0x02b857D07F0405F5724652702807314054f17F49";
+  const { isDeveloper, isOwner, isWaletConnect, isWhiteListed, isSubscriber} = useSelector((state: any) => state);
+  const contractAddress = "0xaB17f0Ccd540798742e408EAAa8d68C0de9d35E3";
+  dispatch(setContractAddress(contractAddress));
 
   const loadContract = async () => {
     const web3 = new Web3(window.ethereum);  
@@ -33,10 +34,12 @@ const App = () => {
     <div>
       <Header />
 
-      <PreSignInScreen />
+        <PreSignInScreen />
       
       {
-        isWaletConnect && isWhiteListed && isSubscriber && ( <PostSignInScreen /> )
+         isOwner || (isWaletConnect && isWhiteListed && isSubscriber) ?
+          <PostSignInScreen /> : null
+        
       }
 
 

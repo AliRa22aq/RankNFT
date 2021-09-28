@@ -24,12 +24,7 @@ const PostSignInScreen = () => {
                   <NFTForm />
 
                 </Grid>
-
-                {/* <Grid item xs={1}>
-
-                <Divider orientation="vertical" flexItem />
-
-                </Grid> */}
+                
 
                 <Grid item xs={9}>
                   <NFTCards />

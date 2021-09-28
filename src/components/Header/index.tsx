@@ -6,21 +6,25 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { useDispatch, useSelector } from 'react-redux';
-import { setLoading, setLogout, setSignedIn, clearState, setActiveUser, userWalletconnected, setWhiteListed, setSubscriber, setOwner } from '../store';
+import { setDeveloper, setLoading, setLogout, setSignedIn, clearState, setActiveUser, userWalletconnected, setWhiteListed, setSubscriber, setOwner } from '../store';
 import InfoModal from './InfoModel'
 
 
 const Header = () => {
 
   const dispatch = useDispatch()
-  const {isWaletConnect, ContractData, isSubscriber} = useSelector((state: any) => state);
+  const {isOwner, isWaletConnect, ContractData, isSubscriber} = useSelector((state: any) => state);
 
   
   window.ethereum.on('accountsChanged', function (accounts: string[]) {
     dispatch(setActiveUser(accounts[0]))
-    dispatch(clearState())
-    
+    dispatch(setLogout())
   })
+
+  window.ethereum.on('disconnect', () => {
+    dispatch(setLogout())
+  });
+
 
   const signIn = async () => {
 
@@ -52,12 +56,18 @@ const Header = () => {
       );
     }
     
-    const whitelistStatus = await ContractData.methods.is_whitelisted(userCurrentAddress).call();
-
+    
     const owner = await ContractData.methods.owner().call();
-    dispatch(setOwner(owner));
-
-
+    dispatch(setOwner(owner === userCurrentAddress));
+    console.log("owner", owner)
+    
+    
+    const developer = await ContractData.methods.developer_address().call();
+    dispatch(setDeveloper(developer === userCurrentAddress ));
+    console.log("developer", developer)
+    
+    const whitelistStatus = await ContractData.methods.is_whitelisted(userCurrentAddress).call();
+    
 
     if (whitelistStatus){ 
 
@@ -115,11 +125,11 @@ const Header = () => {
           }
 
           {
-            isSubscriber && ( <InfoModal /> )
+            (isOwner || isSubscriber) && ( <InfoModal /> )
           }
 
           {
-            isSubscriber && (
+            (isOwner || isSubscriber) && (
               <Button onClick= {logOut} color="inherit"> 
                 <Typography component="div" sx={{ flexGrow: 1 }}>
                     Logout
