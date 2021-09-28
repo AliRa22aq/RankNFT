@@ -41,7 +41,18 @@ console.log(subscriptionData)
         </CardContent>
 
         <CardActions style={{alignContent: "center", justifyContent: "center"}}>
-          <Button onClick={() => buySubscription(subscriptionData.id)} variant="outlined">Buy</Button>
+          <Button 
+            disabled = {subscriptionData.id === 1 || subscriptionData.id === 3 ? false:true}
+            onClick={() => buySubscription(subscriptionData.id)} 
+            variant="contained">
+              {
+                subscriptionData.id === 1 || subscriptionData.id === 3 ?
+                "Buy" :
+                "Comming Soon"
+
+              }
+            
+            </Button>
         </CardActions>
       </React.Fragment>
 
