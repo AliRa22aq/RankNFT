@@ -3,6 +3,9 @@ import './style.css';
 // import { intervalToDuration, formatDistanceToNow } from 'date-fns'
 // import { useDispatch, useSelector } from 'react-redux';
 // import { setSubscriptionPeriod, setWhitelistPeriod } from '../store';
+import Grid from "@mui/material/Grid";
+import NFTForm from './components/form';
+import NFTCards from './components/nftCards';
 
 
 const PostSignInScreen = () => {
@@ -14,11 +17,26 @@ const PostSignInScreen = () => {
   return (
     <div className = "postsignin-container">
 
-              <div>
-                You are in
+              <Grid container>
+
+                <Grid item xs={3}>
+
+                  <NFTForm />
+
+                </Grid>
+
+                {/* <Grid item xs={1}>
+
+                <Divider orientation="vertical" flexItem />
+
+                </Grid> */}
+
+                <Grid item xs={9}>
+                  <NFTCards />
+                </Grid>
 
 
-              </div>
+              </Grid>
 
     </div>
   );

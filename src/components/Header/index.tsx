@@ -8,9 +8,6 @@ import Button from '@mui/material/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading, setLogout, setSignedIn, clearState, setActiveUser, userWalletconnected, setWhiteListed, setSubscriber, setOwner } from '../store';
 import InfoModal from './InfoModel'
-// import { RankNFT as RankNFTType } from '../../../types/web3-v1-contracts/RankNFT';
-// const RankNFTABI = require("../../abis/RankNFT.json");
-
 
 
 const Header = () => {
@@ -109,7 +106,7 @@ const Header = () => {
           {
             !isWaletConnect ?
               <Button onClick={signIn} color="inherit">
-                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                <Typography component="div" sx={{ flexGrow: 1 }}>
                     Sign In
                 </Typography>
               </Button>
@@ -124,7 +121,7 @@ const Header = () => {
           {
             isSubscriber && (
               <Button onClick= {logOut} color="inherit"> 
-                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                <Typography component="div" sx={{ flexGrow: 1 }}>
                     Logout
                 </Typography>
               </Button>
