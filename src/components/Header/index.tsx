@@ -6,8 +6,8 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearState, setActiveUser, userWalletconnected, isWhiteListed, isSubscriber, setOwner } from '../store';
-
+import { clearState, setActiveUser, userWalletconnected, setWhiteListed, setSubscriber, setOwner } from '../store';
+import InfoModal from './InfoModel'
 // import { RankNFT as RankNFTType } from '../../../types/web3-v1-contracts/RankNFT';
 // const RankNFTABI = require("../../abis/RankNFT.json");
 
@@ -16,7 +16,7 @@ import { clearState, setActiveUser, userWalletconnected, isWhiteListed, isSubscr
 const Header = () => {
 
   const dispatch = useDispatch()
-  const {isWaletConnect, ContractData} = useSelector((state: any) => state);
+  const {isWaletConnect, ContractData, isSubscriber} = useSelector((state: any) => state);
 
 
   window.ethereum.on('accountsChanged', function (accounts: string[]) {
@@ -62,26 +62,38 @@ const Header = () => {
 
     if (whitelistStatus){ 
 
-        dispatch(isWhiteListed(true));
+        dispatch(setWhiteListed(true));
         const subscriptionStatus = await ContractData.methods.is_subscriber(userCurrentAddress).call();
         console.log(subscriptionStatus)
 
         if(subscriptionStatus){
-          dispatch(isSubscriber(true));
+          dispatch(setSubscriber(true));
         } else{
-          dispatch(isSubscriber(false));
+          dispatch(setSubscriber(false));
         }
     } else {
-      dispatch(isWhiteListed(false));
-      dispatch(isSubscriber(false));
+      dispatch(setWhiteListed(false));
+      dispatch(setSubscriber(false));
     }
 
   }
+
+
+  const logOut = async () => {
+    // const web3 = Web3()
+    // await web3.clearCachedProvider()
+    dispatch(setSubscriber(false));
+    dispatch(setWhiteListed(false));
+
+
+  }
+
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
+
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             RankNFTs
           </Typography>
@@ -91,7 +103,15 @@ const Header = () => {
               <Button onClick={signIn} color="inherit"> Sign In </Button>
                :
                null
-              }
+          }
+
+          {
+            isSubscriber && ( <InfoModal /> )
+          }
+
+          {
+            isSubscriber && (<Button onClick= {logOut} color="inherit"> Logout </Button>)
+          }
 
         </Toolbar>
       </AppBar>

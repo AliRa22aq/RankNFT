@@ -1,0 +1,23 @@
+.container {
+    /* margin: 1rem; */
+    width: 100%;    
+    display: flex;
+    /* border: 1px solid rgb(255, 10, 10); */
+
+
+}
+
+.card-container{
+    width: 100%;    
+    height: 100%;    
+    padding: 0rem;
+    margin: 0rem;
+    /* border: 1px solid black */
+
+}
+
+.card {
+    padding: 0.5rem;
+    margin: 0.5rem;
+
+}

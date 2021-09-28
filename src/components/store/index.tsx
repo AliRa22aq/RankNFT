@@ -52,11 +52,11 @@ const dataSlice = createSlice({
         // Use a "state machine" approach for loading state instead of booleans
         state.isWaletConnect = payload;
       },
-      isWhiteListed(state, {payload}:PayloadAction<boolean> ) {
+      setWhiteListed(state, {payload}:PayloadAction<boolean> ) {
         // Use a "state machine" approach for loading state instead of booleans
         state.isWhiteListed = payload;
       },
-      isSubscriber(state, {payload}:PayloadAction<boolean> ) {
+      setSubscriber(state, {payload}:PayloadAction<boolean> ) {
         // Use a "state machine" approach for loading state instead of booleans
         state.isSubscriber = payload;
       },
@@ -81,6 +81,6 @@ const dataSlice = createSlice({
 // Extract the action creators object and the reducer
 const { actions, reducer } = dataSlice
 // Extract and export each action creator by name
-export const { clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, isSubscriber, isWhiteListed, userWalletconnected, setLoading } = actions
+export const { clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
 // Export the reducer, either as a default or named export
 export default reducer
