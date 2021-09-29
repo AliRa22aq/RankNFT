@@ -16,6 +16,7 @@ interface DataType {
     isSubscriber: boolean,
     whitelistPeriod: number,
     subscriptionPeriod: number,
+    uploadedContractAddress: string
   }
 
 const initialState: DataType = {
@@ -32,6 +33,7 @@ const initialState: DataType = {
     isSubscriber: false,
     whitelistPeriod: 0,
     subscriptionPeriod: 0,
+    uploadedContractAddress: ""
 
 
 }
@@ -103,6 +105,9 @@ const dataSlice = createSlice({
       setSubscriptionPeriod(state, {payload}:PayloadAction<number> ) {
         state.subscriptionPeriod = payload
       },
+      setUploadedContractAddress(state, {payload}:PayloadAction<string> ) {
+        state.uploadedContractAddress = payload
+      },
 
     },
   })
@@ -110,6 +115,6 @@ const dataSlice = createSlice({
 // Extract the action creators object and the reducer
 const { actions, reducer } = dataSlice
 // Extract and export each action creator by name
-export const { setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
+export const { setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
 // Export the reducer, either as a default or named export
 export default reducer
