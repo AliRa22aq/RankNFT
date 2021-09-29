@@ -17,7 +17,7 @@ let subscriptionData: Data[] = [
   {
     id: 1,
     days: "One Day",
-    price: "0.03",
+    price: "0.00",
     day: "1 day",
   },
   {
@@ -41,8 +41,14 @@ let subscriptionData: Data[] = [
 ];
 
 const SubscriptionCards = () => {
+
   const dispatch = useDispatch();
   const { ContractData, userAddress } = useSelector((state: any) => state);
+
+  useEffect(() => {
+    getSubscriptionData();
+  }, []);
+
 
   const getSubscriptionData = async () => {
     const days: number[] = [1, 7, 30, 180];
@@ -50,14 +56,12 @@ const SubscriptionCards = () => {
       let cost = await ContractData.methods
         .get_cost_of_subscription(day)
         .call();
-      cost = web3.utils.fromWei(cost, "ether");
+      cost = await web3.utils.fromWei(cost, "ether");
+      console.log("cost", cost)
       subscriptionData[key].price = cost;
     });
   };
 
-  useEffect(() => {
-    getSubscriptionData();
-  }, []);
 
   const buySubscription = async (id: number) => {
     if (id === 1) {
@@ -117,6 +121,8 @@ const SubscriptionCards = () => {
         });
     }
   };
+
+
 
   return (
     <div className="container">

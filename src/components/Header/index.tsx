@@ -1,147 +1,141 @@
-import React from "react"
+import React from "react";
 import Web3 from "web3";
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import { useDispatch, useSelector } from 'react-redux';
-import { setDeveloper, setLoading, setLogout, setSignedIn, clearState, setActiveUser, userWalletconnected, setWhiteListed, setSubscriber, setOwner } from '../store';
-import InfoModal from './InfoModel'
-
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setDeveloper,
+  setLoading,
+  setLogout,
+  setSignedIn,
+  setActiveUser,
+  userWalletconnected,
+  setWhiteListed,
+  setSubscriber,
+  setOwner,
+} from "../store";
+import InfoModal from "./InfoModel";
 
 const Header = () => {
+  const dispatch = useDispatch();
+  const { isOwner, isDeveloper, isWaletConnect, ContractData, isSubscriber } = useSelector(
+    (state: any) => state
+  );
 
-  const dispatch = useDispatch()
-  const {isOwner, isWaletConnect, ContractData, isSubscriber} = useSelector((state: any) => state);
-
-  
-  window.ethereum.on('accountsChanged', function (accounts: string[]) {
-    dispatch(setActiveUser(accounts[0]))
-    dispatch(setLogout())
-  })
-
-  window.ethereum.on('disconnect', () => {
-    dispatch(setLogout())
+  window.ethereum.on("accountsChanged", function (accounts: string[]) {
+    dispatch(setActiveUser(accounts[0]));
+    dispatch(setLogout());
   });
 
+  window.ethereum.on("disconnect", () => {
+    dispatch(setLogout());
+  });
 
   const signIn = async () => {
+    dispatch(setLoading(true));
 
-    dispatch(setLoading(true))
-    
-    let userCurrentAddress; 
+    let userCurrentAddress;
 
     if (window.ethereum) {
       window.web3 = new Web3(window.ethereum);
       await window.ethereum.enable();
-      dispatch(userWalletconnected(true))
-      console.log(window.web3.currentProvider.isMetaMask)
-      
-      // Get current logged in user address
-      const accounts = await window.web3.eth.getAccounts()
-      userCurrentAddress = accounts[0];
-      dispatch(setActiveUser(accounts[0]))
+      dispatch(userWalletconnected(true));
+      console.log(window.web3.currentProvider.isMetaMask);
 
+      // Get current logged in user address
+      const accounts = await window.web3.eth.getAccounts();
+      userCurrentAddress = accounts[0];
+      dispatch(setActiveUser(accounts[0]));
     } else if (window.web3) {
       window.web3 = new Web3(window.web3.currentProvider);
-      dispatch(userWalletconnected(true))
-      const accounts = await window.web3.eth.getAccounts()
-      dispatch(setActiveUser(accounts[0]))
+      dispatch(userWalletconnected(true));
+      const accounts = await window.web3.eth.getAccounts();
+      dispatch(setActiveUser(accounts[0]));
       userCurrentAddress = accounts[0];
-
     } else {
       window.alert(
         "Non-Ethereum browser detected. You should consider trying MetaMask!"
       );
     }
-    
-    
+
     const owner = await ContractData.methods.owner().call();
-    dispatch(setOwner(owner === userCurrentAddress));
-    console.log("owner", owner)
-    
-    
+    if (owner === userCurrentAddress) {
+      dispatch(setOwner(true));
+      dispatch(setLoading(false));
+    }
+
     const developer = await ContractData.methods.developer_address().call();
-    dispatch(setDeveloper(developer === userCurrentAddress ));
-    console.log("developer", developer)
-    
-    const whitelistStatus = await ContractData.methods.is_whitelisted(userCurrentAddress).call();
-    
+    if (developer === userCurrentAddress) {
+      dispatch(setDeveloper(developer === userCurrentAddress));
+      dispatch(setLoading(false));
+    }
 
-    if (whitelistStatus){ 
+    const whitelistStatus = await ContractData.methods
+      .is_whitelisted(userCurrentAddress)
+      .call();
 
-        dispatch(setWhiteListed(true));
-        const subscriptionStatus = await ContractData.methods.is_subscriber(userCurrentAddress).call();
-        console.log(subscriptionStatus)
+    if (whitelistStatus) {
+      dispatch(setWhiteListed(true));
+      const subscriptionStatus = await ContractData.methods
+        .is_subscriber(userCurrentAddress)
+        .call();
+      console.log(subscriptionStatus);
 
-        if(subscriptionStatus){
-          dispatch(setSubscriber(true));
-          dispatch(setSignedIn(true));         
-          dispatch(setLoading(false))
-          
-        } else{
-          dispatch(setSubscriber(false));
-          dispatch(setSignedIn(false));   
-          dispatch(setLoading(false))
-
-        }
+      if (subscriptionStatus) {
+        dispatch(setSubscriber(true));
+        dispatch(setSignedIn(true));
+        dispatch(setLoading(false));
+      } else {
+        dispatch(setSubscriber(false));
+        dispatch(setSignedIn(false));
+        dispatch(setLoading(false));
+      }
     } else {
       dispatch(setWhiteListed(false));
       dispatch(setSubscriber(false));
-      dispatch(setSignedIn(false));     
-      dispatch(setLoading(false))
-
+      dispatch(setSignedIn(false));
+      dispatch(setLoading(false));
     }
 
-    dispatch(setLoading(false))
-
-  }
-
+    dispatch(setLoading(false));
+  };
 
   const logOut = async () => {
-    dispatch(setLogout())
-  }
-
+    dispatch(setLogout());
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              NFT Sniper
+            NFT Sniper
           </Typography>
 
-          {
-            !isWaletConnect ?
-              <Button onClick={signIn} color="inherit">
-                <Typography component="div" sx={{ flexGrow: 1 }}>
-                    Sign In
-                </Typography>
-              </Button>
-               :
-               null
-          }
+          {!isWaletConnect ? (
+            <Button onClick={signIn} color="inherit">
+              <Typography component="div" sx={{ flexGrow: 1 }}>
+                Sign In
+              </Typography>
+            </Button>
+          ) : null}
 
-          {
-            (isOwner || isSubscriber) && ( <InfoModal /> )
-          }
+          {(isDeveloper || isOwner || isSubscriber) && <InfoModal />}
 
-          {
-            (isOwner || isSubscriber) && (
-              <Button onClick= {logOut} color="inherit"> 
-                <Typography component="div" sx={{ flexGrow: 1 }}>
-                    Logout
-                </Typography>
-              </Button>
-              )
-          }
-
+          {(isDeveloper || isOwner || isSubscriber) && (
+            <Button onClick={logOut} color="inherit">
+              <Typography component="div" sx={{ flexGrow: 1 }}>
+                Logout
+              </Typography>
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
     </Box>
   );
-}
+};
 
 export default Header;

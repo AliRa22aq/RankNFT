@@ -10,11 +10,14 @@ import TextField from "@mui/material/TextField";
 // import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
-const NFTForm = () => {
-  const initialValues = { link: "", from: 0, to: 0 };
 
-  const onSubmit = async () => {
-    alert("Hello World");
+
+
+const NFTForm = () => {
+  const initialValues = { address: "", from: 0, to: 0 };
+
+  const onSubmit = async (values: typeof initialValues) => {
+    console.log(values)  
   };
 
   return (
@@ -31,7 +34,7 @@ const NFTForm = () => {
                 <Field
                   component={TextField}
                   type="text"
-                  name="link"
+                  name="address"
                   label="Link"
                   fullWidth
                 />

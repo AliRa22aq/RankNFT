@@ -1,18 +1,14 @@
 import React, {useEffect} from 'react';
+import './App.css';
 import Web3 from "web3";
 import { useDispatch, useSelector} from 'react-redux';
 import { setContractData, setContractAddress } from './components/store';
-
-import './App.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import PreSignInScreen from './components/PreSinginScreen';
 import PostSignInScreen from './components/PostSinginScreen';
-
 import { RankNFT as RankNFTType } from '../types/web3-v1-contracts/RankNFT'
 const RankNFTABI = require("./abis/RankNFT.json");
-
-
 
 const App = () => {
   const dispatch = useDispatch()
@@ -37,11 +33,10 @@ const App = () => {
         <PreSignInScreen />
       
       {
-         isOwner || (isWaletConnect && isWhiteListed && isSubscriber) ?
+         isDeveloper || isOwner || (isWaletConnect && isWhiteListed && isSubscriber) ?
           <PostSignInScreen /> : null
         
       }
-
 
       <Footer />
     </div>
