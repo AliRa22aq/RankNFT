@@ -14,11 +14,40 @@ interface Data {
 }
 
 interface Props {
-  subscriptionData : Data,
+  price : string,
+  index: number,
   buySubscription: (id: number)=> void
 }
 
-const SubscriptionCard: FC<Props> = ({subscriptionData, buySubscription}) => {
+
+let subscriptionData: Data[] = [
+  {
+    id: 1,
+    days: "One Day",
+    price: "0.03",
+    day: "1 day",
+  },
+  {
+    id: 2,
+    days: "Seven Days",
+    price: "0.06",
+    day: "7 days",
+  },
+  {
+    id: 3,
+    days: "One Month",
+    price: "0.15",
+    day: "30 days",
+  },
+  {
+    id: 4,
+    days: "Six Months",
+    price: "0.7",
+    day: "180 days",
+  },
+];
+
+const SubscriptionCard: FC<Props> = ({price, index,  buySubscription}) => {
 
 console.log(subscriptionData)
 
@@ -30,23 +59,23 @@ console.log(subscriptionData)
       <React.Fragment>
         <CardContent>
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            Plan {subscriptionData.id}
+            Plan {subscriptionData[index].id}
           </Typography>
           <Typography variant="h6" component="div">
-            {subscriptionData.days} Subscription
+            {subscriptionData[index].days} Subscription
           </Typography>
           <Typography variant="body2">
-            {subscriptionData.price} Ethers for {subscriptionData.day}
+            {price} Ethers for {subscriptionData[index].day}
           </Typography>
         </CardContent>
 
         <CardActions style={{alignContent: "center", justifyContent: "center"}}>
           <Button 
-            disabled = {subscriptionData.id === 1 || subscriptionData.id === 3 ? false:true}
-            onClick={() => buySubscription(subscriptionData.id)} 
+            disabled = {subscriptionData[index].id === 1 || subscriptionData[index].id === 3 ? false:true}
+            onClick={() => buySubscription(subscriptionData[index].id)} 
             variant="contained">
               {
-                subscriptionData.id === 1 || subscriptionData.id === 3 ?
+                subscriptionData[index].id === 1 || subscriptionData[index].id === 3 ?
                 "Buy" :
                 "Coming Soon"
               }

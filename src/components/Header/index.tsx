@@ -16,6 +16,7 @@ import {
   setWhiteListed,
   setSubscriber,
   setOwner,
+  clearState
 } from "../store";
 import InfoModal from "./InfoModel";
 
@@ -35,6 +36,8 @@ const Header = () => {
   });
 
   const signIn = async () => {
+
+    // dispatch(clearState());
     dispatch(setLoading(true));
 
     let userCurrentAddress;

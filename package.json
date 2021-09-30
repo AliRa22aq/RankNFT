@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
+    "@material-ui/core": "^4.12.3",
     "@mui/icons-material": "^5.0.1",
     "@mui/material": "^5.0.1",
     "@mui/styled-engine-sc": "^5.0.0",
@@ -18,11 +19,13 @@
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "add": "^2.0.6",
     "bn.js": "^5.2.0",
     "countdown": "^2.6.0",
     "date-fns": "^2.24.0",
     "ethers": "^5.4.7",
     "formik": "^2.2.9",
+    "formik-material-ui": "^4.0.0-alpha.1",
     "moment": "^2.29.1",
     "moment-countdown": "^0.0.3",
     "opensea-js": "^1.2.0",
@@ -35,7 +38,8 @@
     "typescript": "^4.1.2",
     "use-nft": "^0.10.1",
     "web-vitals": "^1.0.1",
-    "web3": "^1.5.3"
+    "web3": "^1.5.3",
+    "yarn": "^1.22.15"
   },
   "scripts": {
     "generate-types": "typechain --target=web3-v1 \"src/abis/*.json\"",

@@ -5,16 +5,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setUploadedContractAddress } from '../../../store';
 import Grid from "@mui/material/Grid";
 import { Form, Formik, Field } from "formik";
-// import { TextField} from 'formik-material-ui';
-import TextField from "@mui/material/TextField";
+import { TextField} from 'formik-material-ui';
+// import TextField from "@mui/material"
 // import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 // import * as Yup from 'yup';
-
-
-// interface MyFormValues {
-//   address: string;
-// }
 
 const NFTForm = () => {
 
@@ -45,11 +40,11 @@ const NFTForm = () => {
      <Grid container spacing={1} className="form">
        <Grid item xs={12} className="form-component">
          <Field
-          //  component={TextField}
+           component={TextField}
            type="text"
            name="address"
            label="Conrtact Address"
-          //  fullWidth
+           fullWidth
          />
        </Grid>
 
