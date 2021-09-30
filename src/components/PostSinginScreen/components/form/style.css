@@ -1,17 +1,60 @@
-.form{
+.parent-container{
     margin: 0px;
     width: 100%;
     height: 100%;
-    display: flex;
-    align-content: center;
-    justify-content: center;
+    /* display: flex; */
+    /* border: 1px solid black ; */
+    /* align-content: center;
+    justify-content: center; */
 
 }
 
+.form-container {
+    width: 100%;
+    /* border: 1px solid rgb(230, 0, 0) ; */
+    margin-bottom: 30px;
+
+
+}
+
+.form-component {
+    width: 100%;
+    /* border: 1px solid black ; */
+
+
+}
 .form-text {
-    margin-left: 10px;
+    /* margin-left: 10px; */
 }
 
+.project-detail-container{
+    width: "100%";
+    margin-top: 20px;
+    margin-left: 17px;
+    max-width: 300px;
+
+    overflow-wrap: break-word;
+    /* word-wrap: break-word;
+    hyphens: auto; */
+  }
+
+.project-detail-header {
+    font-size: large;
+    font-weight: bold; 
+    margin-bottom: 0px;
+    margin-top: 0px;
+
+}
+
+.range-header {
+    width: "100%";
+    font-size: large;
+    font-weight: bold; 
+    margin-bottom: 2px;
+    margin-left: 0px;
+    /* margin: 20px; */
+
+}
 
 .form-button-container {
     display: flex;
@@ -19,7 +62,7 @@
     justify-content: center;
     width: 100%;
     height: 100%;
-    margin-top: 2rem;
+    margin-top: 1rem;
 
 }
 
@@ -27,4 +70,5 @@
     width: 200px;
     height: 50px;
 }
+
 
