@@ -49,7 +49,7 @@ let subscriptionData: Data[] = [
 
 const SubscriptionCard: FC<Props> = ({price, index,  buySubscription}) => {
 
-console.log(subscriptionData)
+// console.log(subscriptionData)
 
 
   return (

@@ -2,6 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RankNFT as RankNFTType } from '../../../types/web3-v1-contracts/RankNFT'
 
 
+export interface Attribute {
+  trait_type :string, 
+  value: string
+}
+
+
 interface DataType {
     userAddress: string,
     isOwner: boolean,
@@ -16,7 +22,8 @@ interface DataType {
     isSubscriber: boolean,
     whitelistPeriod: number,
     subscriptionPeriod: number,
-    uploadedContractAddress: string
+    uploadedContractAddress: string,
+    NFTattributes: Attribute[] | null
   }
 
 const initialState: DataType = {
@@ -33,7 +40,8 @@ const initialState: DataType = {
     isSubscriber: false,
     whitelistPeriod: 0,
     subscriptionPeriod: 0,
-    uploadedContractAddress: ""
+    uploadedContractAddress: "",
+    NFTattributes: null
 
 
 }
@@ -108,6 +116,9 @@ const dataSlice = createSlice({
       setUploadedContractAddress(state, {payload}:PayloadAction<string> ) {
         state.uploadedContractAddress = payload
       },
+      setAttributes(state, {payload}: PayloadAction<Attribute[]>) {
+        state.NFTattributes = payload
+      }
 
     },
   })
@@ -115,6 +126,6 @@ const dataSlice = createSlice({
 // Extract the action creators object and the reducer
 const { actions, reducer } = dataSlice
 // Extract and export each action creator by name
-export const { setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
+export const { setAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
 // Export the reducer, either as a default or named export
 export default reducer

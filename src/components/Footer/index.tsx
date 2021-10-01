@@ -11,6 +11,7 @@ const Footer = () => {
         <img
           src="https://cdn.worldvectorlogo.com/logos/discord-6.svg"
           alt="dicord"
+          className="SavedLink"
           width="50"
           height="50"
           style={{marginLeft: "10px"}}
