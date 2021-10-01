@@ -18,7 +18,7 @@ const App = () => {
 
   const loadContract = async () => {
     const web3 = new Web3(window.ethereum);  
-    const ContractData = (new web3.eth.Contract(RankNFTABI.abi, contractAddress) as any) as RankNFTType;
+    const ContractData = await (new web3.eth.Contract(RankNFTABI.abi, contractAddress) as any) as RankNFTType;
     dispatch(setContractData(ContractData));
   }
 

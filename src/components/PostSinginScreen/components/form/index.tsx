@@ -1,13 +1,14 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import "./style.css";
 import { useDispatch, useSelector } from 'react-redux';
-import { setUploadedContractAddress, setAttributes, Attribute } from '../../../store';
+import { setUploadedContractAddress, setAvailableAttributes, Attribute, addTokenInList, AttributesOfEachToekn } from '../../../store';
 import Grid from "@mui/material/Grid";
 import { Form, Formik, Field } from "formik";
 import { TextField} from 'formik-material-ui';
 import Button from "@mui/material/Button";
 // import * as Yup from 'yup';
 const Web3 = require("web3");
+import axios from "axios";
 
 
 interface Data {
@@ -25,9 +26,10 @@ const initialData = {
   uri : null
 }
 
+// 
 
 const NFTForm = () => {
-
+  
   const dispatch = useDispatch();
   const [data, setData] = useState<Data>(initialData);
   const [loading, setLoading] = useState(false);
@@ -35,10 +37,12 @@ const NFTForm = () => {
   const [needRange, setNeedrange] = useState(false);
 
   const fetchData = async  (contractAdrs : string) => {
-
-    setData(initialData) 
+    setData(initialData)
     setNeedrange(false)
     setLoading(true)
+    dispatch(addTokenInList(null))
+    dispatch(setAvailableAttributes(null))
+
       
       var web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/92a3eada72834b629e28ff80ba4af4d0'))  
 
@@ -79,32 +83,58 @@ const NFTForm = () => {
 
   const fetchAttributes = async (from: number, to: number) => {
 
+    // let fullData = [];
+
+
     let check = data?.baseTokenURI?.includes("ipfs://");
     if(check){
       let url = data?.baseTokenURI?.replace("ipfs://", "https://ipfs.io/ipfs/");
       if( url){
-        let fetchAPI =  (await fetch(url) as any)
-        fetchAPI = (await fetchAPI.json() as any)
-        console.log("new", fetchAPI)
+        let fetchAPI =  await axios.get(url ) as any          
+        console.log("new", fetchAPI.data.attributes)
         if(fetchAPI){
-          dispatch(setAttributes((fetchAPI.attributes) as Attribute[]))
+          dispatch(setAvailableAttributes((fetchAPI.data.attributes) as Attribute[]))
         }
       }
     }
 
     check = data?.baseTokenURI?.includes("https://"); 
     if(check){
-        if(data?.baseTokenURI){
-          let fetchAPI =  (await fetch(data?.baseTokenURI) as any)
-          fetchAPI = (await fetchAPI.json() as any)
-            console.log("new", fetchAPI)
+        let url = data?.baseTokenURI
+        if(url){
+          let fetchAPI =  await axios.get( url ) as any          
+          console.log("new", fetchAPI.data.attributes)
           if(fetchAPI){
-            dispatch(setAttributes((fetchAPI.attributes) as Attribute[]))
-          }
-  
-        }
-    }
+            dispatch(setAvailableAttributes((fetchAPI.data.attributes) as Attribute[]))
 
+
+            // export interface AttributesOfEachToekn {
+              //   tokenID: string
+              //   attributes: Attribute[],
+              // }
+
+            const range = to - from + 1
+            console.log("to and from: ", to, from)
+            console.log("ready with range: ", range)
+
+            for(var i = from;  i <= range;  i++ ) {
+                let activeURL =  url.replace("1" , String(i))
+                console.log("activeURL", activeURL)
+
+                let activefetchAPI =  await axios.get( activeURL ) as any          
+                // fullData.push(activefetchAPI.fetchAPI.data.attributes)
+                console.log(activefetchAPI.data.attributes)
+                dispatch(addTokenInList({tokenID: String(i) , attributes: activefetchAPI.data.attributes} as AttributesOfEachToekn))
+                // fullData.push(activefetchAPI.data.attributes)
+            }   
+
+
+          }
+          
+        }
+      }
+      
+      // console.log(fullData)
   }
 
   return (
@@ -221,7 +251,7 @@ const NFTForm = () => {
 
 {
       needRange ?
-        <Formik initialValues={{ from: 0, to: 20 }}  
+        <Formik initialValues={{ from: 1, to: 20 }}  
             onSubmit={async (values, { setSubmitting, resetForm, setFieldValue,  }) => {
               fetchAttributes(values.from, values.to)
             }}

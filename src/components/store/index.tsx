@@ -4,8 +4,24 @@ import { RankNFT as RankNFTType } from '../../../types/web3-v1-contracts/RankNFT
 
 export interface Attribute {
   trait_type :string, 
-  value: string
+  value: string,
 }
+
+export interface AttributesOfEachToekn {
+  tokenID: string
+  attributes: Attribute[],
+}
+
+// export interface CountOfEachAttribute {
+//   trait_value: string,
+//   count: number
+// }
+
+// export interface CountOfAllAttributes {
+//   full_list_of_all_attributes: CountOfEachAttribute[]
+// }
+
+
 
 
 interface DataType {
@@ -23,7 +39,8 @@ interface DataType {
     whitelistPeriod: number,
     subscriptionPeriod: number,
     uploadedContractAddress: string,
-    NFTattributes: Attribute[] | null
+    NFTattributes: Attribute[] | null,
+    list_of_all_tokens: AttributesOfEachToekn[] | null
   }
 
 const initialState: DataType = {
@@ -41,7 +58,8 @@ const initialState: DataType = {
     whitelistPeriod: 0,
     subscriptionPeriod: 0,
     uploadedContractAddress: "",
-    NFTattributes: null
+    NFTattributes: null,
+    list_of_all_tokens: null,
 
 
 }
@@ -116,16 +134,36 @@ const dataSlice = createSlice({
       setUploadedContractAddress(state, {payload}:PayloadAction<string> ) {
         state.uploadedContractAddress = payload
       },
-      setAttributes(state, {payload}: PayloadAction<Attribute[]>) {
-        state.NFTattributes = payload
-      }
+      setAvailableAttributes(state, {payload}: PayloadAction<Attribute[]  |  null>) {
+        if(payload === null){
+          state.NFTattributes = null
+        } else {
+          state.NFTattributes = payload
+        }
+      },
+      addTokenInList(state, {payload}: PayloadAction<AttributesOfEachToekn |  null>) {
+        console.log("payload added ", payload)
+        if(payload === null){
+          state.list_of_all_tokens = null
+        }
+        else {
+            if(state.list_of_all_tokens !== null){
+            state.list_of_all_tokens = [...state.list_of_all_tokens, payload]
+          } else {
+            state.list_of_all_tokens = [ payload ]
+          }
 
+        }
+        console.log("Ater adding token ", state.list_of_all_tokens)
+        
+      }
+      
     },
   })
   
 // Extract the action creators object and the reducer
 const { actions, reducer } = dataSlice
 // Extract and export each action creator by name
-export const { setAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
+export const { addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
 // Export the reducer, either as a default or named export
 export default reducer

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import "./style.css";
 // import { intervalToDuration, formatDistanceToNow } from 'date-fns'
 import { useSelector } from 'react-redux';
-import { Attribute } from '../../../store';
+import { Attribute, AttributesOfEachToekn } from '../../../store';
 // import Grid from "@mui/material/Grid";
 // import { Form, Formik, Field } from "formik";
 // import { TextField} from 'formik-material-ui';
@@ -25,7 +25,7 @@ interface Data {
 
 const NFTCards = () => {
   
-  const { NFTattributes } = useSelector((state: any) => state);
+  const { NFTattributes, list_of_all_tokens } = useSelector((state: any) => state);
 
 
 
@@ -37,17 +37,49 @@ const NFTCards = () => {
         
         {
           NFTattributes ?
-          <>
+          <div>
                   <div> Attributes : </div> 
           {
               NFTattributes.map((attribute: Attribute, key: number) => {
                 return (
-                  <span> {`${key+1}) ${attribute.trait_type}      `} </span>
+                  <span key= {key}> {`${key+1})  ${attribute.trait_type}: ${attribute.value}    `} </span>
+              )
+          })}
+
+          <br />
+          <br />
+          
+          </div> : null
+        }
+
+        {
+          list_of_all_tokens !== null  ?
+          <>
+          {
+            list_of_all_tokens.map((attributesOfEachToekn: AttributesOfEachToekn, key: number) => {
+              if(attributesOfEachToekn)
+              return (
+              <div key={key}>
+                  <div> Attributes of Token : {attributesOfEachToekn.tokenID}</div> 
+                  {
+                    attributesOfEachToekn.attributes.map((attribute: Attribute, key: number) => {
+                          return (
+                            <span key= {key}> {`${attribute.trait_type}: ${attribute.value}    `} </span>
+                        )
+                    })
+                  }
+                  <br />
+                  <br />
+             </div>
               )
           })}
           
           </> : null
         }
+
+
+
+
         <br />
         <br />
         <br />
@@ -58,7 +90,7 @@ const NFTCards = () => {
         <div> Testing: 0x2cfcbf304415d87611E89fd284Ed362Cf6bA5141 </div>
         <div> Testing: 0xA66CC78067fd1E6Aa3eEC4CcdFF88D81527F92c1 </div>
         <div> WannabeMusicClub: 0x402491a577373995fF3382e6da3c282cb0564902 </div>
-        <div> WannabeMusicClub: 0xc1a1e381389cb927f1d57511e144b644ef0c6385 </div>
+        <div> lostboy: 0xc1a1e381389cb927f1d57511e144b644ef0c6385 </div>
 
         
 

@@ -135,7 +135,7 @@ const SubscriptionCards = () => {
           {
             Object.values(prices).map((price: string, key: number) => {
             return (
-              <Grid item xs={3} className="card">
+              <Grid item xs={3} className="card" key={key}>
                 <SubscriptionCard
                   price={price}
                   index = {key}
