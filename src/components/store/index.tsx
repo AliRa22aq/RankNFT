@@ -12,14 +12,15 @@ export interface AttributesOfEachToekn {
   attributes: Attribute[],
 }
 
-// export interface CountOfEachAttribute {
-//   trait_value: string,
-//   count: number
-// }
+export interface CountOfEachAttribute {
+  trait_type :string, 
+  trait_count: {value: string, count: number}[],
+  total_variations: number
+}
 
-// export interface CountOfAllAttributes {
-//   full_list_of_all_attributes: CountOfEachAttribute[]
-// }
+export interface CountOfAllAttributes {
+  full_list_of_all_attributes: CountOfEachAttribute[]
+}
 
 
 
@@ -39,8 +40,10 @@ interface DataType {
     whitelistPeriod: number,
     subscriptionPeriod: number,
     uploadedContractAddress: string,
-    NFTattributes: Attribute[] | null,
-    list_of_all_tokens: AttributesOfEachToekn[] | null
+    allAvailableAttributes: Attribute[] | null,
+    list_of_all_tokens: AttributesOfEachToekn[] | null,
+    countOfAllAttribute: CountOfEachAttribute[] | null
+
   }
 
 const initialState: DataType = {
@@ -58,8 +61,9 @@ const initialState: DataType = {
     whitelistPeriod: 0,
     subscriptionPeriod: 0,
     uploadedContractAddress: "",
-    NFTattributes: null,
+    allAvailableAttributes: null,
     list_of_all_tokens: null,
+    countOfAllAttribute: null
 
 
 }
@@ -134,15 +138,21 @@ const dataSlice = createSlice({
       setUploadedContractAddress(state, {payload}:PayloadAction<string> ) {
         state.uploadedContractAddress = payload
       },
+
+
+
       setAvailableAttributes(state, {payload}: PayloadAction<Attribute[]  |  null>) {
         if(payload === null){
-          state.NFTattributes = null
+          state.allAvailableAttributes = null
         } else {
-          state.NFTattributes = payload
+          state.allAvailableAttributes = payload
         }
       },
+
+
+
       addTokenInList(state, {payload}: PayloadAction<AttributesOfEachToekn |  null>) {
-        console.log("payload added ", payload)
+        // console.log("payload added ", payload)
         if(payload === null){
           state.list_of_all_tokens = null
         }
@@ -154,8 +164,30 @@ const dataSlice = createSlice({
           }
 
         }
-        console.log("Ater adding token ", state.list_of_all_tokens)
+        // console.log("Ater adding token ", state.list_of_all_tokens)
         
+      },
+
+      // export interface CountOfEachAttribute {
+        // trait_type :string, 
+        // trait_count: {value: string, count: number}[],
+        // total_variations: number
+        // }
+      setCountOfAllAttribute(state, {payload}: PayloadAction<CountOfEachAttribute |  null>) {
+        console.log("payload added ", payload)
+        if(payload === null){
+          state.countOfAllAttribute = null
+        }
+        else {
+            if(state.countOfAllAttribute !== null){
+            state.countOfAllAttribute = [...state.countOfAllAttribute, payload]
+          } else {
+            state.countOfAllAttribute = [ payload ]
+          }
+
+        }
+        console.log("Ater adding token in countOfAllAttribute ", state.countOfAllAttribute)
+
       }
       
     },

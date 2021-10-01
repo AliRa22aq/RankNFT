@@ -26,7 +26,6 @@ const initialData = {
   uri : null
 }
 
-// 
 
 const NFTForm = () => {
   
@@ -35,6 +34,40 @@ const NFTForm = () => {
   const [loading, setLoading] = useState(false);
   const [needURI, setneedURI] = useState(false);
   const [needRange, setNeedrange] = useState(false);
+
+
+  
+  const fetchAllTokenData = async (tokenURI: string, from: number, to: number) => {
+    try{
+      let url = tokenURI
+      if(url){
+        let fetchAPI =  await axios.get( url ) as any          
+        console.log("new", fetchAPI.data.attributes)
+        if(fetchAPI){
+          dispatch(setAvailableAttributes((fetchAPI.data.attributes) as Attribute[]))
+
+          const range = to - from + 1
+          console.log("to and from: ", to, from)
+          console.log("ready with range: ", range)
+
+          for(var i = from;  i <= range;  i++ ) {
+              let activeURL =  url.replace("1" , String(i))
+              console.log("activeURL", activeURL)
+
+              let activefetchAPI =  await axios.get( activeURL ) as any          
+              console.log(activefetchAPI.data.attributes)
+              dispatch(addTokenInList({tokenID: String(i) , attributes: activefetchAPI.data.attributes} as AttributesOfEachToekn))
+          }
+
+
+        }
+        
+      }
+    }
+    catch(e) { alert("Unable to get information of the token. Please use another") }
+
+  }
+
 
   const fetchData = async  (contractAdrs : string) => {
     setData(initialData)
@@ -63,9 +96,6 @@ const NFTForm = () => {
       try{
         console.log("asset ", "trying 1")
         const tokenURI1 = await MyContract.methods.tokenURI(1).call();
-        // let baseTokenURI1 = tokenURI1.substring(0, tokenURI1.lastIndexOf('/'))
-        // baseTokenURI1 = baseTokenURI1?.replace("https", "http")
-        // console.log("asset ", baseTokenURI1)
         setData(pre => {return {...pre, baseTokenURI: tokenURI1}}) 
         setneedURI(false)
         setNeedrange(true)
@@ -82,70 +112,30 @@ const NFTForm = () => {
   }
 
   const fetchAttributes = async (from: number, to: number) => {
+    
+    // if(data?.baseTokenURI === null) return;
+
     let check;
 
     check = data?.baseTokenURI?.includes("ipfs://");
-    if(check){
-
-      try{
-        let url = data?.baseTokenURI?.replace("ipfs://", "https://ipfs.io/ipfs/");
-        if( url){
-          let fetchAPI =  await axios.get(url ) as any          
-          console.log("new", fetchAPI.data.attributes)
-          if(fetchAPI){
-            dispatch(setAvailableAttributes((fetchAPI.data.attributes) as Attribute[]))
-  
-            const range = to - from + 1
-            console.log("to and from: ", to, from)
-            console.log("ready with range: ", range)
-  
-            for(var i = from;  i <= range;  i++ ) {
-                let activeURL =  url.replace("1" , String(i))
-                console.log("activeURL", activeURL)
-  
-                let activefetchAPI =  await axios.get( activeURL ) as any          
-                console.log(activefetchAPI.data.attributes)
-                dispatch(addTokenInList({tokenID: String(i) , attributes: activefetchAPI.data.attributes} as AttributesOfEachToekn))
-            }
-  
-          }
-        }
-      } catch(e) { alert( "Unable to get information of the token. Trying again") }
-}
-
+    if(check && data?.baseTokenURI) {
+      let url = data?.baseTokenURI?.replace("ipfs://", "https://ipfs.io/ipfs/");
+      fetchAllTokenData(url, from, to)
+    }
 
     check = data?.baseTokenURI?.includes("https://"); 
-    if(check){
-
-      try{
-        let url = data?.baseTokenURI
-        if(url){
-          let fetchAPI =  await axios.get( url ) as any          
-          console.log("new", fetchAPI.data.attributes)
-          if(fetchAPI){
-            dispatch(setAvailableAttributes((fetchAPI.data.attributes) as Attribute[]))
-
-            const range = to - from + 1
-            console.log("to and from: ", to, from)
-            console.log("ready with range: ", range)
-
-            for(var i = from;  i <= range;  i++ ) {
-                let activeURL =  url.replace("1" , String(i))
-                console.log("activeURL", activeURL)
-
-                let activefetchAPI =  await axios.get( activeURL ) as any          
-                console.log(activefetchAPI.data.attributes)
-                dispatch(addTokenInList({tokenID: String(i) , attributes: activefetchAPI.data.attributes} as AttributesOfEachToekn))
-            }
-
-
-          }
-          
-        }
-      }
-      catch(e) { alert("Unable to get information of the token. Please use another") }
-}
+    if(check && data?.baseTokenURI){
+      let url = data?.baseTokenURI
+      fetchAllTokenData(url, from, to)
+    }
       
+
+
+
+
+
+
+
   }
 
   return (
@@ -153,7 +143,7 @@ const NFTForm = () => {
 
     <div className="form-container" >
 
-    <Formik initialValues={{ address: '', uri: '' }}  
+    <Formik initialValues={{ address: '0xc1a1e381389cb927f1d57511e144b644ef0c6385', uri: '' }}  
             onSubmit={async (values, { setSubmitting, setFieldValue,  }) => {
             
               if(!values.uri){

@@ -25,7 +25,7 @@ interface Data {
 
 const NFTCards = () => {
   
-  const { NFTattributes, list_of_all_tokens } = useSelector((state: any) => state);
+  const { allAvailableAttributes, list_of_all_tokens } = useSelector((state: any) => state);
 
 
 
@@ -33,16 +33,14 @@ const NFTCards = () => {
     <div className="cards-container">
       <div className="cards-header"> NFTs </div>
   
-
-        
         {
-          NFTattributes ?
+          allAvailableAttributes ?
           <div>
-                  <div> Attributes : </div> 
+                  <div> Attributes Count </div> 
           {
-              NFTattributes.map((attribute: Attribute, key: number) => {
+              allAvailableAttributes.map((attribute: Attribute, key: number) => {
                 return (
-                  <span key= {key}> {`${key+1})  ${attribute.trait_type}: ${attribute.value}    `} </span>
+                  <span key= {key}><b> {key+1}:  {attribute.trait_type} </b></span>
               )
           })}
 
