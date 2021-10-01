@@ -82,36 +82,48 @@ const NFTForm = () => {
   }
 
   const fetchAttributes = async (from: number, to: number) => {
+    let check;
 
-    // let fullData = [];
-
-
-    let check = data?.baseTokenURI?.includes("ipfs://");
+    check = data?.baseTokenURI?.includes("ipfs://");
     if(check){
-      let url = data?.baseTokenURI?.replace("ipfs://", "https://ipfs.io/ipfs/");
-      if( url){
-        let fetchAPI =  await axios.get(url ) as any          
-        console.log("new", fetchAPI.data.attributes)
-        if(fetchAPI){
-          dispatch(setAvailableAttributes((fetchAPI.data.attributes) as Attribute[]))
+
+      try{
+        let url = data?.baseTokenURI?.replace("ipfs://", "https://ipfs.io/ipfs/");
+        if( url){
+          let fetchAPI =  await axios.get(url ) as any          
+          console.log("new", fetchAPI.data.attributes)
+          if(fetchAPI){
+            dispatch(setAvailableAttributes((fetchAPI.data.attributes) as Attribute[]))
+  
+            const range = to - from + 1
+            console.log("to and from: ", to, from)
+            console.log("ready with range: ", range)
+  
+            for(var i = from;  i <= range;  i++ ) {
+                let activeURL =  url.replace("1" , String(i))
+                console.log("activeURL", activeURL)
+  
+                let activefetchAPI =  await axios.get( activeURL ) as any          
+                console.log(activefetchAPI.data.attributes)
+                dispatch(addTokenInList({tokenID: String(i) , attributes: activefetchAPI.data.attributes} as AttributesOfEachToekn))
+            }
+  
+          }
         }
-      }
-    }
+      } catch(e) { alert( "Unable to get information of the token. Trying again") }
+}
+
 
     check = data?.baseTokenURI?.includes("https://"); 
     if(check){
+
+      try{
         let url = data?.baseTokenURI
         if(url){
           let fetchAPI =  await axios.get( url ) as any          
           console.log("new", fetchAPI.data.attributes)
           if(fetchAPI){
             dispatch(setAvailableAttributes((fetchAPI.data.attributes) as Attribute[]))
-
-
-            // export interface AttributesOfEachToekn {
-              //   tokenID: string
-              //   attributes: Attribute[],
-              // }
 
             const range = to - from + 1
             console.log("to and from: ", to, from)
@@ -122,19 +134,18 @@ const NFTForm = () => {
                 console.log("activeURL", activeURL)
 
                 let activefetchAPI =  await axios.get( activeURL ) as any          
-                // fullData.push(activefetchAPI.fetchAPI.data.attributes)
                 console.log(activefetchAPI.data.attributes)
                 dispatch(addTokenInList({tokenID: String(i) , attributes: activefetchAPI.data.attributes} as AttributesOfEachToekn))
-                // fullData.push(activefetchAPI.data.attributes)
-            }   
+            }
 
 
           }
           
         }
       }
+      catch(e) { alert("Unable to get information of the token. Please use another") }
+}
       
-      // console.log(fullData)
   }
 
   return (
