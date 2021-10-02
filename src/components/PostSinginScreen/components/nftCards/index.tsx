@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import "./style.css";
 // import { intervalToDuration, formatDistanceToNow } from 'date-fns'
 import { useSelector } from 'react-redux';
-import { Attribute, AttributesOfEachToekn } from '../../../store';
+import { Attribute, AttributesOfEachToekn, CountOfEachAttribute } from '../../../store';
 // import Grid from "@mui/material/Grid";
 // import { Form, Formik, Field } from "formik";
 // import { TextField} from 'formik-material-ui';
@@ -11,7 +11,7 @@ import { Attribute, AttributesOfEachToekn } from '../../../store';
 // import Button from "@mui/material/Button";
 // import App from '../nftCardModel'
 const Web3 = require("web3");
-import { useNft } from "use-nft"
+// import { useNft } from "use-nft"
 
 
 // import { OpenSeaPort, Network  } from 'opensea-js'
@@ -25,22 +25,30 @@ interface Data {
 
 const NFTCards = () => {
   
-  const { allAvailableAttributes, list_of_all_tokens } = useSelector((state: any) => state);
+  const { countOfAllAttribute, allAvailableAttributes, list_of_all_tokens } = useSelector((state: any) => state);
 
+  console.log("countOfAllAttribute ", countOfAllAttribute)
 
 
   return (
     <div className="cards-container">
       <div className="cards-header"> NFTs </div>
   
-        {
-          allAvailableAttributes ?
+
+
+      {
+      // interface CountOfEachAttribute {
+          //   trait_type :string, 
+          //   trait_count: {value: string, count: number}[],
+          //   total_variations: number
+          // }
+          countOfAllAttribute ?
           <div>
-                  <div> Attributes Count </div> 
+                  <div> Total Variations in Attributes </div> 
           {
-              allAvailableAttributes.map((attribute: Attribute, key: number) => {
+              countOfAllAttribute.map((attribute: CountOfEachAttribute, key: number) => {
                 return (
-                  <span key= {key}><b> {key+1}:  {attribute.trait_type} </b></span>
+                  <div key= {key}><b> {key+1}:  {attribute.trait_type}  <span> {attribute.total_variations} </span> </b></div>
               )
           })}
 

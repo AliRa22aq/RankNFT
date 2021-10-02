@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import "./style.css";
 import { useDispatch, useSelector } from 'react-redux';
-import { setUploadedContractAddress, setAvailableAttributes, Attribute, addTokenInList, AttributesOfEachToekn } from '../../../store';
+import { Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress, setAvailableAttributes, CountOfEachAttribute, addTokenInList, AttributesOfEachToekn } from '../../../store';
 import Grid from "@mui/material/Grid";
 import { Form, Formik, Field } from "formik";
 import { TextField} from 'formik-material-ui';
@@ -44,7 +44,33 @@ const NFTForm = () => {
         let fetchAPI =  await axios.get( url ) as any          
         console.log("new", fetchAPI.data.attributes)
         if(fetchAPI){
-          dispatch(setAvailableAttributes((fetchAPI.data.attributes) as Attribute[]))
+
+
+
+          const countOfAllAttribute: CountOfEachAttribute[] | null = [];
+
+
+          fetchAPI.data.attributes.map((attribute: Attribute) => {
+
+            const dataToDispatch: CountOfEachAttribute = {
+                  trait_type :attribute.trait_type, 
+                  trait_count: null,
+                  total_variations: 0
+            }
+            dispatch(setAvailableAttributes(dataToDispatch as CountOfEachAttribute))
+            
+            if(dataToDispatch){
+              countOfAllAttribute.push(dataToDispatch)
+            }
+          })
+          if(countOfAllAttribute){
+            dispatch(setInitalCountOfAllAttribute(countOfAllAttribute as CountOfEachAttribute[])) 
+          }
+          // if(countOfAllAttribute){
+          // }
+
+          // if(countOfEachAttribute){
+          // }
 
           const range = to - from + 1
           console.log("to and from: ", to, from)
@@ -57,6 +83,27 @@ const NFTForm = () => {
               let activefetchAPI =  await axios.get( activeURL ) as any          
               console.log(activefetchAPI.data.attributes)
               dispatch(addTokenInList({tokenID: String(i) , attributes: activefetchAPI.data.attributes} as AttributesOfEachToekn))
+              activefetchAPI.data.attributes.map((attribute: Attribute)=> {
+                        dispatch(setCountOfAllAttribute(attribute));
+              })
+
+          // interface CountOfEachAttribute {
+          //   trait_type :string, 
+          //   trait_count: {value: string, count: number}[],
+          //   total_variations: number
+          // }
+          // activefetchAPI.data.attributes.map((attribute: any) => {
+          //   const dataToDispatch = {
+          //     trait_type: attribute.trait_type, 
+          //     value: attribute.value
+          //   }
+
+            // dispatch(setCountOfAllAttribute(dataToDispatch))
+
+           // })
+
+
+
           }
 
 
@@ -252,7 +299,7 @@ const NFTForm = () => {
 
 {
       needRange ?
-        <Formik initialValues={{ from: 1, to: 20 }}  
+        <Formik initialValues={{ from: 1, to: 5 }}  
             onSubmit={async (values, { setSubmitting, resetForm, setFieldValue,  }) => {
               fetchAttributes(values.from, values.to)
             }}

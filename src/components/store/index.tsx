@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RankNFT as RankNFTType } from '../../../types/web3-v1-contracts/RankNFT'
+import { is } from 'typescript-is';
 
 
 export interface Attribute {
@@ -14,9 +15,15 @@ export interface AttributesOfEachToekn {
 
 export interface CountOfEachAttribute {
   trait_type :string, 
-  trait_count: {value: string, count: number}[],
+  trait_count: {value: string, count: number}[] | null,
   total_variations: number
 }
+
+// const  countOfEachAttribute: CountOfEachAttribute = {
+//   trait_type: "a", 
+//   trait_count: [{value: "q", count: 1}],
+//   total_variations: 1
+// }
 
 export interface CountOfAllAttributes {
   full_list_of_all_attributes: CountOfEachAttribute[]
@@ -40,7 +47,7 @@ interface DataType {
     whitelistPeriod: number,
     subscriptionPeriod: number,
     uploadedContractAddress: string,
-    allAvailableAttributes: Attribute[] | null,
+    allAvailableAttributes: CountOfEachAttribute[] | null,
     list_of_all_tokens: AttributesOfEachToekn[] | null,
     countOfAllAttribute: CountOfEachAttribute[] | null
 
@@ -141,12 +148,19 @@ const dataSlice = createSlice({
 
 
 
-      setAvailableAttributes(state, {payload}: PayloadAction<Attribute[]  |  null>) {
+      setAvailableAttributes(state, {payload}: PayloadAction< CountOfEachAttribute |  null>) {
         if(payload === null){
           state.allAvailableAttributes = null
+        } 
+        
+        else {
+          if(state.allAvailableAttributes !== null){
+          state.allAvailableAttributes = [...state.allAvailableAttributes, payload]
         } else {
-          state.allAvailableAttributes = payload
+          state.allAvailableAttributes = [ payload ]
         }
+      }
+
       },
 
 
@@ -164,38 +178,104 @@ const dataSlice = createSlice({
           }
 
         }
-        // console.log("Ater adding token ", state.list_of_all_tokens)
         
       },
 
-      // export interface CountOfEachAttribute {
-        // trait_type :string, 
-        // trait_count: {value: string, count: number}[],
-        // total_variations: number
-        // }
-      setCountOfAllAttribute(state, {payload}: PayloadAction<CountOfEachAttribute |  null>) {
-        console.log("payload added ", payload)
+      setInitalCountOfAllAttribute(state, {payload}: PayloadAction< CountOfEachAttribute[] |  null>) {
+        // console.log("payload added ", payload)
         if(payload === null){
           state.countOfAllAttribute = null
-        }
-        else {
-            if(state.countOfAllAttribute !== null){
-            state.countOfAllAttribute = [...state.countOfAllAttribute, payload]
-          } else {
-            state.countOfAllAttribute = [ payload ]
+        }else{
+            state.countOfAllAttribute =  payload
+        } 
+        // console.log("Initial countOfAllAttribute ", state.countOfAllAttribute)
+      }, 
+
+      setCountOfAllAttribute(state, {payload}: PayloadAction< Attribute >) {
+
+        console.log("Step 1- payload added ", payload)
+
+        console.log("Step 2- Check if countOfAllAttribute in not null", state.countOfAllAttribute !== null)
+
+        if(state.countOfAllAttribute !== null){
+
+        console.log("Step 3- Not null. Entered with the payload", payload)
+
+        console.log("Step 4- Start mapping on each element of countOfAllAttributes")
+
+        state.countOfAllAttribute.map((countOfEachAttribute:CountOfEachAttribute) => {
+
+        console.log("Step 5- Entered in mapping with the element: ", JSON.stringify(countOfEachAttribute))
+
+        console.log("Step 6- Checking if payload-trait-type matched with element-trait-type: ", countOfEachAttribute.trait_type)
+        
+        if(countOfEachAttribute.trait_type === payload.trait_type){
+
+        console.log("Step 7- Matched")
+        
+        console.log("Step 8- Check if element-trait-count array is empty")
+          
+          if(countOfEachAttribute.trait_count === null ){
+            console.log("Step 9- Empty")
+            const  new_trait_count =  { value: payload.value, count: 1}
+            countOfEachAttribute.trait_count = [new_trait_count]
+            countOfEachAttribute.total_variations++
+            console.log("Step 10a- new trait value added in element trait count list ", JSON.stringify(new_trait_count))
+            console.log("Step 10b- trait count list updated ", JSON.stringify(countOfEachAttribute.trait_count))
           }
+          
+          else {
 
+                  console.log("Step 11- Not Empty")
+                  
+                  const checkValue = (obj: any) => obj.value === String(payload.value);
+                  console.log("Step 13- Already exist? ", countOfEachAttribute.trait_count.some(checkValue))
+                  
+                  if(countOfEachAttribute.trait_count.some(checkValue)) {
+                    
+                    countOfEachAttribute.trait_count && countOfEachAttribute.trait_count.map((trait) => {
+                      
+                    console.log("Step 12- Star looping over the list of trait-counts to see if any matches")
+ 
+                    console.log("Step 13a- Entered in element's trait-count list with element ", JSON.stringify(trait))
+    
+                    console.log("Step 13b- checking if any element trait-count list matched with payload value ", payload.value)
+  
+                    if(trait.value === payload.value){
+                    console.log("Step 15- Value matched. Increasing count by one: from ", trait.count)
+                        trait.count = trait.count + 1
+                    console.log("Step 15- Value matched. Increasing count by one: to ", trait.count)
+
+                    } 
+                  })
+                }
+
+
+                  else {
+
+                    const  new_trait_count =  { value: payload.value, count: 1}
+                    console.log("Step 13c- Value not matched. Adding a new element", new_trait_count )
+
+                    console.log("Step 113d-  list_of_new_traits before updating ", JSON.stringify(countOfEachAttribute.trait_count))
+                    countOfEachAttribute.trait_count = [...countOfEachAttribute.trait_count, new_trait_count];
+                    console.log("Step 13e-  list_of_new_traits after updating ", JSON.stringify(countOfEachAttribute.trait_count))
+                    countOfEachAttribute.total_variations++
+
+                  }                  
+                }
+              }
+            })      
         }
-        console.log("Ater adding token in countOfAllAttribute ", state.countOfAllAttribute)
-
       }
-      
-    },
+    }
   })
+  
+
+
   
 // Extract the action creators object and the reducer
 const { actions, reducer } = dataSlice
 // Extract and export each action creator by name
-export const { addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
+export const { setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
 // Export the reducer, either as a default or named export
 export default reducer

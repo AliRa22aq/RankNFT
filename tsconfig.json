@@ -20,6 +20,9 @@
     "noEmit": true,
     "jsx": "react-jsx",
   },
+  "plugins": [
+    { "transform": "typescript-is/lib/transform-inline/transformer" }
+    ],
   "include": [
     "src"
   ]
