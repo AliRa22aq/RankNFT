@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import "./style.css";
 import { useDispatch, useSelector } from 'react-redux';
-import { Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress, setAvailableAttributes, CountOfEachAttribute, addTokenInList, AttributesOfEachToekn } from '../../../store';
+import { setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress, setAvailableAttributes, CountOfEachAttribute, addTokenInList, AttributesOfEachToekn } from '../../../store';
 import Grid from "@mui/material/Grid";
 import { Form, Formik, Field } from "formik";
 import { TextField} from 'formik-material-ui';
@@ -45,14 +45,11 @@ const NFTForm = () => {
         console.log("new", fetchAPI.data.attributes)
         if(fetchAPI){
 
-
-
           const countOfAllAttribute: CountOfEachAttribute[] | null = [];
-
 
           fetchAPI.data.attributes.map((attribute: Attribute) => {
 
-            const dataToDispatch: CountOfEachAttribute = {
+          const dataToDispatch: CountOfEachAttribute = {
                   trait_type :attribute.trait_type, 
                   trait_count: null,
                   total_variations: 0
@@ -66,11 +63,6 @@ const NFTForm = () => {
           if(countOfAllAttribute){
             dispatch(setInitalCountOfAllAttribute(countOfAllAttribute as CountOfEachAttribute[])) 
           }
-          // if(countOfAllAttribute){
-          // }
-
-          // if(countOfEachAttribute){
-          // }
 
           const range = to - from + 1
           console.log("to and from: ", to, from)
@@ -81,31 +73,21 @@ const NFTForm = () => {
               console.log("activeURL", activeURL)
 
               let activefetchAPI =  await axios.get( activeURL ) as any          
-              console.log(activefetchAPI.data.attributes)
-              dispatch(addTokenInList({tokenID: String(i) , attributes: activefetchAPI.data.attributes} as AttributesOfEachToekn))
+              console.log("ali", activefetchAPI.data)
+              dispatch(addTokenInList({
+                tokenID: String(i) , 
+                attributes: activefetchAPI.data.attributes,
+                rarity_score: 0,
+                image: activefetchAPI.data.image,
+                title: activefetchAPI.data.title? activefetchAPI.data.title: "" ,
+                name: activefetchAPI.data.name? activefetchAPI.data.name: "" 
+
+
+              } as AttributesOfEachToekn))
               activefetchAPI.data.attributes.map((attribute: Attribute)=> {
                         dispatch(setCountOfAllAttribute(attribute));
               })
-
-          // interface CountOfEachAttribute {
-          //   trait_type :string, 
-          //   trait_count: {value: string, count: number}[],
-          //   total_variations: number
-          // }
-          // activefetchAPI.data.attributes.map((attribute: any) => {
-          //   const dataToDispatch = {
-          //     trait_type: attribute.trait_type, 
-          //     value: attribute.value
-          //   }
-
-            // dispatch(setCountOfAllAttribute(dataToDispatch))
-
-           // })
-
-
-
           }
-
 
         }
         
@@ -144,6 +126,14 @@ const NFTForm = () => {
         console.log("asset ", "trying 1")
         const tokenURI1 = await MyContract.methods.tokenURI(1).call();
         setData(pre => {return {...pre, baseTokenURI: tokenURI1}}) 
+
+        dispatch(setProjectInfo({
+                totalSupply:  Number(totalSupply), 
+                name:  name, 
+                baseTokenURI: tokenURI1,
+                range: {from: 1, to: 10}
+              }))
+
         setneedURI(false)
         setNeedrange(true)
         setLoading(false)
@@ -153,6 +143,7 @@ const NFTForm = () => {
             console.log("asset ", "Error fetching URI from useNFT hook too")
             alert("Please provide NFT URI")
             setData(pre => {return {...pre,  baseTokenURI: null}}) 
+            dispatch(setProjectInfo({totalSupply:  Number(totalSupply), name:  name, baseTokenURI: null, range: {from: 1, to: 10}}))
             setneedURI(true)
             setLoading(false)
       }
@@ -160,6 +151,7 @@ const NFTForm = () => {
 
   const fetchAttributes = async (from: number, to: number) => {
     
+    dispatch(setProjectRange({from, to}))
     // if(data?.baseTokenURI === null) return;
 
     let check;

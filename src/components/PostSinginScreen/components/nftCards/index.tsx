@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import "./style.css";
 // import { intervalToDuration, formatDistanceToNow } from 'date-fns'
-import { useSelector } from 'react-redux';
-import { TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute } from '../../../store';
+import { useSelector, useDispatch } from 'react-redux';
+import { setNormalizedRarityScoreToAttributes, RarityScoreOfValue, setRarityScoreToValues, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute } from '../../../store';
 // import Grid from "@mui/material/Grid";
 // import { Form, Formik, Field } from "formik";
 // import { TextField} from 'formik-material-ui';
@@ -12,6 +12,10 @@ import { TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute } fr
 // import App from '../nftCardModel'
 const Web3 = require("web3");
 // import { useNft } from "use-nft"
+import Switch from '@mui/material/Switch';
+import Button from '@mui/material/Button';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 
 // import { OpenSeaPort, Network  } from 'opensea-js'
@@ -25,16 +29,94 @@ interface Data {
 
 const NFTCards = () => {
   
-  const { countOfAllAttribute, allAvailableAttributes, list_of_all_tokens } = useSelector((state: any) => state);
+  const dispatch = useDispatch();
+  const [normalization, setNormalization] = useState(true)
+  const { countOfAllAttribute, projectInfo, rarityScoreOfAllValues, rarityScoreOfAllAttributes, allAvailableAttributes, list_of_all_tokens } = useSelector((state: any) => state);
 
-  console.log("countOfAllAttribute ", countOfAllAttribute)
 
+  console.log("score", rarityScoreOfAllValues)
+
+  const handleChange = () => {
+    setNormalization(!normalization)
+  }
+
+  const findRarityScore = () => {
+
+    dispatch(setRarityScoreToValues(null))
+    dispatch(setNormalizedRarityScoreToAttributes(null))
+
+    const totalSupply:number = 10
+    // projectInfo && projectInfo.totalSupply
+
+    // // Normal Scoring
+    if(countOfAllAttribute && !normalization){
+      console.log("Normalization is off")
+      countOfAllAttribute.map((eachAttribute: CountOfEachAttribute) => {
+        eachAttribute.trait_count && eachAttribute.trait_count.map((eachValue: TraitCount) => {
+          const chance_of_occuring = eachValue.count/totalSupply
+          const rarity_score = 1/chance_of_occuring;
+          const rarity_score_of_each_value: RarityScoreOfValue = {
+            value: eachValue.value,  rarity_score: rarity_score
+          }
+          //console.log(rarity_score_of_each_value)
+          dispatch(setRarityScoreToValues(rarity_score_of_each_value))
+        })
+      })
+    }
+
+    // Normalized Scoring
+    if(countOfAllAttribute && normalization){
+      console.log("Normalization is on")
+      let traits_count = 0;
+      
+      countOfAllAttribute.map((eachAttribute: CountOfEachAttribute) => {
+        traits_count = traits_count + eachAttribute.total_variations
+      })
+
+
+      
+      const attribute_count_in_categories = countOfAllAttribute.length;
+      const average_trait_count = traits_count/countOfAllAttribute.length;
+      
+      console.log("traits_count",traits_count )
+      console.log("attribute_count_in_categories",attribute_count_in_categories )
+
+      countOfAllAttribute.map((eachAttribute: CountOfEachAttribute) => {
+
+        eachAttribute.trait_count && eachAttribute.trait_count.map((eachValue: TraitCount) => {
+
+          const chance_of_occuring = eachValue.count/totalSupply;
+          const rarity_score = 1/chance_of_occuring;
+
+          const normalized_score = rarity_score * average_trait_count / attribute_count_in_categories;
+          const final_score = normalized_score / 2;
+
+          const rarity_score_of_each_value: RarityScoreOfValue = {
+            value: eachValue.value,  rarity_score: final_score
+          }
+          // console.log(rarity_score_of_each_value)
+          dispatch(setRarityScoreToValues(rarity_score_of_each_value))
+        })
+      })
+    }
+
+  }
+
+
+    
 
   return (
     <div className="cards-container">
       <div className="cards-header"> NFTs </div>
   
+      {/* <Switch onChange={handleChange} /> <br /> */}
 
+      <FormGroup>
+          <FormControlLabel onChange={handleChange} control={<Switch defaultChecked />} label="Normalization" />
+      </FormGroup> <br />
+
+
+      <Button onClick={findRarityScore} variant="contained"> Check rarity </Button>
 
       {
           countOfAllAttribute ?

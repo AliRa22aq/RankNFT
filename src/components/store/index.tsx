@@ -6,11 +6,17 @@ import { is } from 'typescript-is';
 export interface Attribute {
   trait_type :string, 
   value: string,
+  value_rarity_score?: number
 }
 
 export interface AttributesOfEachToekn {
   tokenID: string
   attributes: Attribute[],
+  rarity_score: number 
+  image: string,
+  title?: string
+  description?: string,
+  name?: string,
 }
 
 export interface TraitCount {
@@ -25,17 +31,26 @@ export interface CountOfEachAttribute {
   total_variations: number
 }
 
-// const  countOfEachAttribute: CountOfEachAttribute = {
-//   trait_type: "a", 
-//   trait_count: [{value: "q", count: 1}],
-//   total_variations: 1
-// }
-
-export interface CountOfAllAttributes {
-  full_list_of_all_attributes: CountOfEachAttribute[]
+export interface RarityScoreOfValue {
+  value :string, 
+  rarity_score: number 
 }
 
 
+// export interface CountOfAllAttributes {
+//   full_list_of_all_attributes: CountOfEachAttribute[]
+// }
+
+interface Range {
+  from: number, to: number
+}
+
+export interface ProjectInfo {
+    totalSupply:  number, 
+    name:  string,
+    baseTokenURI?: string | null,
+    range: Range
+  }
 
 
 interface DataType {
@@ -55,7 +70,9 @@ interface DataType {
     uploadedContractAddress: string,
     allAvailableAttributes: CountOfEachAttribute[] | null,
     list_of_all_tokens: AttributesOfEachToekn[] | null,
-    countOfAllAttribute: CountOfEachAttribute[] | null
+    countOfAllAttribute: CountOfEachAttribute[] | null,
+    projectInfo: ProjectInfo | null,
+    rarityScoreOfAllValues: RarityScoreOfValue[] | null
 
   }
 
@@ -76,7 +93,9 @@ const initialState: DataType = {
     uploadedContractAddress: "",
     allAvailableAttributes: null,
     list_of_all_tokens: null,
-    countOfAllAttribute: null
+    countOfAllAttribute: null,
+    projectInfo: null,
+    rarityScoreOfAllValues: null
 
 
 }
@@ -152,10 +171,24 @@ const dataSlice = createSlice({
         state.uploadedContractAddress = payload
       },
 
+      setProjectRange(state, {payload}: PayloadAction< Range >) {
+        if(state.projectInfo){
+          state.projectInfo.range = payload
+        }
+      },
+      
+      setProjectInfo(state, {payload}: PayloadAction< ProjectInfo |  null>) {
+        if(payload === null){
+          state.projectInfo = null
+        } else {
+          state.projectInfo = payload
+        }
+
+      },
 
 
       setAvailableAttributes(state, {payload}: PayloadAction< CountOfEachAttribute |  null>) {
-        if(payload === null){
+          if(payload === null){
           state.allAvailableAttributes = null
         } 
         
@@ -186,6 +219,78 @@ const dataSlice = createSlice({
         }
         
       },
+
+      setRarityScoreToToken(state, {payload}: PayloadAction< {  tokenID: string , rarity_score: number } >) {
+        // console.log("payload added ", payload)
+        state.list_of_all_tokens && state.list_of_all_tokens.map((token)=> {
+          if(token.tokenID === payload.tokenID){
+            token.rarity_score = payload.rarity_score
+          }
+        })
+        // console.log("Initial countOfAllAttribute ", state.countOfAllAttribute)
+      }, 
+
+      setRarityScoreToAttributeValue(state, {payload}: PayloadAction< RarityScoreOfValue | null >) {
+        if(payload === null){
+          state.rarityScoreOfAllValues = null
+        }
+        else {
+          if(state.rarityScoreOfAllValues === null) {
+            state.rarityScoreOfAllValues = [payload]
+          } 
+          else {
+            state.rarityScoreOfAllValues = [...state.rarityScoreOfAllValues, payload]
+          }
+        }
+      }, 
+
+
+      // export interface Attribute {
+      //   trait_type :string, 
+      //   value: string,
+      //   value_rarity_score?: number
+      // }
+      
+      // export interface AttributesOfEachToekn {
+      //   tokenID: string
+      //   attributes: Attribute[],
+      //   rarity_score: number 
+      //   image: string,
+      //   title?: string
+      //   description?: string,
+      //   name?: string,
+      // }
+      
+
+      setRarityScoreToEachNFTAttribuValue(state, {payload}: PayloadAction< RarityScoreOfValue >) {
+
+            state.list_of_all_tokens && state.list_of_all_tokens.map((listOfAttributes: AttributesOfEachToekn) => {
+              listOfAttributes.attributes.map((attribute: Attribute)=> {
+                              if(attribute.value === payload.value) {
+                                attribute.value_rarity_score = payload.rarity_score
+                              }
+
+              })
+
+            })
+
+      }, 
+
+
+
+      setNormalizedRarityScoreToAttributes(state, {payload}: PayloadAction< RarityScoreOfValue | null >) {
+        if(payload === null){
+          state.rarityScoreOfAllValues = null
+        }
+        else {
+          if(state.rarityScoreOfAllValues === null) {
+            state.rarityScoreOfAllValues = [payload]
+          } 
+          else {
+            state.rarityScoreOfAllValues = [...state.rarityScoreOfAllValues, payload]
+          }
+        }
+      }, 
 
       setInitalCountOfAllAttribute(state, {payload}: PayloadAction< CountOfEachAttribute[] |  null>) {
         // console.log("payload added ", payload)
@@ -282,6 +387,6 @@ const dataSlice = createSlice({
 // Extract the action creators object and the reducer
 const { actions, reducer } = dataSlice
 // Extract and export each action creator by name
-export const { setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
+export const { setNormalizedRarityScoreToAttributes, setRarityScoreToValues, setRarityScoreToToken, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
 // Export the reducer, either as a default or named export
 export default reducer
