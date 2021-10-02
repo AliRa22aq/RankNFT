@@ -13,9 +13,15 @@ export interface AttributesOfEachToekn {
   attributes: Attribute[],
 }
 
+export interface TraitCount {
+  value: string,
+  count: number
+}
+
+
 export interface CountOfEachAttribute {
   trait_type :string, 
-  trait_count: {value: string, count: number}[] | null,
+  trait_count: TraitCount[] | null,
   total_variations: number
 }
 

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import "./style.css";
 // import { intervalToDuration, formatDistanceToNow } from 'date-fns'
 import { useSelector } from 'react-redux';
-import { Attribute, AttributesOfEachToekn, CountOfEachAttribute } from '../../../store';
+import { TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute } from '../../../store';
 // import Grid from "@mui/material/Grid";
 // import { Form, Formik, Field } from "formik";
 // import { TextField} from 'formik-material-ui';
@@ -37,11 +37,6 @@ const NFTCards = () => {
 
 
       {
-      // interface CountOfEachAttribute {
-          //   trait_type :string, 
-          //   trait_count: {value: string, count: number}[],
-          //   total_variations: number
-          // }
           countOfAllAttribute ?
           <div>
                   <div> Total Variations in Attributes </div> 
@@ -58,7 +53,38 @@ const NFTCards = () => {
           </div> : null
         }
 
+
         {
+          countOfAllAttribute ? 
+          <div>
+                             <div> Count of each trait </div> 
+                             <br />
+                             <br />
+
+              {
+                countOfAllAttribute.map((attribute: CountOfEachAttribute) => {
+
+                  return (
+                    <div>   
+                          <span><b> {attribute.trait_type} {":"}</b></span>
+                            {
+                              attribute.trait_count && attribute.trait_count.map((attribute_count: TraitCount, key: number) => {
+                                return (
+                                <span key= {key}> {attribute_count.value}:  {attribute_count.count}  </span>
+                                )
+                              })
+                            }  
+                      <br />
+                      <br />
+                    </div>
+                  )
+                })
+              }
+          </div> : 
+          null
+        }
+
+        {/* {
           list_of_all_tokens !== null  ?
           <>
           {
@@ -78,10 +104,10 @@ const NFTCards = () => {
                   <br />
              </div>
               )
-          })}
+          })} 
           
           </> : null
-        }
+        }*/}
 
 
 
