@@ -8,6 +8,7 @@ import store from './components/store/store';
 import { getDefaultProvider, } from "ethers"
 import { NftProvider } from "use-nft"
 
+
 // We are using the "ethers" fetcher here.
 const ethersConfig = {
   provider: getDefaultProvider("homestead"),

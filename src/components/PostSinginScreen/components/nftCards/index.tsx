@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import "./style.css";
 // import { intervalToDuration, formatDistanceToNow } from 'date-fns'
 import { useSelector, useDispatch } from 'react-redux';
-import { setNormalizedRarityScoreToAttributes, RarityScoreOfValue, setRarityScoreToValues, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute } from '../../../store';
+import { setNormalizedRarityScoreToAttributes, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute } from '../../../store';
 // import Grid from "@mui/material/Grid";
 // import { Form, Formik, Field } from "formik";
 // import { TextField} from 'formik-material-ui';
@@ -20,12 +20,12 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 
 // import { OpenSeaPort, Network  } from 'opensea-js'
 
-interface Data {
-  totalSupply: string, 
-  name: string,
-  baseTokenURI: string,
-  // attributes: any
-}
+// interface Data {
+//   totalSupply: string, 
+//   name: string,
+//   baseTokenURI: string,
+//   // attributes: any
+// }
 
 const NFTCards = () => {
   
@@ -34,7 +34,7 @@ const NFTCards = () => {
   const { countOfAllAttribute, projectInfo, rarityScoreOfAllValues, rarityScoreOfAllAttributes, allAvailableAttributes, list_of_all_tokens } = useSelector((state: any) => state);
 
 
-  console.log("score", rarityScoreOfAllValues)
+  console.log("list_of_all_tokens", list_of_all_tokens)
 
   const handleChange = () => {
     setNormalization(!normalization)
@@ -42,10 +42,11 @@ const NFTCards = () => {
 
   const findRarityScore = () => {
 
-    dispatch(setRarityScoreToValues(null))
+    dispatch(setRarityScoreToAttributeValue(null))
     dispatch(setNormalizedRarityScoreToAttributes(null))
 
-    const totalSupply:number = 10
+    const totalSupply:number = projectInfo && projectInfo.range.range
+    console.log("totalSupply ", totalSupply)
     // projectInfo && projectInfo.totalSupply
 
     // // Normal Scoring
@@ -59,7 +60,9 @@ const NFTCards = () => {
             value: eachValue.value,  rarity_score: rarity_score
           }
           //console.log(rarity_score_of_each_value)
-          dispatch(setRarityScoreToValues(rarity_score_of_each_value))
+          dispatch(setRarityScoreToAttributeValue(rarity_score_of_each_value))
+          dispatch(setRarityScoreToEachNFTAttribuValue(rarity_score_of_each_value))
+          
         })
       })
     }
@@ -95,7 +98,9 @@ const NFTCards = () => {
             value: eachValue.value,  rarity_score: final_score
           }
           // console.log(rarity_score_of_each_value)
-          dispatch(setRarityScoreToValues(rarity_score_of_each_value))
+          dispatch(setRarityScoreToAttributeValue(rarity_score_of_each_value))
+          dispatch(setRarityScoreToEachNFTAttribuValue(rarity_score_of_each_value))
+
         })
       })
     }

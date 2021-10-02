@@ -131,7 +131,7 @@ const NFTForm = () => {
                 totalSupply:  Number(totalSupply), 
                 name:  name, 
                 baseTokenURI: tokenURI1,
-                range: {from: 1, to: 10}
+                range: {from: 1, to: 10, range: 10-1+1}
               }))
 
         setneedURI(false)
@@ -143,15 +143,15 @@ const NFTForm = () => {
             console.log("asset ", "Error fetching URI from useNFT hook too")
             alert("Please provide NFT URI")
             setData(pre => {return {...pre,  baseTokenURI: null}}) 
-            dispatch(setProjectInfo({totalSupply:  Number(totalSupply), name:  name, baseTokenURI: null, range: {from: 1, to: 10}}))
+            dispatch(setProjectInfo({totalSupply:  Number(totalSupply), name:  name, baseTokenURI: null, range: {from: 1, to: 10, range: 10-1+1}}))
             setneedURI(true)
             setLoading(false)
       }
   }
 
   const fetchAttributes = async (from: number, to: number) => {
-    
-    dispatch(setProjectRange({from, to}))
+
+    dispatch(setProjectRange({from: from, to: to, range: to - from + 1}))
     // if(data?.baseTokenURI === null) return;
 
     let check;
