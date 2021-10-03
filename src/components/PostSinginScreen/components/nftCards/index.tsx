@@ -28,6 +28,10 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
 
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
+
+
 enum Sort {
   rarityScore = 1,
   tokenID = 2
@@ -38,6 +42,8 @@ const NFTCards = () => {
   const dispatch = useDispatch();
   const [normalization, setNormalization] = useState(true)
   const [showNFTs, setShowNFTs] = useState(false)
+  const [page, setPage] = useState(1)
+  const [list_of_NFTs_for_currentPage, set_list_of_NFTs_for_currentPage] = useState<any[] | null>([])
   const [sortBy, setSortBy] = React.useState<number>(1);
 
   
@@ -130,10 +136,18 @@ const NFTCards = () => {
       })
     }
     dispatch(sortByRarityScore())
+    handleInputLength()
     setShowNFTs(true)
 
   }
  
+  const handlePage = (event: any, value: number) => {
+    console.log(value)
+    setPage(value)
+    handleInputLength()
+  };
+
+
   const dummyData = [
     {
       image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
@@ -144,58 +158,258 @@ const NFTCards = () => {
     {
       image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
       name: "Ali",
-      tokenID: "1",
+      tokenID: "2",
       rarity_score: 0
     },
     {
       image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
       name: "Ali",
-      tokenID: "1",
+      tokenID: "3",
       rarity_score: 0
     },
     {
       image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
       name: "Ali",
-      tokenID: "1",
+      tokenID: "4",
       rarity_score: 0
     },
     {
       image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
       name: "Ali",
-      tokenID: "1",
+      tokenID: "5",
       rarity_score: 0
     },
     {
       image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
       name: "Ali",
-      tokenID: "1",
+      tokenID: "6",
       rarity_score: 0
     },
     {
       image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
       name: "Ali",
-      tokenID: "1",
+      tokenID: "7",
       rarity_score: 0
     },
     {
       image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
       name: "Ali",
-      tokenID: "1",
+      tokenID: "8",
       rarity_score: 0
     },
     {
       image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
       name: "Ali",
-      tokenID: "1",
+      tokenID: "9",
       rarity_score: 0
     },
     {
       image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
       name: "Ali",
-      tokenID: "1",
+      tokenID: "10",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "11",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "12",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "13",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "14",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "15",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "16",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "17",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "18",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "19",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "20",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "21",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "22",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "23",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "24",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "25",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "26",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "27",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "28",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "29",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "30",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "31",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "32",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "33",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "34",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "35",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "36",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "37",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "38",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "39",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "40",
       rarity_score: 0
     }
+
+
   ]
+
+
+  const numberOfItems = list_of_all_tokens && list_of_all_tokens.length | 0;
+  const numberPerPage = 8
+  const numberOfPages = Math.ceil(numberOfItems/numberPerPage)
+
+  const handleInputLength = () => {
+    set_list_of_NFTs_for_currentPage(list_of_all_tokens && list_of_all_tokens.slice((page-1)*numberPerPage, page*numberPerPage))
+    console.log(list_of_NFTs_for_currentPage)
+  }
+
+  useEffect(()=> {
+    handleInputLength()
+  }, [page])
+
+  useEffect(()=> {
+    handlePage(0,1)
+  }, [sortBy])
 
   return (
     <div className="cards-container">
@@ -244,7 +458,8 @@ const NFTCards = () => {
            <Grid container>
           {
             //  list_of_all_tokens && list_of_all_tokens.map((token: AttributesOfEachToekn) => {
-              list_of_all_tokens && list_of_all_tokens.map((token: AttributesOfEachToekn) => {
+              // list_of_all_tokens && list_of_all_tokens.map((token: AttributesOfEachToekn) => {
+                list_of_NFTs_for_currentPage && list_of_NFTs_for_currentPage.map((token: any) => {
               
                 return (
                   <div className="NFTs-card"> 
@@ -255,6 +470,11 @@ const NFTCards = () => {
                 )            
             })
           }
+            <div className="pagination-container">
+              <Stack spacing={2}>
+                <Pagination count={numberOfPages} page={page} onChange={handlePage}/>
+              </Stack>
+            </div>
           </Grid>
           </div>
                 :    

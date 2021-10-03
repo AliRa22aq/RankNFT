@@ -19,6 +19,8 @@ import {
   clearState
 } from "../store";
 import InfoModal from "./InfoModel";
+import LOGO from '../assets/NFT_Sniper_logo.png'
+
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -113,13 +115,14 @@ const Header = () => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            NFT Sniper
+        <Toolbar sx={{ backgroundColor: "white", maxHeight: 80 }}> 
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, marginTop: 3 }}>
+            {/* NFT Sniper */}
+            <img src={LOGO} alt="LOGO" width="100" height="100" />
           </Typography>
 
           {!isWaletConnect ? (
-            <Button onClick={signIn} color="inherit">
+            <Button onClick={signIn} >
               <Typography component="div" sx={{ flexGrow: 1 }}>
                 Sign In
               </Typography>
@@ -129,7 +132,7 @@ const Header = () => {
           {(isDeveloper || isOwner || isSubscriber) && <InfoModal />}
 
           {(isDeveloper || isOwner || isSubscriber) && (
-            <Button onClick={logOut} color="inherit">
+            <Button onClick={logOut} >
               <Typography component="div" sx={{ flexGrow: 1 }}>
                 Logout
               </Typography>
