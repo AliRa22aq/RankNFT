@@ -53,6 +53,7 @@ interface DataType {
     isDeveloper: boolean,
     ContractData: RankNFTType | null,
     loading: boolean,
+    loadingNFTS: boolean,
     transectionProgress: boolean,
     contractAddress: string | null,
     isWaletConnect: boolean,
@@ -76,6 +77,7 @@ const initialState: DataType = {
     isDeveloper: false,
     ContractData: null,
     loading: false,
+    loadingNFTS: false,
     transectionProgress: false,
     contractAddress: "",
     isWaletConnect: false,
@@ -179,6 +181,31 @@ const dataSlice = createSlice({
       }
     },
 
+    setLoadingNFTs(state, { payload }: PayloadAction<boolean>) {
+      // Use a "state machine" approach for loading state instead of booleans
+      state.loadingNFTS = payload;
+    },
+
+    sortByRarityScore(state) {
+      console.log("Sorting start", state.list_of_all_tokens)
+      if(state.list_of_all_tokens){
+        state.list_of_all_tokens = state.list_of_all_tokens.sort( (a, b) => {
+            return b.rarity_score - a.rarity_score;
+          });
+      }
+      console.log("Sorting End", state.list_of_all_tokens)
+    },
+
+    sortByTokenID(state) {
+      console.log("Sorting start", state.list_of_all_tokens)
+      if(state.list_of_all_tokens){
+        state.list_of_all_tokens = state.list_of_all_tokens.sort( (a, b) => {
+            return Number(a.tokenID) - Number(b.tokenID);
+          });
+      }
+      console.log("Sorting End", state.list_of_all_tokens)
+    },
+
     setAvailableAttributes(
       state,
       { payload }: PayloadAction<CountOfEachAttribute | null>
@@ -243,6 +270,8 @@ const dataSlice = createSlice({
           ];
         }
       }
+
+      // actions.sortByRarityScore();
     },
 
     setRarityScoreToEachNFTAttribuValue( state, { payload }: PayloadAction<RarityScoreOfValue> ) {
@@ -264,10 +293,7 @@ const dataSlice = createSlice({
           console.log("total_score", token.tokenID, token.rarity_score)
 
         });
- 
-
-
-      
+       
     },
 
     setNormalizedRarityScoreToAttributes(
@@ -423,6 +449,6 @@ const dataSlice = createSlice({
 // Extract the action creators object and the reducer
 const { actions, reducer } = dataSlice
 // Extract and export each action creator by name
-export const { setNormalizedRarityScoreToAttributes, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setRarityScoreToToken, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
+export const { setLoadingNFTs, sortByTokenID, sortByRarityScore, setNormalizedRarityScoreToAttributes, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setRarityScoreToToken, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
 // Export the reducer, either as a default or named export
 export default reducer

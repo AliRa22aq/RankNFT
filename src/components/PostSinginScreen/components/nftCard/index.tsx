@@ -14,11 +14,11 @@ interface Props{
 
 const NFTCard: React.FC<Props> = ({image, name, tokenID, rarity_score }) => {
   return (
-    <Card sx={{ height: 400, width: 300 }}>
+    <Card sx={{ height: 300, width: 200 }}>
       <CardActionArea>
         <CardMedia
           component="img"
-          height="300"
+          height="200"
           image={image}
           alt={name? name: "nothing"}
         />
@@ -30,7 +30,7 @@ const NFTCard: React.FC<Props> = ({image, name, tokenID, rarity_score }) => {
             Token ID: {tokenID}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Rarity Score: {rarity_score}
+            Rarity Score: { Math.round(rarity_score)}
           </Typography>
 
           

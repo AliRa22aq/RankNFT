@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import "./style.css";
 // import { intervalToDuration, formatDistanceToNow } from 'date-fns'
 import { useSelector, useDispatch } from 'react-redux';
-import { setNormalizedRarityScoreToAttributes, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute } from '../../../store';
+import { sortByTokenID, sortByRarityScore, setNormalizedRarityScoreToAttributes, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute } from '../../../store';
 // import Grid from "@mui/material/Grid";
 // import { Form, Formik, Field } from "formik";
 // import { TextField} from 'formik-material-ui';
@@ -21,18 +21,45 @@ import NFTCard from "../nftCard";
 
 
 // import { OpenSeaPort, Network  } from 'opensea-js'
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
+
+enum Sort {
+  rarityScore = 1,
+  tokenID = 2
+}
 
 const NFTCards = () => {
   
   const dispatch = useDispatch();
   const [normalization, setNormalization] = useState(true)
   const [showNFTs, setShowNFTs] = useState(false)
-  const { countOfAllAttribute, projectInfo, rarityScoreOfAllValues, rarityScoreOfAllAttributes, allAvailableAttributes, list_of_all_tokens } = useSelector((state: any) => state);
+  const [sortBy, setSortBy] = React.useState<number>(1);
 
-
+  
+  const { loadingNFTS, countOfAllAttribute, projectInfo, rarityScoreOfAllValues, rarityScoreOfAllAttributes, allAvailableAttributes, list_of_all_tokens } = useSelector((state: any) => state);
+  
+  
   console.log("list_of_all_tokens", list_of_all_tokens)
+  
+  
 
+  const handleSort = (e: number) => {
+    // console.log(e)
+    setSortBy(e);
+    if(e === 1){
+      dispatch(sortByRarityScore())
+
+    }
+    if(e === 2){
+      dispatch(sortByTokenID())
+    }
+  };
+      
   const handleChange = () => {
     setNormalization(!normalization)
     findRarityScore()
@@ -62,7 +89,7 @@ const NFTCards = () => {
           dispatch(setRarityScoreToEachNFTAttribuValue(rarity_score_of_each_value))
           
         })
-      })
+      })      
     }
 
     // Normalized Scoring
@@ -102,45 +129,198 @@ const NFTCards = () => {
         })
       })
     }
+    dispatch(sortByRarityScore())
     setShowNFTs(true)
 
   }
  
+  const dummyData = [
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "1",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "1",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "1",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "1",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "1",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "1",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "1",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "1",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "1",
+      rarity_score: 0
+    },
+    {
+      image: "https://images-na.ssl-images-amazon.com/images/I/41g6jROgo0L.png",
+      name: "Ali",
+      tokenID: "1",
+      rarity_score: 0
+    }
+  ]
 
   return (
     <div className="cards-container">
-      <div className="cards-header"> NFTs </div>
   
-       <Grid container >
+       {/* <Grid container > */}
+
 
 
       {
+        countOfAllAttribute ? 
+        
+        <div className="input-container"> 
+          <div className="button-container"> 
+            <FormGroup>
+                <FormControlLabel onChange={handleChange} control={<Switch defaultChecked />} label="Normalization" />
+            </FormGroup>
+                <Button onClick={findRarityScore} variant="contained"> Check rarity </Button>
+          </div> 
+          <div className="selection-container"> 
+                <Box sx={{ minWidth: 150}}>
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label"> Sort By</InputLabel>
+                    <Select
+                      variant="standard"
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select-helper"
+                      value={sortBy}
+                      label="Sort By"
+                      onChange={(e) => handleSort(Number(e.target.value))}
+                    >
+                      <MenuItem value={1} className="menu-item"> {`${" "}Rarity Score`}</MenuItem>
+                      <MenuItem value={2}> Token ID</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+        </div>
+        </div>
+        : null 
+      }
+
+      {
         showNFTs ? 
-        <Grid item xs={9} style={{display: "flex"}}>
-          <>
+        // <Grid item xs={12} style={{display: "flex",  minWidth: 300}}>
+
+          <div className="NFTs-container">
+           <Grid container>
           {
-             list_of_all_tokens && list_of_all_tokens.map((token: AttributesOfEachToekn) => {
+            //  list_of_all_tokens && list_of_all_tokens.map((token: AttributesOfEachToekn) => {
+              list_of_all_tokens && list_of_all_tokens.map((token: AttributesOfEachToekn) => {
+              
                 return (
-                  <NFTCard image={token.image} name={token.name} tokenID={token.tokenID} rarity_score={token.rarity_score} />
+                  <div className="NFTs-card"> 
+                    <Grid item xs={12}>
+                     <NFTCard image={token.image} name={token.name} tokenID={token.tokenID} rarity_score={token.rarity_score} />
+                    </Grid>
+                  </div>
                 )            
             })
           }
-          </>
-        
-        </Grid> 
-        : <Grid item xs={9}>  Welcome </Grid>
+          </Grid>
+          </div>
+                :    
+          <div> 
+              {
+                 !loadingNFTS ? 
+                 <div> 
+                    Welcome. Please Enter a NFT contract address and load it to snip
+                 </div>
+                  : 
+                 <div> 
+                  {
+                    countOfAllAttribute ?
+                    <div>
+
+                          <div>
+                                  <div> Total Variations in Attributes </div> 
+                          {
+                              countOfAllAttribute.map((attribute: CountOfEachAttribute, key: number) => {
+                                return (
+                                  <div key= {key}><b> {key+1}:  {attribute.trait_type}  <span> {attribute.total_variations} </span> </b></div>
+                              )
+                          })}
+
+                          <br />
+                          <br />
+                          
+                          </div> 
+
+                          <div>
+                                      <div> Count of each trait </div> 
+                                      <br />
+
+                        {
+                          countOfAllAttribute.map((attribute: CountOfEachAttribute) => {
+
+                            return (
+                              <div>   
+                                    <span><b> {attribute.trait_type} {":"}</b></span>
+                                      {
+                                        attribute.trait_count && attribute.trait_count.map((attribute_count: TraitCount, key: number) => {
+                                          return (
+                                          <span key= {key}> {attribute_count.value}:  {attribute_count.count}  </span>
+                                          )
+                                        })
+                                      }  
+                                <br />
+                                <br />
+                              </div>
+                            )
+                          })
+                        }
+                    </div> 
+                    
+                    </div> 
+                    : 
+                    null
+                  }
+                 </div>
+              }
+          </div>
         }
 
-        <Grid item xs={2}> 
 
-      
-        <FormGroup>
-            <FormControlLabel onChange={handleChange} control={<Switch defaultChecked />} label="Normalization" />
-            <Button onClick={findRarityScore} variant="contained"> Check rarity </Button>
-        </FormGroup>
-        </Grid>
 
-        </Grid>
+        {/* </Grid> */}
 
     </div>
 
@@ -149,54 +329,7 @@ const NFTCards = () => {
 
 export default NFTCards;
 
-{/* {
-    countOfAllAttribute ?
-    <div>
-            <div> Total Variations in Attributes </div> 
-    {
-        countOfAllAttribute.map((attribute: CountOfEachAttribute, key: number) => {
-          return (
-            <div key= {key}><b> {key+1}:  {attribute.trait_type}  <span> {attribute.total_variations} </span> </b></div>
-        )
-    })}
 
-    <br />
-    <br />
-    
-    </div> : null
-  } */}
-
-
-
-  {/* {
-    countOfAllAttribute ? 
-    <div>
-                       <div> Count of each trait </div> 
-                       <br />
-                       <br />
-
-        {
-          countOfAllAttribute.map((attribute: CountOfEachAttribute) => {
-
-            return (
-              <div>   
-                    <span><b> {attribute.trait_type} {":"}</b></span>
-                      {
-                        attribute.trait_count && attribute.trait_count.map((attribute_count: TraitCount, key: number) => {
-                          return (
-                          <span key= {key}> {attribute_count.value}:  {attribute_count.count}  </span>
-                          )
-                        })
-                      }  
-                <br />
-                <br />
-              </div>
-            )
-          })
-        }
-    </div> : 
-    null
-  } */}
 
   {/* {
     list_of_all_tokens !== null  ?

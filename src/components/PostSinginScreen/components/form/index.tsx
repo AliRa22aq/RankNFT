@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import "./style.css";
 import { useDispatch, useSelector } from 'react-redux';
-import { setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress, setAvailableAttributes, CountOfEachAttribute, addTokenInList, AttributesOfEachToekn } from '../../../store';
+import { setLoadingNFTs, setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress, setAvailableAttributes, CountOfEachAttribute, addTokenInList, AttributesOfEachToekn } from '../../../store';
 import Grid from "@mui/material/Grid";
 import { Form, Formik, Field } from "formik";
 import { TextField} from 'formik-material-ui';
@@ -38,6 +38,9 @@ const NFTForm = () => {
 
   
   const fetchAllTokenData = async (tokenURI: string, from: number, to: number) => {
+    dispatch(setLoadingNFTs(true))
+
+    
     try{
       let url = tokenURI
       if(url){
@@ -92,8 +95,14 @@ const NFTForm = () => {
         }
         
       }
+      dispatch(setLoadingNFTs(false))
+
     }
-    catch(e) { alert("Unable to get information of the token. Please use another") }
+    catch(e) { 
+      alert("Unable to get information of the token. Please use another")
+      dispatch(setLoadingNFTs(false))
+      
+    }
 
   }
 
@@ -150,6 +159,8 @@ const NFTForm = () => {
   }
 
   const fetchAttributes = async (from: number, to: number) => {
+
+    dispatch(setLoadingNFTs(false))
 
     dispatch(setProjectRange({from: from, to: to, range: to - from + 1}))
     // if(data?.baseTokenURI === null) return;
