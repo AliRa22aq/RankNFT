@@ -46,6 +46,10 @@ export interface ProjectInfo {
     range: Range
   }
 
+export interface Loading {
+  started: boolean,
+  completed: boolean
+}
 
 interface DataType {
     userAddress: string,
@@ -67,7 +71,11 @@ interface DataType {
     list_of_all_tokens: AttributesOfEachToekn[] | null,
     countOfAllAttribute: CountOfEachAttribute[] | null,
     projectInfo: ProjectInfo | null,
-    rarityScoreOfAllValues: RarityScoreOfValue[] | null
+    rarityScoreOfAllValues: RarityScoreOfValue[] | null,
+    loading_contractData: Loading,
+    isSnipping: Loading,
+
+    
 
   }
 
@@ -91,7 +99,9 @@ const initialState: DataType = {
     list_of_all_tokens: null,
     countOfAllAttribute: null,
     projectInfo: null,
-    rarityScoreOfAllValues: null
+    rarityScoreOfAllValues: null,
+    loading_contractData: {started: false, completed: false},
+    isSnipping: {started: false, completed: false},
 
 
 }
@@ -440,6 +450,40 @@ const dataSlice = createSlice({
         );
       }
     },
+
+    setLoadingContractData(state, {payload}: PayloadAction<{action: "started"|"completed", value: boolean}>){
+
+      if(payload.action === "started"){
+        state.loading_contractData =  {...state.loading_contractData, started: payload.value}
+      }
+
+      if(payload.action === "completed"){
+        state.loading_contractData =  {...state.loading_contractData, completed: payload.value}
+      }
+
+    },
+
+    setIsSnipping(state, {payload}: PayloadAction<{action: "started"|"completed"| null}>){
+
+      if(payload.action === null){
+        state.isSnipping =  {started: false, completed: false}
+      }
+      else {
+        if(payload.action === "started"){
+          state.isSnipping =  {started: true, completed: false}
+        }
+  
+        if(payload.action === "completed"){
+          state.isSnipping =  {started: true, completed: true}
+        }
+      }
+
+
+    },
+
+
+
+    
   },
 });
   
@@ -449,6 +493,6 @@ const dataSlice = createSlice({
 // Extract the action creators object and the reducer
 const { actions, reducer } = dataSlice
 // Extract and export each action creator by name
-export const { setLoadingNFTs, sortByTokenID, sortByRarityScore, setNormalizedRarityScoreToAttributes, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setRarityScoreToToken, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
+export const { setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setNormalizedRarityScoreToAttributes, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setRarityScoreToToken, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
 // Export the reducer, either as a default or named export
 export default reducer

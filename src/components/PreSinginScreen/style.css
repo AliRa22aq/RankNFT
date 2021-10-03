@@ -49,3 +49,13 @@
     margin: 0.5rem;
 
 }
+
+.loading-userAuthenticity {
+    width: 100%;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    margin-top: 200px;
+
+
+}

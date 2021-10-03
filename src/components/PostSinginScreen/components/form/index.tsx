@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import "./style.css";
 import { useDispatch, useSelector } from 'react-redux';
-import { setLoadingNFTs, setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress, setAvailableAttributes, CountOfEachAttribute, addTokenInList, AttributesOfEachToekn } from '../../../store';
+import { setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress, setAvailableAttributes, CountOfEachAttribute, addTokenInList, AttributesOfEachToekn } from '../../../store';
 import Grid from "@mui/material/Grid";
 import { Form, Formik, Field } from "formik";
 import { TextField} from 'formik-material-ui';
@@ -9,6 +9,7 @@ import Button from "@mui/material/Button";
 // import * as Yup from 'yup';
 const Web3 = require("web3");
 import axios from "axios";
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 interface Data {
@@ -38,7 +39,7 @@ const NFTForm = () => {
 
   
   const fetchAllTokenData = async (tokenURI: string, from: number, to: number) => {
-    dispatch(setLoadingNFTs(true))
+    // dispatch(setLoadingNFTs(true))
 
     
     try{
@@ -95,17 +96,17 @@ const NFTForm = () => {
         }
         
       }
-      dispatch(setLoadingNFTs(false))
+        dispatch(setIsSnipping({action: "completed"}))
+      // dispatch(setLoadingNFTs(false))
 
     }
     catch(e) { 
       alert("Unable to get information of the token. Please use another")
-      dispatch(setLoadingNFTs(false))
-      
+      // dispatch(setLoadingNFTs(false)
+      dispatch(setIsSnipping({action: "completed"}))
     }
 
   }
-
 
   const fetchData = async  (contractAdrs : string) => {
     setData(initialData)
@@ -158,9 +159,10 @@ const NFTForm = () => {
       }
   }
 
-  const fetchAttributes = async (from: number, to: number) => {
+  const startSnipping = async (from: number, to: number) => {
 
     dispatch(setLoadingNFTs(false))
+    dispatch(setIsSnipping({action: "started"})) 
 
     dispatch(setProjectRange({from: from, to: to, range: to - from + 1}))
     // if(data?.baseTokenURI === null) return;
@@ -260,7 +262,7 @@ const NFTForm = () => {
 
        {
          loading ? 
-           <div> Loading . . . </div> : 
+           <div className="loading-contractDetails"> <CircularProgress /> </div> : 
            <div className="project-detail-container">
 
               {
@@ -304,7 +306,7 @@ const NFTForm = () => {
       needRange ?
         <Formik initialValues={{ from: 1, to: 5 }}  
             onSubmit={async (values, { setSubmitting, resetForm, setFieldValue,  }) => {
-              fetchAttributes(values.from, values.to)
+              startSnipping(values.from, values.to)
             }}
             >
             {() => (

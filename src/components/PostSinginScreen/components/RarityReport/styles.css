@@ -1,0 +1,33 @@
+.Loading-NFTs-Data-container{
+    margin: 10px;
+}
+
+.Loading-NFTs-Data{
+
+}
+
+.Loading-NFTs-progress {
+    margin-bottom: 10px;
+}
+.Loading-NFTs-Text1{
+    /* border: 1px solid black; */
+    font-weight: bold;
+    font-size: 24px;
+    margin-bottom: 20px;
+
+
+}
+
+.Loading-NFTs-Text2{
+    /* border: 1px solid black; */
+    margin-bottom: 10px;
+
+}
+
+.Loading-NFTs-Attribute{
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 5px;
+
+
+}

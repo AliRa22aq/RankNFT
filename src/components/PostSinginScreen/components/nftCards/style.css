@@ -10,48 +10,39 @@
     justify-content: center; */
 
 }
-
-.input-container {
-    /* align-content: center;
-    justify-content: center; */
-    /* text-align: center; */
+.NFT-Secreen{
+    width: 100%;
     /* border: 1px solid rgb(255, 0, 0); */
-    /* width: 60% */
+    margin-top: -20px;
+
+
 
 }
 
-.button-container{
-    /* align-items: flex-end; */
-    position: absolute;
-    right: 10px;
-    top: 90px; 
-    /* border: 1px solid black; */
-    /* width: 500px; */
+.input-container {
+    width: 100%;
+    align-self: baseline;
+    height: 50px;
+}
+
+.normalization-container {
+    float:right;
+    /* padding-right:10px; */
 }
 
 .selection-container {
-    /* border: 1px solid rgb(59, 37, 37); */
-    width: 150px;
-    top: 100px; 
-    position: absolute;
-}
+    float:left;
+    padding-left:10px;
 
-.menu-item {
-    margin-left: 5px;
 }
 
 .NFTs-container{
-    margin-top: 60px;
-    /* flex-direction: row; */
-    /* display: flex; */
-    /* max-width: 60%; */
-    /* width: 60%; */
+    /* border: 1px solid rgb(0, 0, 0); */
 }
 
 .NFTs-card {
-    border: 1px solid black;
+    /* border: 1px solid black; */
     margin: 10px;
-
 }
 
 .pagination-container {
@@ -62,4 +53,57 @@
     /* border: 1px solid rgb(59, 37, 37); */
     width: 95%;
 
+}
+
+.menu-item {
+    margin-left: 5px;
+}
+
+
+.before-NFT-Secreen{
+    /* border: 1px solid black; */
+    width: 100%;
+    margin-top: -20px;
+
+}
+
+.before-NFT-welcome-Secreen{
+    margin: 10px;
+}
+
+
+.before-NFT-welcome-Secreen-text1{
+    font-weight: bold;
+    font-size: 24px;
+    margin-bottom: 20px;
+
+}
+.before-NFT-welcome-Secreen-rules-header{
+    font-size: 20px;
+    margin-bottom: 10px;
+
+
+}
+
+.before-NFT-welcome-Secreen-rules{
+    margin-left: 10px;
+}
+
+.before-NFT-welcome-Secreen-rule{
+    margin: 2px;
+}
+
+
+.check-rarity-text{
+    margin: 10px;
+}
+
+
+.check-rarity-button-container{
+    /* border: 1px solid black; */
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    height: 50px;
+    margin-bottom: 20px;
 }

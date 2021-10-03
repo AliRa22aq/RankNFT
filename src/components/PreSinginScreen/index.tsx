@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import NotSubscriber from './notNotSubscriber'
 import NotWhiteListed from './notWhiteListed'
 import Welcome from './welcome'
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 const PreSignInScreen = () => {
@@ -11,7 +12,7 @@ const PreSignInScreen = () => {
     const {isOwner , isDeveloper, loading, isWaletConnect, isWhiteListed, isSubscriber} = useSelector((state: any) => state);
 
     
-    if(loading) return <div>Loading . . . </div>
+    if(loading) return <div className="loading-userAuthenticity"><CircularProgress /> </div>
     
     return (
     <div className = "container">
