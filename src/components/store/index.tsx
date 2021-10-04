@@ -12,6 +12,7 @@ export interface Attribute {
 export interface AttributesOfEachToekn {
   tokenID: string
   attributes: Attribute[],
+  opensea_data: any
   rarity_score: number, 
   normalized_rarity_score: number, 
   image: string,
@@ -49,10 +50,11 @@ interface Range {
 }
 
 export interface ProjectInfo {
-    totalSupply:  number, 
+    contractAddress?: string,
+    totalSupply:  number,
     name:  string,
     baseTokenURI?: string | null,
-    range: Range
+    range: Range | null
   }
 
 export interface Loading {
@@ -332,110 +334,110 @@ const dataSlice = createSlice({
     },
 
     setCountOfAllAttribute(state, { payload }: PayloadAction<Attribute>) {
-      console.log("Step 1- payload added ", payload);
+      // console.log("Step 1- payload added ", payload);
 
-      console.log(
-        "Step 2- Check if countOfAllAttribute in not null",
-        state.countOfAllAttribute !== null
-      );
+      // console.log(
+      //   "Step 2- Check if countOfAllAttribute in not null",
+      //   state.countOfAllAttribute !== null
+      // );
 
       if (state.countOfAllAttribute !== null) {
-        console.log("Step 3- Not null. Entered with the payload", payload);
+        // console.log("Step 3- Not null. Entered with the payload", payload);
 
-        console.log(
-          "Step 4- Start mapping on each element of countOfAllAttributes"
-        );
+        // console.log(
+        //   "Step 4- Start mapping on each element of countOfAllAttributes"
+        // );
 
         state.countOfAllAttribute.map(
           (countOfEachAttribute: CountOfEachAttribute) => {
-            console.log(
-              "Step 5- Entered in mapping with the element: ",
-              JSON.stringify(countOfEachAttribute)
-            );
+            // console.log(
+            //   "Step 5- Entered in mapping with the element: ",
+            //   JSON.stringify(countOfEachAttribute)
+            // );
 
-            console.log(
-              "Step 6- Checking if payload-trait-type matched with element-trait-type: ",
-              countOfEachAttribute.trait_type
-            );
+            // console.log(
+            //   "Step 6- Checking if payload-trait-type matched with element-trait-type: ",
+            //   countOfEachAttribute.trait_type
+            // );
 
             if (countOfEachAttribute.trait_type === payload.trait_type) {
-              console.log("Step 7- Matched");
+              // console.log("Step 7- Matched");
 
-              console.log(
-                "Step 8- Check if element-trait-count array is empty"
-              );
+              // console.log(
+              //   "Step 8- Check if element-trait-count array is empty"
+              // );
 
               if (countOfEachAttribute.trait_count === null) {
-                console.log("Step 9- Empty");
+                // console.log("Step 9- Empty");
                 const new_trait_count = { value: payload.value, count: 1 };
                 countOfEachAttribute.trait_count = [new_trait_count];
                 countOfEachAttribute.total_variations++;
-                console.log(
-                  "Step 10a- new trait value added in element trait count list ",
-                  JSON.stringify(new_trait_count)
-                );
-                console.log(
-                  "Step 10b- trait count list updated ",
-                  JSON.stringify(countOfEachAttribute.trait_count)
-                );
+                // console.log(
+                //   "Step 10a- new trait value added in element trait count list ",
+                //   JSON.stringify(new_trait_count)
+                // );
+                // console.log(
+                //   "Step 10b- trait count list updated ",
+                //   JSON.stringify(countOfEachAttribute.trait_count)
+                // );
               } else {
-                console.log("Step 11- Not Empty");
+                // console.log("Step 11- Not Empty");
 
                 const checkValue = (obj: any) =>
                   obj.value === String(payload.value);
-                console.log(
-                  "Step 13- Already exist? ",
-                  countOfEachAttribute.trait_count.some(checkValue)
-                );
+                // console.log(
+                //   "Step 13- Already exist? ",
+                //   countOfEachAttribute.trait_count.some(checkValue)
+                // );
 
                 if (countOfEachAttribute.trait_count.some(checkValue)) {
                   countOfEachAttribute.trait_count &&
                     countOfEachAttribute.trait_count.map((trait) => {
-                      console.log(
-                        "Step 12- Star looping over the list of trait-counts to see if any matches"
-                      );
+                      // console.log(
+                      //   "Step 12- Star looping over the list of trait-counts to see if any matches"
+                      // );
 
-                      console.log(
-                        "Step 13a- Entered in element's trait-count list with element ",
-                        JSON.stringify(trait)
-                      );
+                      // console.log(
+                      //   "Step 13a- Entered in element's trait-count list with element ",
+                      //   JSON.stringify(trait)
+                      // );
 
-                      console.log(
-                        "Step 13b- checking if any element trait-count list matched with payload value ",
-                        payload.value
-                      );
+                      // console.log(
+                      //   "Step 13b- checking if any element trait-count list matched with payload value ",
+                      //   payload.value
+                      // );
 
                       if (trait.value === payload.value) {
-                        console.log(
-                          "Step 15- Value matched. Increasing count by one: from ",
-                          trait.count
-                        );
+                        // console.log(
+                        //   "Step 15- Value matched. Increasing count by one: from ",
+                        //   trait.count
+                        // );
                         trait.count = trait.count + 1;
-                        console.log(
-                          "Step 15- Value matched. Increasing count by one: to ",
-                          trait.count
-                        );
+                        // console.log(
+                        //   "Step 15- Value matched. Increasing count by one: to ",
+                        //   trait.count
+                        // );
                       }
                     });
                 } else {
                   const new_trait_count = { value: payload.value, count: 1 };
-                  console.log(
-                    "Step 13c- Value not matched. Adding a new element",
-                    new_trait_count
-                  );
+                  // console.log(
+                  //   "Step 13c- Value not matched. Adding a new element",
+                  //   new_trait_count
+                  // );
 
-                  console.log(
-                    "Step 113d-  list_of_new_traits before updating ",
-                    JSON.stringify(countOfEachAttribute.trait_count)
-                  );
+                  // console.log(
+                  //   "Step 113d-  list_of_new_traits before updating ",
+                  //   JSON.stringify(countOfEachAttribute.trait_count)
+                  // );
                   countOfEachAttribute.trait_count = [
                     ...countOfEachAttribute.trait_count,
                     new_trait_count,
                   ];
-                  console.log(
-                    "Step 13e-  list_of_new_traits after updating ",
-                    JSON.stringify(countOfEachAttribute.trait_count)
-                  );
+                  // console.log(
+                  //   "Step 13e-  list_of_new_traits after updating ",
+                  //   JSON.stringify(countOfEachAttribute.trait_count)
+                  // );
                   countOfEachAttribute.total_variations++;
                 }
               }

@@ -10,9 +10,13 @@ import Button from "@mui/material/Button";
 const Web3 = require("web3");
 import axios from "axios";
 import CircularProgress from '@mui/material/CircularProgress';
+import { OpenSeaPort, Network} from 'opensea-js'
+// import * as yup from 'yup';
+
 
 
 interface Data {
+  contractInfo: {contractFunctions: any, contractAddrs: string},
   totalSupply: string | null, 
   name: string | null,
   baseTokenURI: string  | null,
@@ -20,6 +24,7 @@ interface Data {
   uri : string | null
 }
 const initialData = {
+  contractInfo: {contractFunctions: null, contractAddrs: ""},
   totalSupply:  null, 
   name:  null,
   baseTokenURI: null,
@@ -29,6 +34,12 @@ const initialData = {
 
 
 const NFTForm = () => {
+
+  const provider = new Web3.providers.HttpProvider('https://mainnet.infura.io')
+
+  const seaport = new OpenSeaPort(provider, {
+    networkName: Network.Main
+  })
   
   const dispatch = useDispatch();
   const [data, setData] = useState<Data>(initialData);
@@ -37,21 +48,37 @@ const NFTForm = () => {
   const [needRange, setNeedrange] = useState(false);
 
 
+  // let schema = yup.object().shape({
+  //   name: yup.string().required(),
+  //   age: yup.number().required().positive().integer(),
+  //   email: yup.string().email(),
+  //   website: yup.string().url(),
+  //   createdOn: yup.date().default(function () {
+  //     return new Date();
+  //   }),
+  // });
   
   const fetchAllTokenData = async (tokenURI: string, from: number, to: number) => {
     // dispatch(setLoadingNFTs(true))
 
-    
+    console.log("step 1: Snipping started with URL ", tokenURI)
     try{
-      let url = tokenURI
+      let url = tokenURI;
+      // await data.contractFunctions.methods.tokenURI(1).call();
+
       if(url){
         let fetchAPI =  await axios.get( url ) as any          
         console.log("new", fetchAPI.data.attributes)
+        console.log("step 2: Fetched attributes from URL ", fetchAPI.data.attributes)
+
         if(fetchAPI){
 
           const countOfAllAttribute: CountOfEachAttribute[] | null = [];
 
-          fetchAPI.data.attributes.map((attribute: Attribute) => {
+          fetchAPI.data.attributes.map((attribute: Attribute, key: number) => {
+        
+          // console.log(`step 3.${key}: Star looping over each attribute`, attribute)
+        
 
           const dataToDispatch: CountOfEachAttribute = {
                   trait_type :attribute.trait_type, 
@@ -68,19 +95,35 @@ const NFTForm = () => {
             dispatch(setInitalCountOfAllAttribute(countOfAllAttribute as CountOfEachAttribute[])) 
           }
 
-          const range = to - from + 1
-          console.log("to and from: ", to, from)
-          console.log("ready with range: ", range)
 
-          for(var i = from;  i <= range;  i++ ) {
+          const range = to - from + 1
+
+          console.log(`step 4: Going to start loop to get attributes of each token Range`, range)
+
+          for(var i = from;  i <= to;  i++ ) {
+
+          console.log(`step 5: Star looping over each NFT attribute, TokenID`, i)
+
               let activeURL =  url.replace("1" , String(i))
-              console.log("activeURL", activeURL)
+              // console.log("activeURL", activeURL)
+              console.log(`step 6: active URl of NFT`, i, activeURL )
+
+
+              const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}`
+              let opensea_api_res =  await axios.get( opensea_api ) as any
+              console.log("opensea_api_res", opensea_api_res.data.assets[0])  
+
+              // console.log(`step 7: Response from opensea`, i, opensea_api_res.data.assets[0] )
+
 
               let activefetchAPI =  await axios.get( activeURL ) as any          
-              console.log("ali", activefetchAPI.data)
+              console.log(`step 7: Response from axios`, i, activefetchAPI.data )
+
+
               dispatch(addTokenInList({
-                tokenID: String(i) , 
+                tokenID: String(i), 
                 attributes: activefetchAPI.data.attributes,
+                opensea_data: opensea_api_res.data.assets[0],
                 rarity_score: 0,
                 normalized_rarity_score: 0,
                 image: activefetchAPI.data.image,
@@ -116,7 +159,9 @@ const NFTForm = () => {
     dispatch(addTokenInList(null))
     dispatch(setAvailableAttributes(null))
 
-      
+
+
+      // TODO: Ask ben to provide Infure API Kye
       var web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/92a3eada72834b629e28ff80ba4af4d0'))  
 
       const uri = `https://api.etherscan.io/api?module=contract&action=getabi&address=${contractAdrs}&apikey=WKEB4C6A8MPPIYF5699I3A1ZEII57MXG2A`
@@ -131,7 +176,9 @@ const NFTForm = () => {
       console.log("asset ", name)
       console.log("asset ", totalSupply)
 
-      setData(pre => {return {...pre, totalSupply, name }}) 
+      setData(pre => {return {...pre, totalSupply, name,   
+        contractInfo: {contractFunctions: MyContract, contractAddrs: contractAdrs}
+      }}) 
 
       try{
         console.log("asset ", "trying 1")
@@ -139,10 +186,11 @@ const NFTForm = () => {
         setData(pre => {return {...pre, baseTokenURI: tokenURI1}}) 
 
         dispatch(setProjectInfo({
+                contractAddress: contractAdrs,
                 totalSupply:  Number(totalSupply), 
                 name:  name, 
                 baseTokenURI: tokenURI1,
-                range: {from: 1, to: 10, range: 10-1+1}
+                range: null
               }))
 
         setneedURI(false)
@@ -154,7 +202,13 @@ const NFTForm = () => {
             console.log("asset ", "Error fetching URI from useNFT hook too")
             alert("Please provide NFT URI")
             setData(pre => {return {...pre,  baseTokenURI: null}}) 
-            dispatch(setProjectInfo({totalSupply:  Number(totalSupply), name:  name, baseTokenURI: null, range: {from: 1, to: 10, range: 10-1+1}}))
+            dispatch(setProjectInfo({
+                contractAddress: contractAdrs, 
+                totalSupply:  Number(totalSupply), 
+                name:  name, 
+                baseTokenURI: null, 
+                range: null
+              }))
             setneedURI(true)
             setLoading(false)
       }

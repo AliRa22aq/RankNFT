@@ -6,6 +6,10 @@
     width: 100%;
     /* display: block;     */
     /* height: 5rem; */
+    z-index: 1;
+    display: block;
+
+
 }
 
 .footer-content {
@@ -14,9 +18,10 @@
     height: 100%;
     display: flex;
     align-items: center;
-    /* border: 1px solid #000000; */
     justify-content: center;
-    
+  }
 
-
+  
+  a:link , a:visited, a:hover, a:active {
+    color: rgb(0, 0, 0);
   }

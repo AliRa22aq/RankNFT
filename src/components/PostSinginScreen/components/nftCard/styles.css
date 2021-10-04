@@ -3,17 +3,71 @@
 }
 
 .NFT-image {
-    /* border: 1px solid black; */
     width: 300px;
 
 
 }
 
+.NFT-Opensea-Container{
+    margin-top: 10px;
+    /* margin-left: 10px; */
 
-.NFT-rarity-details{
+    font-size: 18px;
+
+
+}
+
+.price-container {
+    display: flex;
+    /* margin-top: 10px; */
+}
+
+.price{
+    margin-left: 7px;
+    margin-right: 2px;
+}
+
+
+a:link , a:visited, a:hover, a:active {
+    color: rgb(0, 0, 0);
+}
+
+
+.NFT-rarity-detail{
     float: right;
     /* border: 1px solid black; */
     width: 300px;
     top: 0;
-    padding: 10px
+    padding-left: 20px;
+}
+
+.NFT-rarity-details-header {
+    font-size: 20px;
+    margin-bottom: 10px;
+    font-weight: bold;
+
+}
+
+.NFT-rarity-details-main {
+    margin-bottom: 10px;
+    font-size: 18px;
+
+
+
+}
+
+.NFT-rarity-details-attributes-heading {
+    margin-bottom: 5px;
+    font-size: 18px;
+
+}
+
+
+.NFT-rarity-details-attributes{
+
+}
+
+
+.NFT-rarity-details {
+
 }

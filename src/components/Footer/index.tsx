@@ -6,8 +6,11 @@ const Footer = () => {
   return (
     <div className="footer-container">
       <div className="footer-content">
+        <a href="https://discord.gg/tgSTXsxrph" target="_blank" >
         <Typography variant="subtitle1" >Contact Admin</Typography> 
-        <a href="https://discord.gg/tgSTXsxrph">
+        </a>
+
+        <a href="https://discord.gg/tgSTXsxrph" target="_blank" >
         <img
           src="https://cdn.worldvectorlogo.com/logos/discord-6.svg"
           alt="dicord"
@@ -17,6 +20,7 @@ const Footer = () => {
           style={{marginLeft: "10px"}}
         />
         </a>
+
       </div>
     </div>
   );

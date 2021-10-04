@@ -9,7 +9,13 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import './styles.css'
-import {  Attribute, AttributesOfEachToekn, CountOfEachAttribute } from '../../../store';
+import {  Attribute, AttributesOfEachToekn } from '../../../store';
+import Web3 from "web3";
+// @ts-ignore
+import CornerRibbon from "react-corner-ribbon";
+
+// import ether from '../../../etherSymbol.png'
+import ether from '../../../assets/etherSymbol.png'
 
 
 interface Props {
@@ -19,23 +25,42 @@ interface Props {
 
 const NFTCard: FC<Props> = ({token, normalization}) => {
   
+  const web3 = new Web3(window.ethereum);  
+
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    setOpen(true)
+  };
   const handleClose = () => setOpen(false);
+
+  const onSale = token?.opensea_data?.sell_orders && token?.opensea_data?.sell_orders[0]? true:false; 
+
 
 
   return (
     <div>
     <Card sx={{ height: 300, width: 200 }} onClick={handleOpen}>
       <CardActionArea>
-        <CardMedia
-          component="img"
-          height="200"
-          image={token.image}
-          alt={token.name? token.name: "nothing"}
-        />
+        {
+          onSale ?
+          // <div className="ribbon">
+            <CornerRibbon 
+                backgroundColor="#2c7" 
+                fontColor="#f0f0f0" 
+                style={{zIndex:1}} 
+                > 
+                  Listed 
+                </CornerRibbon> :
+          null
+        }
+          <CardMedia
+            component="img"
+            height="200"
+            image={token.image}
+            alt={token.name? token.name: "nothing"}
+          />
         <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
+          <Typography gutterBottom variant="body1" component="div">
             {token.name? token.name: "No name avaiable"}
           </Typography>
           <Typography variant="body2" color="text.secondary">
@@ -47,6 +72,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
         </CardContent>
       </CardActionArea>
     </Card>
+
     
 
     <Modal
@@ -75,20 +101,39 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
               <img src={token.image} alt={token.name} height="300" width="300" /> 
             </div>
             <div className="NFT-Opensea-Container">
-              <div> Price: 5 Eth </div>
-              <div> On sale </div>
+              <div> {token.opensea_data?.sell_orders ? "Open to sale": "Not open to sale"} </div>
+            {
+              onSale? 
+              <div className="price-container"> 
+                Price: 
+                <span className="price">
+                <img src={ether} alt="ether" width="12px" height="15px" />
+                </span>
+                {web3.utils.fromWei(String(token.opensea_data.sell_orders[0].current_price), "ether") } 
+                </div>:
+              null
+            }
+            {
+              token.opensea_data?.permalink ?
+               <div><a href={token.opensea_data?.permalink}  target="_blank" > see on Opensea </a> </div>:
+              null
+            }
             </div>
 
         </div>
         
-        <div className="NFT-rarity-details">
-          <div> Details </div>
-          <div> TokenID: {token.tokenID} </div>
+        <div className="NFT-rarity-detail">
+
+          <div className="NFT-rarity-details-header"> Details </div>
+
+          <div className="NFT-rarity-details-main"> 
+          <div> Token ID: {token.tokenID} </div>
           <div> Name: {token.name ? token.name : null} </div>
           <div> Rarity Score: { normalization ? Math.round(token.normalized_rarity_score) : Math.round(token.rarity_score)} </div>
-
+          </div>
           
-          <div> 
+          <div className="NFT-rarity-details-attributes-heading"> Attributes and Scores</div>
+          <div className="NFT-rarity-details-attributes"> 
             {
               token.attributes && token.attributes?.map((attribute: Attribute) => {
                 return(
@@ -102,7 +147,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
             } 
           </div>
 
-          <div> {token.description ? token.description : null} </div>
+          <div className="NFT-rarity-details" > {token.description ? token.description : null} </div>
         </div>
 
         </div>
