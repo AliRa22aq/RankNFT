@@ -1,7 +1,7 @@
 import React from "react"
 import "./styles.css"
 import { useSelector, useDispatch } from 'react-redux';
-import { sortByTokenID, sortByRarityScore, setNormalizedRarityScoreToAttributes, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute } from '../../../store';
+import {  CountOfEachAttribute } from '../../../store';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 
@@ -10,7 +10,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 
 
 const RarityReport = () => {
-    const { isSnipping, countOfAllAttribute, projectInfo, rarityScoreOfAllValues, rarityScoreOfAllAttributes, allAvailableAttributes, list_of_all_tokens } = useSelector((state: any) => state);
+    const { countOfAllAttribute } = useSelector((state: any) => state);
 
     return(
         <div className="Loading-NFTs-Data-container">

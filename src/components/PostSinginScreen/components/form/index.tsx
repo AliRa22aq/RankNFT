@@ -82,6 +82,7 @@ const NFTForm = () => {
                 tokenID: String(i) , 
                 attributes: activefetchAPI.data.attributes,
                 rarity_score: 0,
+                normalized_rarity_score: 0,
                 image: activefetchAPI.data.image,
                 title: activefetchAPI.data.title? activefetchAPI.data.title: "" ,
                 name: activefetchAPI.data.name? activefetchAPI.data.name: "" 
@@ -181,12 +182,6 @@ const NFTForm = () => {
       fetchAllTokenData(url, from, to)
     }
       
-
-
-
-
-
-
 
   }
 

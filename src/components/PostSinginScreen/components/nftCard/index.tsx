@@ -1,18 +1,28 @@
-import * as React from 'react';
+import React, {useEffect, FC} from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux';
 
 interface Props{
-    image:string,
-    name?: string,
-    tokenID: string,
-    rarity_score: number
+  image:string,
+  name?: string,
+  tokenID: string,
+  rarity_score: number
 }
 
-const NFTCard: React.FC<Props> = ({image, name, tokenID, rarity_score }) => {
+
+const NFTCard: FC<Props> = ({image, name, tokenID, rarity_score }) => {
+  
+  const { list_of_all_tokens } = useSelector((state: any) => state);
+  
+  useEffect(()=> {
+    
+  }, [list_of_all_tokens[0].rarity_score])
+
+
   return (
     <Card sx={{ height: 300, width: 200 }}>
       <CardActionArea>

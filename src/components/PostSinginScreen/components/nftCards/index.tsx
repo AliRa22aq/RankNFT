@@ -1,17 +1,9 @@
-import React, {useEffect, useState} from "react";
+import  React, {useEffect, useState} from "react";
 import "./style.css";
 // import { intervalToDuration, formatDistanceToNow } from 'date-fns'
 import { useSelector, useDispatch } from 'react-redux';
-import { sortByTokenID, sortByRarityScore, setNormalizedRarityScoreToAttributes, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute } from '../../../store';
-// import Grid from "@mui/material/Grid";
-// import { Form, Formik, Field } from "formik";
-// import { TextField} from 'formik-material-ui';
-// import TextField from "@mui/material/TextField";
-// import Typography from "@mui/material/Typography";
-// import Button from "@mui/material/Button";
-// import App from '../nftCardModel'
+import { sortByTokenID, sortByRarityScore, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute } from '../../../store';
 const Web3 = require("web3");
-// import { useNft } from "use-nft"
 import Switch from '@mui/material/Switch';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
@@ -21,11 +13,6 @@ import NFTCard from "../nftCard";
 import RarityReport from "../RarityReport/RarityReport";
 import FinalRarityReport from "../RarityReport/FinalRarityReport";
 
-
-
-
-
-
 // import { OpenSeaPort, Network  } from 'opensea-js'
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
@@ -33,15 +20,9 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 
-
-enum Sort {
-  rarityScore = 1,
-  tokenID = 2
-}
 
 const NFTCards = () => {
   
@@ -49,15 +30,16 @@ const NFTCards = () => {
   const [normalization, setNormalization] = useState(true)
   const [showNFTs, setShowNFTs] = useState(false)
   const [page, setPage] = useState(1)
-  const [list_of_NFTs_for_currentPage, set_list_of_NFTs_for_currentPage] = useState<any[] | null>([])
+  const [list_of_NFTs_for_currentPage, set_list_of_NFTs_for_currentPage] = useState<AttributesOfEachToekn[] | null>([])
   const [sortBy, setSortBy] = React.useState<number>(1);
 
   
-  const { isSnipping, countOfAllAttribute, projectInfo, rarityScoreOfAllValues, rarityScoreOfAllAttributes, allAvailableAttributes, list_of_all_tokens } = useSelector((state: any) => state);
+  const { isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
   
   
-  console.log("isSnipping", isSnipping)
-  
+  console.log("list_of_all_tokens", list_of_all_tokens)
+  console.log("rarityScoreOfAllValues",  rarityScoreOfAllValues)
+
   
 
   const handleSort = (e: number) => {
@@ -79,32 +61,13 @@ const NFTCards = () => {
   const findRarityScore = () => {
 
     dispatch(setRarityScoreToAttributeValue(null))
-    dispatch(setNormalizedRarityScoreToAttributes(null))
 
     const totalSupply:number = projectInfo && projectInfo.range.range
     console.log("totalSupply ", totalSupply)
-    // projectInfo && projectInfo.totalSupply
-
-    // // Normal Scoring
-    if(countOfAllAttribute && !normalization){
-      console.log("Normalization is off")
-      countOfAllAttribute.map((eachAttribute: CountOfEachAttribute) => {
-        eachAttribute.trait_count && eachAttribute.trait_count.map((eachValue: TraitCount) => {
-          const chance_of_occuring = eachValue.count/totalSupply
-          const rarity_score = 1/chance_of_occuring;
-          const rarity_score_of_each_value: RarityScoreOfValue = {
-            value: eachValue.value,  rarity_score: rarity_score
-          }
-          //console.log(rarity_score_of_each_value)
-          dispatch(setRarityScoreToAttributeValue(rarity_score_of_each_value))
-          dispatch(setRarityScoreToEachNFTAttribuValue(rarity_score_of_each_value))
-          
-        })
-      })      
-    }
 
     // Normalized Scoring
-    if(countOfAllAttribute && normalization){
+    if(countOfAllAttribute){
+  
       console.log("Normalization is on")
       let traits_count = 0;
       
@@ -126,12 +89,13 @@ const NFTCards = () => {
           const rarity_score = 1/chance_of_occuring;
 
           const normalized_score = rarity_score * average_trait_count / attribute_count_in_categories;
-          const final_score = normalized_score / 2;
+          const final_normalized_score = normalized_score / 2;
 
           const rarity_score_of_each_value: RarityScoreOfValue = {
-            value: eachValue.value,  rarity_score: final_score
+            value: eachValue.value,  rarity_score: rarity_score , normalized_rarity_score:  final_normalized_score
           }
-          // console.log(rarity_score_of_each_value)
+
+          console.log("aliiiii", rarity_score_of_each_value)
           dispatch(setRarityScoreToAttributeValue(rarity_score_of_each_value))
           dispatch(setRarityScoreToEachNFTAttribuValue(rarity_score_of_each_value))
 
@@ -165,7 +129,7 @@ const NFTCards = () => {
 
   useEffect(()=> {
     handlePage(0,1)
-  }, [sortBy])
+  }, [sortBy, showNFTs])
 
   return (
     <div className="cards-container">
@@ -208,14 +172,16 @@ const NFTCards = () => {
             <div className="NFTs-container">
               <Grid container>
                 {
-                  //  list_of_all_tokens && list_of_all_tokens.map((token: AttributesOfEachToekn) => {
-                    // list_of_all_tokens && list_of_all_tokens.map((token: AttributesOfEachToekn) => {
-                      list_of_NFTs_for_currentPage && list_of_NFTs_for_currentPage.map((token: any) => {
+                      list_of_NFTs_for_currentPage && list_of_NFTs_for_currentPage.map((token: AttributesOfEachToekn) => {
                     
                       return (
                         <div className="NFTs-card"> 
                           <Grid item xs={12}>
-                          <NFTCard image={token.image} name={token.name} tokenID={token.tokenID} rarity_score={token.rarity_score} />
+                          <NFTCard 
+                            image={token.image} 
+                            name={token.name} 
+                            tokenID={token.tokenID} 
+                            rarity_score={normalization ? token.normalized_rarity_score : token.rarity_score} />
                           </Grid>
                         </div>
                       )            
@@ -267,7 +233,7 @@ const NFTCards = () => {
                  isSnipping.started  && isSnipping.completed && !showNFTs ?
                  <div>
                       <div className="check-rarity-text">Amazing. we are ready to check rarity of NFTs. Lets go</div>
-                      <div className="check-rarity-button-container"> <Button onClick={findRarityScore} variant="contained"> Check rarity </Button></div>
+                      <div className="check-rarity-button-container"> <Button onClick={()=> findRarityScore()} variant="contained"> Check rarity </Button></div>
                       <FinalRarityReport />
                  </div> 
                  :

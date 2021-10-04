@@ -5,13 +5,15 @@ import { RankNFT as RankNFTType } from '../../../types/web3-v1-contracts/RankNFT
 export interface Attribute {
   trait_type :string, 
   value: string,
-  value_rarity_score?: number
+  value_rarity_score: number,
+  value_normalized_rarity_score: number
 }
 
 export interface AttributesOfEachToekn {
   tokenID: string
   attributes: Attribute[],
-  rarity_score: number 
+  rarity_score: number, 
+  normalized_rarity_score: number, 
   image: string,
   title?: string
   description?: string,
@@ -31,8 +33,15 @@ export interface CountOfEachAttribute {
 
 export interface RarityScoreOfValue {
   value :string, 
-  rarity_score: number 
+  rarity_score: number ,
+  normalized_rarity_score: number ,
 }
+
+// Idea
+// export interface RarityScoreOfValue {
+//   normal: {value :string, rarity_score: number},
+//   normalized: {value :string, rarity_score: number}
+// }
 
 
 interface Range {
@@ -250,19 +259,19 @@ const dataSlice = createSlice({
       }
     },
 
-    setRarityScoreToToken(
-      state,
-      { payload }: PayloadAction<{ tokenID: string; rarity_score: number }>
-    ) {
-      // console.log("payload added ", payload)
-      state.list_of_all_tokens &&
-        state.list_of_all_tokens.map((token) => {
-          if (token.tokenID === payload.tokenID) {
-            token.rarity_score = payload.rarity_score;
-          }
-        });
-      // console.log("Initial countOfAllAttribute ", state.countOfAllAttribute)
-    },
+    // setRarityScoreToToken(
+    //   state,
+    //   { payload }: PayloadAction<{ tokenID: string; rarity_score: number }>
+    // ) {
+    //   // console.log("payload added ", payload)
+    //   state.list_of_all_tokens &&
+    //     state.list_of_all_tokens.map((token) => {
+    //       if (token.tokenID === payload.tokenID) {
+    //         token.rarity_score = payload.rarity_score;
+    //       }
+    //     });
+    //   // console.log("Initial countOfAllAttribute ", state.countOfAllAttribute)
+    // },
 
     setRarityScoreToAttributeValue(
       state,
@@ -292,11 +301,13 @@ const dataSlice = createSlice({
         (token: AttributesOfEachToekn) => {
           
           token.attributes.map((attribute: Attribute) => {
-            let total_score = 0;
             if (attribute.value === payload.value) {
+              
               attribute.value_rarity_score = payload.rarity_score;
-              // total_score = total_score + payload.rarity_score
-              token.rarity_score = token.rarity_score + payload.rarity_score
+              attribute.value_normalized_rarity_score = payload.normalized_rarity_score;
+
+              token.rarity_score = token.rarity_score + payload.rarity_score;
+              token.normalized_rarity_score = token.normalized_rarity_score + payload.normalized_rarity_score;
             }
           });
           
@@ -306,23 +317,6 @@ const dataSlice = createSlice({
        
     },
 
-    setNormalizedRarityScoreToAttributes(
-      state,
-      { payload }: PayloadAction<RarityScoreOfValue | null>
-    ) {
-      if (payload === null) {
-        state.rarityScoreOfAllValues = null;
-      } else {
-        if (state.rarityScoreOfAllValues === null) {
-          state.rarityScoreOfAllValues = [payload];
-        } else {
-          state.rarityScoreOfAllValues = [
-            ...state.rarityScoreOfAllValues,
-            payload,
-          ];
-        }
-      }
-    },
 
     setInitalCountOfAllAttribute(
       state,
@@ -493,6 +487,6 @@ const dataSlice = createSlice({
 // Extract the action creators object and the reducer
 const { actions, reducer } = dataSlice
 // Extract and export each action creator by name
-export const { setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setNormalizedRarityScoreToAttributes, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setRarityScoreToToken, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
+export const {  setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
 // Export the reducer, either as a default or named export
 export default reducer
