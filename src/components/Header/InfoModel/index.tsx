@@ -13,7 +13,7 @@ const InfoModal = () => {
 
   return (
     <div>
-      <Button onClick={handleOpen} color="inherit">
+      <Button onClick={handleOpen} >
         <Typography component="div" sx={{ flexGrow: 1 }}>
           Subscription Info
         </Typography>
