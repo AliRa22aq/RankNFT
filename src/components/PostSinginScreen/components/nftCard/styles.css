@@ -1,0 +1,19 @@
+.NFT-container {
+    display: flex;
+}
+
+.NFT-image {
+    /* border: 1px solid black; */
+    width: 300px;
+
+
+}
+
+
+.NFT-rarity-details{
+    float: right;
+    /* border: 1px solid black; */
+    width: 300px;
+    top: 0;
+    padding: 10px
+}

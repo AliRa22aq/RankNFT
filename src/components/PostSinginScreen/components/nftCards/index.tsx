@@ -178,10 +178,14 @@ const NFTCards = () => {
                         <div className="NFTs-card"> 
                           <Grid item xs={12}>
                           <NFTCard 
-                            image={token.image} 
-                            name={token.name} 
-                            tokenID={token.tokenID} 
-                            rarity_score={normalization ? token.normalized_rarity_score : token.rarity_score} />
+                              token = {token} 
+                              normalization = {normalization}
+                              
+                              />
+                            {/* // image={token.image} 
+                            // name={token.name} 
+                            // tokenID={token.tokenID} 
+                            // rarity_score={normalization ? token.normalized_rarity_score : token.rarity_score} /> */}
                           </Grid>
                         </div>
                       )            
