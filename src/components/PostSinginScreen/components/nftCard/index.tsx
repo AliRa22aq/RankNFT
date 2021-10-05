@@ -109,7 +109,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
                 <span className="price">
                 <img src={ether} alt="ether" width="12px" height="15px" />
                 </span>
-                {web3.utils.fromWei(String(token.opensea_data.sell_orders[0].current_price), "ether") } 
+                {web3.utils.fromWei(Math.round(token.opensea_data?.sell_orders[0]?.current_price).toString(), "ether") } 
                 </div>:
               null
             }
