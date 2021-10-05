@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import "./style.css";
 import { useDispatch, useSelector } from 'react-redux';
-import { setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress, setAvailableAttributes, CountOfEachAttribute, addTokenInList, AttributesOfEachToekn } from '../../../store';
+import { reSetSnipping, setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress, setAvailableAttributes, CountOfEachAttribute, addTokenInList, AttributesOfEachToekn } from '../../../store';
 import Grid from "@mui/material/Grid";
 import { Form, Formik, Field } from "formik";
 import { TextField} from 'formik-material-ui';
@@ -11,7 +11,8 @@ const Web3 = require("web3");
 import axios from "axios";
 import CircularProgress from '@mui/material/CircularProgress';
 import { OpenSeaPort, Network} from 'opensea-js'
-// import * as yup from 'yup';
+import * as yup from 'yup';
+import { isMatchWithOptions } from "date-fns/fp";
 
 
 
@@ -48,18 +49,23 @@ const NFTForm = () => {
   const [needRange, setNeedrange] = useState(false);
 
 
-  // let schema = yup.object().shape({
-  //   name: yup.string().required(),
-  //   age: yup.number().required().positive().integer(),
-  //   email: yup.string().email(),
-  //   website: yup.string().url(),
-  //   createdOn: yup.date().default(function () {
-  //     return new Date();
-  //   }),
-  // });
+  let schema1 = yup.object().shape({
+    address: yup.string().length(42, "not a contract address").required(),
+    uri: yup.string()
+  });
+
+  let schema2 = yup.object().shape({
+    from: yup.number().positive().moreThan(0, "should be more than 1").lessThan(yup.ref("to"), "not a valid range ").required(),
+    to: yup.number().positive().moreThan(yup.ref("from"), "not a valid range ").moreThan(1, "should be more than 1").required()
+  });
+
+
   
   const fetchAllTokenData = async (tokenURI: string, from: number, to: number) => {
-    // dispatch(setLoadingNFTs(true))
+    // dispatch(setAvailableAttributes(null))
+    // dispatch(setInitalCountOfAllAttribute(null)) 
+    // dispatch(addTokenInList(null))
+
 
     console.log("step 1: Snipping started with URL ", tokenURI)
     try{
@@ -75,7 +81,7 @@ const NFTForm = () => {
 
           const countOfAllAttribute: CountOfEachAttribute[] | null = [];
 
-          fetchAPI.data.attributes.map((attribute: Attribute, key: number) => {
+          fetchAPI.data.attributes.map((attribute: Attribute) => {
         
           // console.log(`step 3.${key}: Star looping over each attribute`, attribute)
         
@@ -115,7 +121,6 @@ const NFTForm = () => {
 
               // console.log(`step 7: Response from opensea`, i, opensea_api_res.data.assets[0] )
 
-
               let activefetchAPI =  await axios.get( activeURL ) as any          
               console.log(`step 7: Response from axios`, i, activefetchAPI.data )
 
@@ -145,20 +150,19 @@ const NFTForm = () => {
 
     }
     catch(e) { 
-      alert("Unable to get information of the token. Please use another")
+      alert("Unable to fetch information. Make sure you have installed and enabled Moesif CORS extention")
       // dispatch(setLoadingNFTs(false)
-      dispatch(setIsSnipping({action: "completed"}))
+      // dispatch(setIsSnipping({action: "completed"}))
     }
 
   }
 
-  const fetchData = async  (contractAdrs : string) => {
-    setData(initialData)
-    setNeedrange(false)
-    setLoading(true)
-    dispatch(addTokenInList(null))
-    dispatch(setAvailableAttributes(null))
+  const fetchData = async  ( contractAdrs : string, URl:string, setFieldValue: any ) => {
 
+
+      setData(initialData)
+      setNeedrange(false)
+      setLoading(true)
 
 
       // TODO: Ask ben to provide Infure API Kye
@@ -166,8 +170,17 @@ const NFTForm = () => {
 
       const uri = `https://api.etherscan.io/api?module=contract&action=getabi&address=${contractAdrs}&apikey=WKEB4C6A8MPPIYF5699I3A1ZEII57MXG2A`
       const abii = await fetch(uri)
+      console.log("EH: 1", abii)
       const abi = await abii.json()   
+      console.log("EH: 2", abi)
+        
       
+      if(abi.result === 'Contract source code not verified' || abi.message=== "NOTOK" || abi.status === "0"){
+        setLoading(false)
+        alert("Not a valid contract address")
+        throw("Not a valid contract address")
+      };
+
       var MyContract = new web3.eth.Contract(JSON.parse(abi.result), contractAdrs)
       console.log("asset ", MyContract)
 
@@ -180,27 +193,72 @@ const NFTForm = () => {
         contractInfo: {contractFunctions: MyContract, contractAddrs: contractAdrs}
       }}) 
 
-      try{
-        console.log("asset ", "trying 1")
-        const tokenURI1 = await MyContract.methods.tokenURI(1).call();
-        setData(pre => {return {...pre, baseTokenURI: tokenURI1}}) 
+      if(URl === ""){
+        try{
+          console.log("asset ", "trying 1")
+          const tokenURI1 = await MyContract.methods.tokenURI(1).call();
 
-        dispatch(setProjectInfo({
-                contractAddress: contractAdrs,
-                totalSupply:  Number(totalSupply), 
-                name:  name, 
-                baseTokenURI: tokenURI1,
-                range: null
-              }))
+          setData(pre => {return {...pre, baseTokenURI: tokenURI1}}) 
 
-        setneedURI(false)
-        setNeedrange(true)
-        setLoading(false)
+          dispatch(setProjectInfo({
+                  contractAddress: contractAdrs,
+                  totalSupply:  Number(totalSupply), 
+                  name:  name, 
+                  baseTokenURI: tokenURI1,
+                  range: null
+                }))
 
-        
-      }  catch(error){    
-            console.log("asset ", "Error fetching URI from useNFT hook too")
-            alert("Please provide NFT URI")
+          setneedURI(false)
+          setNeedrange(true)
+          setLoading(false)
+
+          
+        }  catch(error){    
+              console.log("asset ", "Error fetching URI from useNFT hook too")
+              alert("Please provide NFT URI")
+              setData(pre => {return {...pre,  baseTokenURI: null}}) 
+              dispatch(setProjectInfo({
+                  contractAddress: contractAdrs, 
+                  totalSupply:  Number(totalSupply), 
+                  name:  name, 
+                  baseTokenURI: null, 
+                  range: null
+                }))
+              setneedURI(true)
+              setLoading(false)
+        }
+      }
+
+      else {
+        try{
+
+          console.log("URi to chck", URl)
+          let fetchAPI =  await axios.get(URl) as any          
+          console.log("new", fetchAPI.data.attributes)
+          console.log("step 2: Fetched attributes from URL ", fetchAPI.data.attributes)
+  
+          if(fetchAPI  && fetchAPI.data.attributes){
+            setData(pre => {return {...pre, baseTokenURI: URl}}) 
+  
+            dispatch(setProjectInfo({
+                    contractAddress: contractAdrs,
+                    totalSupply:  Number(totalSupply), 
+                    name:  name, 
+                    baseTokenURI: URl,
+                    range: null
+                  }))
+
+            setneedURI(false)
+            setNeedrange(true)
+            setLoading(false)
+            setFieldValue("uri","")
+
+
+          }
+          else {
+            setLoading(false)
+
+            alert("Please provide a valid NFT URI and make sure you have installed and enabled Moesif CORS extention ")
             setData(pre => {return {...pre,  baseTokenURI: null}}) 
             dispatch(setProjectInfo({
                 contractAddress: contractAdrs, 
@@ -210,12 +268,23 @@ const NFTForm = () => {
                 range: null
               }))
             setneedURI(true)
-            setLoading(false)
+            
+            throw("Not a NFT URL")
+          }
+
+        }  catch(error){
+              console.error(error)    
+              alert("Please provide a valid NFT URI")
+              setneedURI(true)
+              setLoading(false)
+        }
       }
-  }
+
+
+    }
 
   const startSnipping = async (from: number, to: number) => {
-
+    dispatch(reSetSnipping()) 
     dispatch(setLoadingNFTs(false))
     dispatch(setIsSnipping({action: "started"})) 
 
@@ -244,24 +313,26 @@ const NFTForm = () => {
 
     <div className="form-container" >
 
-    <Formik initialValues={{ address: '0xc1a1e381389cb927f1d57511e144b644ef0c6385', uri: '' }}  
-            onSubmit={async (values, { setSubmitting, setFieldValue,  }) => {
+    <Formik initialValues={{ address: '0x06012c8cf97bead5deae237070f9587f8e7a266d', uri: '' }}
+            validationSchema={schema1} 
+            onSubmit={async (values, { setSubmitting, setFieldValue  }) => {
             
-              if(!values.uri){
+              // if(!values.uri){
                 dispatch(setUploadedContractAddress(values.address))
-                fetchData(values.address)    
+                console.log("yesssss")  
+                fetchData(values.address, values.uri, setFieldValue)  
+
                 // resetForm()
-                setSubmitting(false)
-              }
-              if(values.uri){
-                // setNeedrange(false)
-                setData(pre => {return {...pre, baseTokenURI:  values.uri}}) 
-                setFieldValue(values.uri,"")
-                // resetForm()
-                setneedURI(false)
-                setSubmitting(false)
-                setNeedrange(true)
-              }
+              //   setSubmitting(false)
+              // }
+              // if(values.uri){
+              //   // setNeedrange(false)
+              //   setData(pre => {return {...pre, baseTokenURI:  values.uri}}) 
+              //   // resetForm()
+              //   setneedURI(false)
+              //   setSubmitting(false)
+              //   setNeedrange(true)
+              // }
             }}>
 
     {() => (
@@ -353,8 +424,9 @@ const NFTForm = () => {
 
 {
       needRange ?
-        <Formik initialValues={{ from: 1, to: 5 }}  
-            onSubmit={async (values, { setSubmitting, resetForm, setFieldValue,  }) => {
+        <Formik initialValues={{ from: 1, to: 20 }}  
+                validationSchema={schema2} 
+                onSubmit={async (values, { setSubmitting, resetForm, setFieldValue,  }) => {
               startSnipping(values.from, values.to)
             }}
             >

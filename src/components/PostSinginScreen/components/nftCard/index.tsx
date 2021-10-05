@@ -11,11 +11,10 @@ import Modal from '@mui/material/Modal';
 import './styles.css'
 import {  Attribute, AttributesOfEachToekn } from '../../../store';
 import Web3 from "web3";
+import ether from '../../../assets/etherSymbol.png'
 // @ts-ignore
 import CornerRibbon from "react-corner-ribbon";
 
-// import ether from '../../../etherSymbol.png'
-import ether from '../../../assets/etherSymbol.png'
 
 
 interface Props {
@@ -49,7 +48,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
                 fontColor="#f0f0f0" 
                 style={{zIndex:1}} 
                 > 
-                  Listed 
+                  on sale
                 </CornerRibbon> :
           null
         }
@@ -86,7 +85,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: 600,
+            width: 650,
             height: 400,
             bgcolor: 'background.paper',
             border: '2px solid #000',
@@ -98,6 +97,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
 
         <div className="NFT-image"> 
             <div>
+
               <img src={token.image} alt={token.name} height="300" width="300" /> 
             </div>
             <div className="NFT-Opensea-Container">

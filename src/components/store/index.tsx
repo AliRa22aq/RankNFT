@@ -261,20 +261,6 @@ const dataSlice = createSlice({
       }
     },
 
-    // setRarityScoreToToken(
-    //   state,
-    //   { payload }: PayloadAction<{ tokenID: string; rarity_score: number }>
-    // ) {
-    //   // console.log("payload added ", payload)
-    //   state.list_of_all_tokens &&
-    //     state.list_of_all_tokens.map((token) => {
-    //       if (token.tokenID === payload.tokenID) {
-    //         token.rarity_score = payload.rarity_score;
-    //       }
-    //     });
-    //   // console.log("Initial countOfAllAttribute ", state.countOfAllAttribute)
-    // },
-
     setRarityScoreToAttributeValue(
       state,
       { payload }: PayloadAction<RarityScoreOfValue | null>
@@ -312,9 +298,6 @@ const dataSlice = createSlice({
               token.normalized_rarity_score = token.normalized_rarity_score + payload.normalized_rarity_score;
             }
           });
-          
-          console.log("total_score", token.tokenID, token.rarity_score)
-
         });
        
     },
@@ -408,36 +391,15 @@ const dataSlice = createSlice({
                       // );
 
                       if (trait.value === payload.value) {
-                        // console.log(
-                        //   "Step 15- Value matched. Increasing count by one: from ",
-                        //   trait.count
-                        // );
                         trait.count = trait.count + 1;
-                        // console.log(
-                        //   "Step 15- Value matched. Increasing count by one: to ",
-                        //   trait.count
-                        // );
                       }
                     });
                 } else {
                   const new_trait_count = { value: payload.value, count: 1 };
-                  // console.log(
-                  //   "Step 13c- Value not matched. Adding a new element",
-                  //   new_trait_count
-                  // );
-
-                  // console.log(
-                  //   "Step 113d-  list_of_new_traits before updating ",
-                  //   JSON.stringify(countOfEachAttribute.trait_count)
-                  // );
                   countOfEachAttribute.trait_count = [
                     ...countOfEachAttribute.trait_count,
                     new_trait_count,
                   ];
-                  // console.log(
-                  //   "Step 13e-  list_of_new_traits after updating ",
-                  //   JSON.stringify(countOfEachAttribute.trait_count)
-                  // );
                   countOfEachAttribute.total_variations++;
                 }
               }
@@ -473,14 +435,23 @@ const dataSlice = createSlice({
           state.isSnipping =  {started: true, completed: true}
         }
       }
-
-
     },
 
+    reSetSnipping(state){
 
-
+      state.allAvailableAttributes= null,
+      state.list_of_all_tokens= null,
+      state.countOfAllAttribute= null,
+      state.rarityScoreOfAllValues= null,
+      state.isSnipping= {started: false, completed: false}
     
-  },
+    }
+      
+
+
+  }
+    
+
 });
   
 
@@ -489,6 +460,6 @@ const dataSlice = createSlice({
 // Extract the action creators object and the reducer
 const { actions, reducer } = dataSlice
 // Extract and export each action creator by name
-export const {  setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
+export const {  reSetSnipping, setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
 // Export the reducer, either as a default or named export
 export default reducer

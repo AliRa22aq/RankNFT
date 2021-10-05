@@ -47,7 +47,8 @@
     "use-nft": "^0.10.1",
     "web-vitals": "^1.0.1",
     "web3": "^1.5.3",
-    "yarn": "^1.22.15"
+    "yarn": "^1.22.15",
+    "yup": "^0.32.9"
   },
   "scripts": {
     "generate-types": "typechain --target=web3-v1 \"src/abis/*.json\"",
