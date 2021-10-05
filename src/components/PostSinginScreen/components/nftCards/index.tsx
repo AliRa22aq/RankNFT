@@ -198,10 +198,7 @@ const NFTCards = () => {
                               normalization = {normalization}
                               
                               />
-                            {/* // image={token.image} 
-                            // name={token.name} 
-                            // tokenID={token.tokenID} 
-                            // rarity_score={normalization ? token.normalized_rarity_score : token.rarity_score} /> */}
+
                           </Grid>
                         </div>
                       )            

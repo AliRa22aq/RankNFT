@@ -161,13 +161,3 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
 
 export default NFTCard;
 
-// interface AttributesOfEachToekn {
-//   tokenID: string
-//   attributes: Attribute[],
-//   rarity_score: number, 
-//   normalized_rarity_score: number, 
-//   image: string,
-//   title?: string
-//   description?: string,
-//   name?: string,
-// }

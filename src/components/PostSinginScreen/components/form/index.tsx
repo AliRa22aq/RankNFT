@@ -6,13 +6,11 @@ import Grid from "@mui/material/Grid";
 import { Form, Formik, Field } from "formik";
 import { TextField} from 'formik-material-ui';
 import Button from "@mui/material/Button";
-// import * as Yup from 'yup';
 const Web3 = require("web3");
 import axios from "axios";
 import CircularProgress from '@mui/material/CircularProgress';
 import { OpenSeaPort, Network} from 'opensea-js'
 import * as yup from 'yup';
-import { isMatchWithOptions } from "date-fns/fp";
 
 
 
@@ -38,10 +36,7 @@ const NFTForm = () => {
 
   const provider = new Web3.providers.HttpProvider('https://mainnet.infura.io')
 
-  const seaport = new OpenSeaPort(provider, {
-    networkName: Network.Main
-  })
-  
+
   const dispatch = useDispatch();
   const [data, setData] = useState<Data>(initialData);
   const [loading, setLoading] = useState(false);
@@ -59,21 +54,19 @@ const NFTForm = () => {
     to: yup.number().positive().moreThan(yup.ref("from"), "not a valid range ").moreThan(1, "should be more than 1").required()
   });
 
-
   
   const fetchAllTokenData = async (tokenURI: string, from: number, to: number) => {
-    // dispatch(setAvailableAttributes(null))
-    // dispatch(setInitalCountOfAllAttribute(null)) 
-    // dispatch(addTokenInList(null))
 
 
     console.log("step 1: Snipping started with URL ", tokenURI)
     try{
-      let url = tokenURI;
-      // await data.contractFunctions.methods.tokenURI(1).call();
+      let url1 = tokenURI;
+      let url = tokenURI.replace("1" , "extension");
+
+      
 
       if(url){
-        let fetchAPI =  await axios.get( url ) as any          
+        let fetchAPI =  await axios.get( url1 ) as any          
         console.log("new", fetchAPI.data.attributes)
         console.log("step 2: Fetched attributes from URL ", fetchAPI.data.attributes)
 
@@ -81,10 +74,7 @@ const NFTForm = () => {
 
           const countOfAllAttribute: CountOfEachAttribute[] | null = [];
 
-          fetchAPI.data.attributes.map((attribute: Attribute) => {
-        
-          // console.log(`step 3.${key}: Star looping over each attribute`, attribute)
-        
+          fetchAPI.data.attributes.map((attribute: Attribute) => {     
 
           const dataToDispatch: CountOfEachAttribute = {
                   trait_type :attribute.trait_type, 
@@ -104,13 +94,13 @@ const NFTForm = () => {
 
           const range = to - from + 1
 
-          console.log(`step 4: Going to start loop to get attributes of each token Range`, range)
+          // console.log(`step 4: Going to start loop to get attributes of each token Range`, range)
 
           for(var i = from;  i <= to;  i++ ) {
 
           console.log(`step 5: Star looping over each NFT attribute, TokenID`, i)
 
-              let activeURL =  url.replace("1" , String(i))
+              let activeURL =  url.replace("extension" , String(i))
               // console.log("activeURL", activeURL)
               console.log(`step 6: active URl of NFT`, i, activeURL )
 
@@ -159,11 +149,9 @@ const NFTForm = () => {
 
   const fetchData = async  ( contractAdrs : string, URl:string, setFieldValue: any ) => {
 
-
       setData(initialData)
       setNeedrange(false)
       setLoading(true)
-
 
       // TODO: Ask ben to provide Infure API Kye
       var web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/92a3eada72834b629e28ff80ba4af4d0'))  
@@ -289,7 +277,6 @@ const NFTForm = () => {
     dispatch(setIsSnipping({action: "started"})) 
 
     dispatch(setProjectRange({from: from, to: to, range: to - from + 1}))
-    // if(data?.baseTokenURI === null) return;
 
     let check;
 
