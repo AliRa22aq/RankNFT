@@ -30,6 +30,7 @@
     "countdown": "^2.6.0",
     "date-fns": "^2.24.0",
     "ethers": "^5.4.7",
+    "fast-sort": "^3.0.3",
     "formik": "^2.2.9",
     "formik-material-ui": "^4.0.0-alpha.1",
     "jsonp": "^0.2.1",

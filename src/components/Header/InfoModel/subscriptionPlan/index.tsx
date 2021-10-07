@@ -94,7 +94,7 @@ const SubscriptionCards = () => {
     }
     if (id === 3 ) {
       await ContractData.methods
-        .get_seven_days_subscription()
+        .get_one_month_subscription()
         .send({
           from: userAddress,
           value: web3.utils.toWei(prices.thrity, "ether"),

@@ -40,7 +40,7 @@ const InfoModal = () => {
           }}
         >
 
-          <Periods />
+          <Periods open={open}/>
 
           <SubscriptionCards />
         

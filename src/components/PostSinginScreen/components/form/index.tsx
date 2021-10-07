@@ -44,9 +44,9 @@ const NFTForm = () => {
   const [loading, setLoading] = useState(false);
   const [needURI, setneedURI] = useState(false);
   const [needRange, setNeedrange] = useState(false);
-  // const [countOfAllAttribute, setCountOfAllAttribute] = useState<CountOfEachAttribute[] | null>(null)
-        // let countOfAllAttribute: CountOfEachAttribute[] | null = [];
+  // const [countOfAllAttributeX, setCountOfAllAttributeX] = useState<any>("hello")
 
+  const [neww, setNeww] = useState<any>();
 
 
   let schema1 = yup.object().shape({
@@ -93,13 +93,13 @@ const NFTForm = () => {
             if(countOfAllAttribute !== null){
               countOfAllAttribute  = [...countOfAllAttribute , dataToDispatch]
             }
+
               
-            dispatch(setInitalCountOfAllAttribute(countOfAllAttribute))
-
-          })
-
             
-          console.log("countOfAllAttribute", countOfAllAttribute)
+          })
+          
+          dispatch(setInitalCountOfAllAttribute(countOfAllAttribute))
+
 
           // const range = to - from + 1
           

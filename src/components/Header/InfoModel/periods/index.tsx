@@ -11,7 +11,7 @@ interface Time {
   subscriptionTimeDistance: string;
 }
 
-const Periods = () => {
+const Periods: React.FC<{open: boolean}> = ({open}) => {
   const [whitelistTime, setWhitelistTimeTime] = useState<string>(
     "Days: 0, Hours: 0, Minutes: 0"
   );
@@ -54,7 +54,7 @@ const Periods = () => {
 
       setWhitelistTimeTime(
         whitelistTime.months?
-        `Days: ${whitelistTime.months}, Days: ${whitelistTime.days}, Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`:
+        `Months: ${whitelistTime.months}, Days: ${whitelistTime.days}, Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`:
         whitelistTime.days?
         `Days: ${whitelistTime.days}, Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`:
         `Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`
@@ -74,7 +74,7 @@ const Periods = () => {
       });
       seSubscriptionTimeTime(
         subscriptionTime.months?
-        `Days: ${subscriptionTime.months}, Days: ${subscriptionTime.days}, Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`:
+        `Months: ${subscriptionTime.months}, Days: ${subscriptionTime.days}, Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`:
         subscriptionTime.days?
         `Days: ${subscriptionTime.days}, Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`:
         `Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`
@@ -98,7 +98,7 @@ const Periods = () => {
       });
       setWhitelistTimeTime(
         whitelistTime.months?
-        `Days: ${whitelistTime.months}, Days: ${whitelistTime.days}, Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`:
+        `Months: ${whitelistTime.months}, Days: ${whitelistTime.days}, Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`:
         whitelistTime.days?
         `Days: ${whitelistTime.days}, Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`:
         `Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`
@@ -123,7 +123,7 @@ const Periods = () => {
       });
       seSubscriptionTimeTime(
         subscriptionTime.months?
-        `Days: ${subscriptionTime.months}, Days: ${subscriptionTime.days}, Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`:
+        `Months: ${subscriptionTime.months}, Days: ${subscriptionTime.days}, Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`:
         subscriptionTime.days?
         `Days: ${subscriptionTime.days}, Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`:
         `Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`
@@ -138,7 +138,7 @@ const Periods = () => {
 
   useEffect(() => {
     checkUserInfo();
-  }, []);
+  }, [open]);
 
   return (
     <div className="period-container">

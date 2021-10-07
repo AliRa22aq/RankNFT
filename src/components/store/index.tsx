@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RankNFT as RankNFTType } from '../../../types/web3-v1-contracts/RankNFT'
+import { sort } from 'fast-sort';
 
 
 export interface Attribute {
@@ -215,7 +216,7 @@ const dataSlice = createSlice({
     sortByTokenID(state) {
       console.log("Sorting start", state.list_of_all_tokens)
       if(state.list_of_all_tokens){
-        state.list_of_all_tokens = state.list_of_all_tokens.sort( (a, b) => {
+        state.list_of_all_tokens.sort( (a, b) => {
             return Number(a.tokenID) - Number(b.tokenID);
           });
       }
@@ -327,9 +328,11 @@ const dataSlice = createSlice({
 
                 // Check if value already present or not
                 const checkValue = (obj: any) => obj.value === String(payload.value);
+                const isPresent = countOfEachAttribute.trait_count.some(checkValue)
+                const isPresent2 = countOfEachAttribute.trait_count.find((elem: any) => elem.value === String(payload.value))
 
                 // Value matched, increase its count by one
-                if (countOfEachAttribute.trait_count.some(checkValue)) {
+                  if (isPresent2) {
                   countOfEachAttribute.trait_count &&
                     countOfEachAttribute.trait_count.map((trait) => {
                       if (trait.value === payload.value) {
