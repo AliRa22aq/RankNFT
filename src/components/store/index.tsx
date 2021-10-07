@@ -12,7 +12,7 @@ export interface Attribute {
 export interface AttributesOfEachToekn {
   tokenID: string
   attributes: Attribute[],
-  opensea_data: any
+  opensea_data?: any
   rarity_score: number, 
   normalized_rarity_score: number, 
   image: string,
@@ -38,12 +38,6 @@ export interface RarityScoreOfValue {
   normalized_rarity_score: number ,
 }
 
-// Idea
-// export interface RarityScoreOfValue {
-//   normal: {value :string, rarity_score: number},
-//   normalized: {value :string, rarity_score: number}
-// }
-
 
 interface Range {
   from: number, to: number, range: number
@@ -58,6 +52,7 @@ export interface ProjectInfo {
   }
 
 export interface Loading {
+  requested: boolean,
   started: boolean,
   completed: boolean
 }
@@ -111,8 +106,8 @@ const initialState: DataType = {
     countOfAllAttribute: null,
     projectInfo: null,
     rarityScoreOfAllValues: null,
-    loading_contractData: {started: false, completed: false},
-    isSnipping: {started: false, completed: false},
+    loading_contractData: {requested: false, started: false, completed: false},
+    isSnipping: {requested: false, started: false, completed: false},
 
 
 }
@@ -247,16 +242,16 @@ const dataSlice = createSlice({
 
     addTokenInList(
       state,
-      { payload }: PayloadAction<AttributesOfEachToekn | null>
+      { payload }: PayloadAction<AttributesOfEachToekn[] | null>
     ) {
       // console.log("payload added ", payload)
       if (payload === null) {
         state.list_of_all_tokens = null;
       } else {
         if (state.list_of_all_tokens !== null) {
-          state.list_of_all_tokens = [...state.list_of_all_tokens, payload];
+          state.list_of_all_tokens = [...state.list_of_all_tokens, ...payload];
         } else {
-          state.list_of_all_tokens = [payload];
+          state.list_of_all_tokens = payload;
         }
       }
     },
@@ -303,98 +298,48 @@ const dataSlice = createSlice({
     },
 
 
-    setInitalCountOfAllAttribute(
-      state,
-      { payload }: PayloadAction<CountOfEachAttribute[] | null>
-    ) {
-      // console.log("payload added ", payload)
+    setInitalCountOfAllAttribute( state, { payload }: PayloadAction<CountOfEachAttribute[] | null> ) {
       if (payload === null) {
         state.countOfAllAttribute = null;
       } else {
         state.countOfAllAttribute = payload;
       }
-      // console.log("Initial countOfAllAttribute ", state.countOfAllAttribute)
     },
 
     setCountOfAllAttribute(state, { payload }: PayloadAction<Attribute>) {
-      // console.log("Step 1- payload added ", payload);
-
-      // console.log(
-      //   "Step 2- Check if countOfAllAttribute in not null",
-      //   state.countOfAllAttribute !== null
-      // );
 
       if (state.countOfAllAttribute !== null) {
-        // console.log("Step 3- Not null. Entered with the payload", payload);
-
-        // console.log(
-        //   "Step 4- Start mapping on each element of countOfAllAttributes"
-        // );
-
         state.countOfAllAttribute.map(
           (countOfEachAttribute: CountOfEachAttribute) => {
-            // console.log(
-            //   "Step 5- Entered in mapping with the element: ",
-            //   JSON.stringify(countOfEachAttribute)
-            // );
 
-            // console.log(
-            //   "Step 6- Checking if payload-trait-type matched with element-trait-type: ",
-            //   countOfEachAttribute.trait_type
-            // );
-
+            // Find the trait type
             if (countOfEachAttribute.trait_type === payload.trait_type) {
-              // console.log("Step 7- Matched");
 
-              // console.log(
-              //   "Step 8- Check if element-trait-count array is empty"
-              // );
-
+              // initiate the trait count array to store all the trait values and add first trait value
               if (countOfEachAttribute.trait_count === null) {
-                // console.log("Step 9- Empty");
                 const new_trait_count = { value: payload.value, count: 1 };
                 countOfEachAttribute.trait_count = [new_trait_count];
                 countOfEachAttribute.total_variations++;
-                // console.log(
-                //   "Step 10a- new trait value added in element trait count list ",
-                //   JSON.stringify(new_trait_count)
-                // );
-                // console.log(
-                //   "Step 10b- trait count list updated ",
-                //   JSON.stringify(countOfEachAttribute.trait_count)
-                // );
-              } else {
-                // console.log("Step 11- Not Empty");
+              } 
 
-                const checkValue = (obj: any) =>
-                  obj.value === String(payload.value);
-                // console.log(
-                //   "Step 13- Already exist? ",
-                //   countOfEachAttribute.trait_count.some(checkValue)
-                // );
+              // Trait array already existed. 
+              else {
 
+                // Check if value already present or not
+                const checkValue = (obj: any) => obj.value === String(payload.value);
+
+                // Value matched, increase its count by one
                 if (countOfEachAttribute.trait_count.some(checkValue)) {
                   countOfEachAttribute.trait_count &&
                     countOfEachAttribute.trait_count.map((trait) => {
-                      // console.log(
-                      //   "Step 12- Star looping over the list of trait-counts to see if any matches"
-                      // );
-
-                      // console.log(
-                      //   "Step 13a- Entered in element's trait-count list with element ",
-                      //   JSON.stringify(trait)
-                      // );
-
-                      // console.log(
-                      //   "Step 13b- checking if any element trait-count list matched with payload value ",
-                      //   payload.value
-                      // );
-
                       if (trait.value === payload.value) {
-                        trait.count = trait.count + 1;
+                        trait.count++;
                       }
                     });
-                } else {
+                } 
+
+                // Value doesn't match, add a new entry and increase the count of variations by one
+                else {
                   const new_trait_count = { value: payload.value, count: 1 };
                   countOfEachAttribute.trait_count = [
                     ...countOfEachAttribute.trait_count,
@@ -421,18 +366,22 @@ const dataSlice = createSlice({
 
     },
 
-    setIsSnipping(state, {payload}: PayloadAction<{action: "started"|"completed"| null}>){
+    setIsSnipping(state, {payload}: PayloadAction<{action: "requested"|"started"|"completed"| null}>){
 
       if(payload.action === null){
-        state.isSnipping =  {started: false, completed: false}
+        state.isSnipping =  {requested: false, started: false, completed: false}
       }
       else {
+        if(payload.action === "requested"){
+          state.isSnipping =  {requested: true, started: false, completed: false}
+        }
+
         if(payload.action === "started"){
-          state.isSnipping =  {started: true, completed: false}
+          state.isSnipping =  {requested: true, started: true, completed: false}
         }
   
         if(payload.action === "completed"){
-          state.isSnipping =  {started: true, completed: true}
+          state.isSnipping =  {requested: true, started: true, completed: true}
         }
       }
     },
@@ -443,7 +392,7 @@ const dataSlice = createSlice({
       state.list_of_all_tokens= null,
       state.countOfAllAttribute= null,
       state.rarityScoreOfAllValues= null,
-      state.isSnipping= {started: false, completed: false}
+      state.isSnipping= { requested: false, started: false, completed: false }
     
     }
       

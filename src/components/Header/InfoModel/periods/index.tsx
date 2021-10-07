@@ -49,8 +49,15 @@ const Periods = () => {
         start: new Date(Date.now()),
         end: new Date(Number(whitelistingPeriod) * 1000),
       });
+
+      console.log("whitelistTime", whitelistTime)
+
       setWhitelistTimeTime(
-        `Days: ${whitelistTime.days}, Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`
+        whitelistTime.months?
+        `Days: ${whitelistTime.months}, Days: ${whitelistTime.days}, Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`:
+        whitelistTime.days?
+        `Days: ${whitelistTime.days}, Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`:
+        `Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`
       );
     }
 
@@ -66,8 +73,14 @@ const Periods = () => {
         end: new Date(Number(SubscriptionPeriod) * 1000),
       });
       seSubscriptionTimeTime(
-        `Days: ${subscriptionTime.days}, Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`
+        subscriptionTime.months?
+        `Days: ${subscriptionTime.months}, Days: ${subscriptionTime.days}, Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`:
+        subscriptionTime.days?
+        `Days: ${subscriptionTime.days}, Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`:
+        `Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`
       );
+      console.log("subscriptionTime", subscriptionTime)
+
     }
   };
 
@@ -84,7 +97,11 @@ const Periods = () => {
         end: new Date(Number(whitelistPeriod) * 1000),
       });
       setWhitelistTimeTime(
-        `Days: ${whitelistTime.days}, Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`
+        whitelistTime.months?
+        `Days: ${whitelistTime.months}, Days: ${whitelistTime.days}, Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`:
+        whitelistTime.days?
+        `Days: ${whitelistTime.days}, Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`:
+        `Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`
       );
     } else {
       setTime((pre) => {
@@ -105,7 +122,11 @@ const Periods = () => {
         end: new Date(Number(subscriptionPeriod) * 1000),
       });
       seSubscriptionTimeTime(
-        `Days: ${subscriptionTime.days}, Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`
+        subscriptionTime.months?
+        `Days: ${subscriptionTime.months}, Days: ${subscriptionTime.days}, Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`:
+        subscriptionTime.days?
+        `Days: ${subscriptionTime.days}, Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`:
+        `Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`
       );
     } else {
       setTime((pre) => {

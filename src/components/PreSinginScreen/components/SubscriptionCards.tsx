@@ -18,7 +18,7 @@ const SubscriptionCards = () => {
   const dispatch = useDispatch();
 
   const initialPrices: Prices = {
-    one : "1",
+    one : "0.2",
     seven : "1",
     thrity : "1",
     oneEighty : "1"

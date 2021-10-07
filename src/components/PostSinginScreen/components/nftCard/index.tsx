@@ -34,8 +34,6 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
 
   const onSale = token?.opensea_data?.sell_orders && token?.opensea_data?.sell_orders[0]? true:false; 
 
-
-
   return (
     <div>
     <Card sx={{ height: 300, width: 200 }} onClick={handleOpen}>

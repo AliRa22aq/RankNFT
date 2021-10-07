@@ -37,8 +37,8 @@ const NFTCards = () => {
   const { isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
   
   
-  console.log("list_of_all_tokens", list_of_all_tokens)
-  console.log("rarityScoreOfAllValues",  rarityScoreOfAllValues)
+  // console.log("list_of_all_tokens", list_of_all_tokens)
+  // console.log("rarityScoreOfAllValues",  rarityScoreOfAllValues)
 
   
 
@@ -116,7 +116,7 @@ const NFTCards = () => {
   };
 
   const numberOfItems = list_of_all_tokens && list_of_all_tokens.length | 0;
-  const numberPerPage = 20
+  const numberPerPage = 32
   const numberOfPages = Math.ceil(numberOfItems/numberPerPage)
 
   const handleInputLength = () => {
@@ -143,7 +143,7 @@ const NFTCards = () => {
       set_list_of_NFTs_for_currentPage(null)
       handlePage(0,1)
     }
-  }, [list_of_all_tokens])
+  }, [isSnipping.requested])
 
 
 
@@ -220,7 +220,7 @@ const NFTCards = () => {
 
           <div className="before-NFT-Secreen">
               {
-                 !isSnipping.started  && !isSnipping.completed ? 
+                  !isSnipping.requested && !isSnipping.started  && !isSnipping.completed ? 
                  <div className="before-NFT-welcome-Secreen"> 
 
                    <div className="before-NFT-welcome-Secreen-text1">
@@ -242,7 +242,9 @@ const NFTCards = () => {
 
                  </div>
                   : 
-                 isSnipping.started  && !isSnipping.completed ? 
+                  isSnipping.requested && !isSnipping.started  && !isSnipping.completed ? 
+                  <div> Wait we are fetching data </div> :                 
+                  isSnipping.started  && !isSnipping.completed ? 
                  <div>
                    <RarityReport /> 
                 </div>                 

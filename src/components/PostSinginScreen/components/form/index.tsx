@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import "./style.css";
 import { useDispatch, useSelector } from 'react-redux';
-import { reSetSnipping, setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress, setAvailableAttributes, CountOfEachAttribute, addTokenInList, AttributesOfEachToekn } from '../../../store';
+import { TraitCount, reSetSnipping, setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress, setAvailableAttributes, CountOfEachAttribute, addTokenInList, AttributesOfEachToekn } from '../../../store';
 import Grid from "@mui/material/Grid";
 import { Form, Formik, Field } from "formik";
 import { TextField} from 'formik-material-ui';
@@ -9,8 +9,10 @@ import Button from "@mui/material/Button";
 const Web3 = require("web3");
 import axios from "axios";
 import CircularProgress from '@mui/material/CircularProgress';
-import { OpenSeaPort, Network} from 'opensea-js'
+// import { OpenSeaPort, Network} from 'opensea-js'
 import * as yup from 'yup';
+import async  from "async";
+// import parallel from 'async/parallel';
 
 
 
@@ -42,6 +44,9 @@ const NFTForm = () => {
   const [loading, setLoading] = useState(false);
   const [needURI, setneedURI] = useState(false);
   const [needRange, setNeedrange] = useState(false);
+  // const [countOfAllAttribute, setCountOfAllAttribute] = useState<CountOfEachAttribute[] | null>(null)
+        // let countOfAllAttribute: CountOfEachAttribute[] | null = [];
+
 
 
   let schema1 = yup.object().shape({
@@ -63,82 +68,118 @@ const NFTForm = () => {
       let url1 = tokenURI;
       let url = tokenURI.replace("1" , "extension");
 
-      
-
       if(url){
         let fetchAPI =  await axios.get( url1 ) as any          
         console.log("new", fetchAPI.data.attributes)
         console.log("step 2: Fetched attributes from URL ", fetchAPI.data.attributes)
+        
+        var countOfAllAttribute: CountOfEachAttribute[] | null = [];
 
         if(fetchAPI){
-
-          const countOfAllAttribute: CountOfEachAttribute[] | null = [];
+          
 
           fetchAPI.data.attributes.map((attribute: Attribute) => {     
 
-          const dataToDispatch: CountOfEachAttribute = {
+          var dataToDispatch: CountOfEachAttribute = {
                   trait_type :attribute.trait_type, 
                   trait_count: null,
                   total_variations: 0
             }
             dispatch(setAvailableAttributes(dataToDispatch as CountOfEachAttribute))
             
-            if(dataToDispatch){
-              countOfAllAttribute.push(dataToDispatch)
+            if(countOfAllAttribute === null){
+              countOfAllAttribute  = [dataToDispatch]
             }
+            if(countOfAllAttribute !== null){
+              countOfAllAttribute  = [...countOfAllAttribute , dataToDispatch]
+            }
+              
+            dispatch(setInitalCountOfAllAttribute(countOfAllAttribute))
+
           })
-          if(countOfAllAttribute){
-            dispatch(setInitalCountOfAllAttribute(countOfAllAttribute as CountOfEachAttribute[])) 
+
+            
+          console.log("countOfAllAttribute", countOfAllAttribute)
+
+          // const range = to - from + 1
+          
+          
+          const requests:any = [];
+          // let requests2:any = [];
+
+          for(var i = from;  i <= to;  i=i+1) {
+                     
+            // const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}`
+            // let opensea_api_res =  await axios.get( opensea_api ) as any
+            // // console.log("opensea_api_res", opensea_api_res.data.assets[0])  
+
+            let activeURL =  url.replace("extension" , String(i))
+            console.log(`step 6: active URl of NFT`, i, activeURL )
+            let API =  axios.get( activeURL ) as any  
+            requests.push(API);      
+            
+            dispatch(setIsSnipping({action: "started"})) 
+            
           }
+          
 
 
-          const range = to - from + 1
 
-          // console.log(`step 4: Going to start loop to get attributes of each token Range`, range)
+          let allTokens: any=[]
+         
+            axios.all(requests).then(axios.spread((...responses) => {
 
-          for(var i = from;  i <= to;  i++ ) {
+                async.parallel([
+                async function(){
+                  responses.slice(0,999).map((activefetchAPI:any, key:number)=>{
+                  console.log(activefetchAPI.data)
+                  const newToken=
+                  {
+                    tokenID: String(key+1), 
+                    attributes: activefetchAPI.data.attributes,
+                    // opensea_data: opensea_api_res.data.assets[0],
+                    rarity_score: 0,
+                    normalized_rarity_score: 0,
+                    image: activefetchAPI.data.image,
+                    title: activefetchAPI.data.title? activefetchAPI.data.title: "" ,
+                    name: activefetchAPI.data.name? activefetchAPI.data.name: "" 
+                  }
 
-          console.log(`step 5: Star looping over each NFT attribute, TokenID`, i)
+                  allTokens.push(newToken)
 
-              let activeURL =  url.replace("extension" , String(i))
-              // console.log("activeURL", activeURL)
-              console.log(`step 6: active URl of NFT`, i, activeURL )
-
-
-              const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}`
-              let opensea_api_res =  await axios.get( opensea_api ) as any
-              console.log("opensea_api_res", opensea_api_res.data.assets[0])  
-
-              // console.log(`step 7: Response from opensea`, i, opensea_api_res.data.assets[0] )
-
-              let activefetchAPI =  await axios.get( activeURL ) as any          
-              console.log(`step 7: Response from axios`, i, activefetchAPI.data )
-
-
-              dispatch(addTokenInList({
-                tokenID: String(i), 
-                attributes: activefetchAPI.data.attributes,
-                opensea_data: opensea_api_res.data.assets[0],
-                rarity_score: 0,
-                normalized_rarity_score: 0,
-                image: activefetchAPI.data.image,
-                title: activefetchAPI.data.title? activefetchAPI.data.title: "" ,
-                name: activefetchAPI.data.name? activefetchAPI.data.name: "" 
-
-
-              } as AttributesOfEachToekn))
-              activefetchAPI.data.attributes.map((attribute: Attribute)=> {
+                  activefetchAPI.data.attributes.map((attribute: Attribute)=> {
                         dispatch(setCountOfAllAttribute(attribute));
-              })
-          }
+                  }) 
+
+                })
+              },
+
+              ], (err:any) => {
+                if(err){
+                  console.error(err);
+                }
+                console.log("allTokens",allTokens)
+              });
+
+
+
+
+              
+              
+              dispatch(addTokenInList(allTokens as AttributesOfEachToekn[]))
+              // dispatch(setCountOfAllAttribute(countOfAllAttribute as CountOfEachAttribute[]));
+              dispatch(setIsSnipping({action: "completed"}))    
+              
+              
+
+              // responses.map((res: any) => {
+              //   console.log(res.data)
+              // })
+            }))
 
         }
-        
-      }
-        dispatch(setIsSnipping({action: "completed"}))
-      // dispatch(setLoadingNFTs(false))
-
     }
+  }
     catch(e) { 
       alert("Unable to fetch information. Make sure you have installed and enabled Moesif CORS extention")
       // dispatch(setLoadingNFTs(false)
@@ -158,9 +199,7 @@ const NFTForm = () => {
 
       const uri = `https://api.etherscan.io/api?module=contract&action=getabi&address=${contractAdrs}&apikey=WKEB4C6A8MPPIYF5699I3A1ZEII57MXG2A`
       const abii = await fetch(uri)
-      console.log("EH: 1", abii)
       const abi = await abii.json()   
-      console.log("EH: 2", abi)
         
       
       if(abi.result === 'Contract source code not verified' || abi.message=== "NOTOK" || abi.status === "0"){
@@ -274,7 +313,8 @@ const NFTForm = () => {
   const startSnipping = async (from: number, to: number) => {
     dispatch(reSetSnipping()) 
     dispatch(setLoadingNFTs(false))
-    dispatch(setIsSnipping({action: "started"})) 
+    dispatch(setIsSnipping({action: "requested"}))    
+
 
     dispatch(setProjectRange({from: from, to: to, range: to - from + 1}))
 
@@ -300,7 +340,7 @@ const NFTForm = () => {
 
     <div className="form-container" >
 
-    <Formik initialValues={{ address: '0x06012c8cf97bead5deae237070f9587f8e7a266d', uri: '' }}
+    <Formik initialValues={{ address: '0xc1a1e381389cb927f1d57511e144b644ef0c6385', uri: '' }}
             validationSchema={schema1} 
             onSubmit={async (values, { setSubmitting, setFieldValue  }) => {
             
