@@ -11,6 +11,7 @@ interface Data {
   days: string,
   price: string,
   day: string,
+  status: "enabled"|"disabled"
 }
 
 interface Props {
@@ -26,24 +27,32 @@ let subscriptionData: Data[] = [
     days: "One Day",
     price: "0.03",
     day: "1 day",
+    status: "enabled"
+
   },
   {
     id: 2,
     days: "Seven Days",
     price: "0.06",
     day: "7 days",
+    status: "disabled"
+
   },
   {
     id: 3,
     days: "One Month",
     price: "0.15",
     day: "30 days",
+    status: "enabled"
+
   },
   {
     id: 4,
     days: "Six Months",
     price: "0.7",
     day: "180 days",
+    status: "disabled"
+
   },
 ];
 
@@ -71,11 +80,11 @@ const SubscriptionCard: FC<Props> = ({price, index,  buySubscription}) => {
 
         <CardActions style={{alignContent: "center", justifyContent: "center"}}>
           <Button 
-            disabled = {subscriptionData[index].id === 1 || subscriptionData[index].id === 3 ? false:true}
+            disabled = { subscriptionData[index].status === "enabled" ? false:true}
             onClick={() => buySubscription(subscriptionData[index].id)} 
             variant="contained">
               {
-                subscriptionData[index].id === 1 || subscriptionData[index].id === 3 ?
+                subscriptionData[index].status === "enabled" ?
                 "Buy" :
                 "Coming Soon"
               }

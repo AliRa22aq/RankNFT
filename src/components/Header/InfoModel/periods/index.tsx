@@ -60,6 +60,12 @@ const Periods: React.FC<{open: boolean}> = ({open}) => {
         `Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`
       );
     }
+    else {
+          setTime((pre) => {
+            return { ...pre, whitelistTimeDistance: "0" };
+          });
+          setWhitelistTimeTime("Days: 0, Hours: 0, Minutes: 0");
+        }
 
     if (SubscriptionPeriod * 1000 > Date.now()) {
       const subscriptionTimeDistance = formatDistanceToNow(
@@ -80,61 +86,66 @@ const Periods: React.FC<{open: boolean}> = ({open}) => {
         `Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`
       );
       console.log("subscriptionTime", subscriptionTime)
-
     }
+    else {
+        setTime((pre) => {
+          return { ...pre, subscriptionTimeDistance: "0" };
+        });
+        seSubscriptionTimeTime("Days: 0, Hours: 0, Minutes: 0");
+      }
   };
 
-  setInterval(() => {
-    if (whitelistPeriod * 1000 > Date.now()) {
-      const whitelistTimeDistance = formatDistanceToNow(
-        new Date(Number(whitelistPeriod) * 1000)
-      );
-      setTime((pre) => {
-        return { ...pre, whitelistTimeDistance: whitelistTimeDistance };
-      });
-      const whitelistTime = intervalToDuration({
-        start: new Date(Date.now()),
-        end: new Date(Number(whitelistPeriod) * 1000),
-      });
-      setWhitelistTimeTime(
-        whitelistTime.months?
-        `Months: ${whitelistTime.months}, Days: ${whitelistTime.days}, Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`:
-        whitelistTime.days?
-        `Days: ${whitelistTime.days}, Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`:
-        `Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`
-      );
-    } else {
-      setTime((pre) => {
-        return { ...pre, whitelistTimeDistance: "0" };
-      });
-      setWhitelistTimeTime("Days: 0, Hours: 0, Minutes: 0");
-    }
+  // setInterval(() => {
+  //   if (whitelistPeriod * 1000 > Date.now()) {
+  //     const whitelistTimeDistance = formatDistanceToNow(
+  //       new Date(Number(whitelistPeriod) * 1000)
+  //     );
+  //     setTime((pre) => {
+  //       return { ...pre, whitelistTimeDistance: whitelistTimeDistance };
+  //     });
+  //     const whitelistTime = intervalToDuration({
+  //       start: new Date(Date.now()),
+  //       end: new Date(Number(whitelistPeriod) * 1000),
+  //     });
+  //     setWhitelistTimeTime(
+  //       whitelistTime.months?
+  //       `Months: ${whitelistTime.months}, Days: ${whitelistTime.days}, Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`:
+  //       whitelistTime.days?
+  //       `Days: ${whitelistTime.days}, Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`:
+  //       `Hours: ${whitelistTime.hours}, Minutes: ${whitelistTime.minutes}`
+  //     );
+  //   } else {
+  //     setTime((pre) => {
+  //       return { ...pre, whitelistTimeDistance: "0" };
+  //     });
+  //     setWhitelistTimeTime("Days: 0, Hours: 0, Minutes: 0");
+  //   }
 
-    if (subscriptionPeriod * 1000 > Date.now()) {
-      const subscriptionTimeDistance = formatDistanceToNow(
-        new Date(Number(subscriptionPeriod) * 1000)
-      );
-      setTime((pre) => {
-        return { ...pre, subscriptionTimeDistance: subscriptionTimeDistance };
-      });
-      const subscriptionTime = intervalToDuration({
-        start: new Date(Date.now()),
-        end: new Date(Number(subscriptionPeriod) * 1000),
-      });
-      seSubscriptionTimeTime(
-        subscriptionTime.months?
-        `Months: ${subscriptionTime.months}, Days: ${subscriptionTime.days}, Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`:
-        subscriptionTime.days?
-        `Days: ${subscriptionTime.days}, Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`:
-        `Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`
-      );
-    } else {
-      setTime((pre) => {
-        return { ...pre, subscriptionTimeDistance: "0" };
-      });
-      seSubscriptionTimeTime("Days: 0, Hours: 0, Minutes: 0");
-    }
-  }, 1000 * 60);
+  //   if (subscriptionPeriod * 1000 > Date.now()) {
+  //     const subscriptionTimeDistance = formatDistanceToNow(
+  //       new Date(Number(subscriptionPeriod) * 1000)
+  //     );
+  //     setTime((pre) => {
+  //       return { ...pre, subscriptionTimeDistance: subscriptionTimeDistance };
+  //     });
+  //     const subscriptionTime = intervalToDuration({
+  //       start: new Date(Date.now()),
+  //       end: new Date(Number(subscriptionPeriod) * 1000),
+  //     });
+  //     seSubscriptionTimeTime(
+  //       subscriptionTime.months?
+  //       `Months: ${subscriptionTime.months}, Days: ${subscriptionTime.days}, Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`:
+  //       subscriptionTime.days?
+  //       `Days: ${subscriptionTime.days}, Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`:
+  //       `Hours: ${subscriptionTime.hours}, Minutes: ${subscriptionTime.minutes}`
+  //     );
+  //   } else {
+  //     setTime((pre) => {
+  //       return { ...pre, subscriptionTimeDistance: "0" };
+  //     });
+  //     seSubscriptionTimeTime("Days: 0, Hours: 0, Minutes: 0");
+  //   }
+  // }, 1000 * 60);
 
   useEffect(() => {
     checkUserInfo();
