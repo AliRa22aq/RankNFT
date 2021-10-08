@@ -44,6 +44,10 @@ const NFTForm = () => {
   const [loading, setLoading] = useState(false);
   const [needURI, setneedURI] = useState(false);
   const [needRange, setNeedrange] = useState(false);
+  // const [countOfAllAttributeLocal, setCountOfAllAttributeLocal] = useState<CountOfEachAttribute[] | null>(null);
+  
+  // console.log("countOfAllAttributeLocal", countOfAllAttributeLocal)
+   
 
 
   let schema1 = yup.object().shape({
@@ -70,14 +74,14 @@ const NFTForm = () => {
         console.log("new", fetchAPI.data.attributes)
         console.log("step 2: Fetched attributes from URL ", fetchAPI.data.attributes)
         
-        var countOfAllAttribute: CountOfEachAttribute[] | null = [];
-
+        let countOfAllAttribute: CountOfEachAttribute[] | null = [];
+        
         if(fetchAPI){
           
 
           fetchAPI.data.attributes.map((attribute: Attribute) => {
 
-          var dataToDispatch: CountOfEachAttribute = {
+            var dataToDispatch: CountOfEachAttribute = {
                   trait_type :attribute.trait_type, 
                   trait_count: null,
                   total_variations: 0
@@ -90,35 +94,103 @@ const NFTForm = () => {
             if(countOfAllAttribute !== null){
               countOfAllAttribute  = [...countOfAllAttribute , dataToDispatch]
             }
-
-              
             
-          })
+            })
           
           dispatch(setInitalCountOfAllAttribute(countOfAllAttribute))
+          // setCountOfAllAttributeLocal(countOfAllAttribute)
 
+          const setCountOfAllAttributeLocally = (attributeList : Attribute[]) => {
+            let updatedCountOfAll:CountOfEachAttribute[];
+            let updatedCountOfEach:CountOfEachAttribute;
+            let index: number = 0;
+        
+            if(countOfAllAttribute !== null) {
 
-          // const fetchingData = (activefetchAPI : any, key: number) => {
+            console.log("Functions started", countOfAllAttribute)
 
-          //   console.log(activefetchAPI.data)
+            countOfAllAttribute?.forEach(
+                (countOfEach: CountOfEachAttribute) => {
+        
+                  attributeList.map((attribute: Attribute) => {
+                  
+                  if(countOfAllAttribute){
+                    index = countOfAllAttribute.findIndex((obj) => obj.trait_type == attribute.trait_type) | 0;
+                  }
+                    
+                  // Find the trait type
+                    if (countOfEach.trait_type === attribute.trait_type) {
+        
+                      // initiate the trait count array to store all the trait values and add first trait value
+                      if (countOfEach.trait_count === null) {
+        
+                        const new_trait_count = { value: attribute.value, count: 1 };
+                        updatedCountOfEach = {
+                          trait_type: attribute.trait_type,
+                          trait_count: [new_trait_count],
+                          total_variations: 1
+                        }
 
-          //   const newToken: any = {
-          //     tokenID: String(key+1), 
-          //     attributes: activefetchAPI.data.attributes,
-          //     // opensea_data: opensea_api_res.data.assets[0],
-          //     rarity_score: 0,
-          //     normalized_rarity_score: 0,
-          //     image: activefetchAPI.data.image,
-          //     title: activefetchAPI.data.title? activefetchAPI.data.title: "" ,
-          //     name: activefetchAPI.data.name? activefetchAPI.data.name: "" 
-          //   }
+                        if(countOfAllAttribute){
+                          // countOfAllAttribute = [
+                          //     ...countOfAllAttribute,
+                               countOfAllAttribute[index] = updatedCountOfEach
+                            // ]
 
-          //   allTokens = [...allTokens , newToken]
+                            console.log(countOfAllAttribute)
+                        }
 
-          //   // activefetchAPI.data.attributes.map((attribute: Attribute)=> {
-          //         // dispatch(setCountOfAllAttribute(attribute));
-          //   // }) 
-          // }
+                      } 
+
+        
+                      // Trait array already existed. 
+                      // else {
+                      //   // Check if value already present or not
+                      //   const checkValue = (obj: any) => obj.value === String(attribute.value);
+                      //   const isPresent = countOfEach.trait_count.some(checkValue)
+                      //   // const isPresent2 = countOfEachAttribute.trait_count.find((elem: any) => elem.value === String(payload.value))
+        
+                      //   // Value matched, increase its count by one
+                      //     if (isPresent) {
+                      //         countOfEach.trait_count.forEach((trait) =>{
+                      //           if (trait.value === attribute.value) {
+                      //               trait.count++;
+                      //           }
+                      //       })
+                      //      } 
+        
+                      //   // // Value doesn't match, add a new entry and increase the count of variations by one
+                      //     else {
+                      //       const new_trait_count = { value: attribute.value, count: 1 };
+                      //       countOfEach.trait_count = [
+                      //         ...countOfEach.trait_count,
+                      //         new_trait_count,
+                      //       ];
+                      //       countOfEach.total_variations++;
+                      //     }
+        
+                      // }
+        
+        
+                    }
+        
+                  })
+        
+                }
+        
+            )
+            
+
+        
+        
+        
+        
+            }
+            
+          }
+        
+        
+
 
           let allTokens: any = [];
           let requests:any = [];
@@ -165,9 +237,9 @@ const NFTForm = () => {
                   console.log("allTokens one by one", allTokens)
 
                   dispatch(setCountOfAllAttribute(activefetchAPI.data.attributes as Attribute[]));
-                  // activefetchAPI.data.attributes.map((attribute: Attribute)=> {
-                  // }) 
-              })
+                  // setCountOfAllAttributeLocally(activefetchAPI.data.attributes as Attribute[])
+
+                })
               console.log("allTokens", allTokens) 
               dispatch(addTokenInList(allTokens as AttributesOfEachToekn[]))
             },

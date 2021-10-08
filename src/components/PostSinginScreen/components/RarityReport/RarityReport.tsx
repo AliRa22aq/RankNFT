@@ -1,4 +1,4 @@
-import React from "react"
+import React, {useEffect} from "react"
 import "./styles.css"
 import { useSelector, useDispatch } from 'react-redux';
 import { CountOfEachAttribute } from '../../../store';
@@ -11,6 +11,10 @@ import LinearProgress from '@mui/material/LinearProgress';
 
 const RarityReport = () => {
     const { countOfAllAttribute } = useSelector((state: any) => state);
+
+    // useEffect(()=> {
+
+    // }, [countOfAllAttribute])
 
     return(
         <div className="Loading-NFTs-Data-container">
