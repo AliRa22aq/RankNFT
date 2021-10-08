@@ -58,8 +58,6 @@ let subscriptionData: Data[] = [
 
 const SubscriptionCard: FC<Props> = ({price, index,  buySubscription}) => {
 
-// console.log(subscriptionData)
-
 
   return (
     <Box sx={{ minWidth: 275 }}>

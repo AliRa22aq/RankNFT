@@ -12,6 +12,7 @@ interface Time {
 }
 
 const Periods: React.FC<{open: boolean}> = ({open}) => {
+
   const [whitelistTime, setWhitelistTimeTime] = useState<string>(
     "Days: 0, Hours: 0, Minutes: 0"
   );
@@ -165,26 +166,28 @@ const Periods: React.FC<{open: boolean}> = ({open}) => {
             <Grid
               container
               style={{
-                width: "80%",
+                width: "100%",
                 justifyContent: "center",
                 alignItems: "center",
                 margin: "10px",
               }}
             >
               <Grid item xs={6}>
+              <div className="periods">
                 Remaining whiteListing period : {time.whitelistTimeDistance}{" "}
                 <br />
                 {whitelistTime}
+              </div>
               </Grid>
 
-              <br />
-              <br />
-
               <Grid item xs={6}>
+              <div className="periods">
                 Remaining subscription period: {time.subscriptionTimeDistance}{" "}
                 <br />
                 {subscriptionTime}
+              </ div>
               </Grid>
+
             </Grid>
           )}
         </Grid>

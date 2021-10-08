@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import "./style.css";
 import { useDispatch, useSelector } from 'react-redux';
-import { TraitCount, reSetSnipping, setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress, setAvailableAttributes, CountOfEachAttribute, addTokenInList, AttributesOfEachToekn } from '../../../store';
+import { setOpenseaData, TraitCount, reSetSnipping, setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress, setAvailableAttributes, CountOfEachAttribute, addTokenInList, AttributesOfEachToekn } from '../../../store';
 import Grid from "@mui/material/Grid";
 import { Form, Formik, Field } from "formik";
 import { TextField} from 'formik-material-ui';
@@ -44,9 +44,6 @@ const NFTForm = () => {
   const [loading, setLoading] = useState(false);
   const [needURI, setneedURI] = useState(false);
   const [needRange, setNeedrange] = useState(false);
-  // const [countOfAllAttributeX, setCountOfAllAttributeX] = useState<any>("hello")
-
-  const [neww, setNeww] = useState<any>();
 
 
   let schema1 = yup.object().shape({
@@ -78,7 +75,7 @@ const NFTForm = () => {
         if(fetchAPI){
           
 
-          fetchAPI.data.attributes.map((attribute: Attribute) => {     
+          fetchAPI.data.attributes.map((attribute: Attribute) => {
 
           var dataToDispatch: CountOfEachAttribute = {
                   trait_type :attribute.trait_type, 
@@ -101,85 +98,99 @@ const NFTForm = () => {
           dispatch(setInitalCountOfAllAttribute(countOfAllAttribute))
 
 
-          // const range = to - from + 1
-          
-          
-          const requests:any = [];
-          // let requests2:any = [];
+          // const fetchingData = (activefetchAPI : any, key: number) => {
 
+          //   console.log(activefetchAPI.data)
+
+          //   const newToken: any = {
+          //     tokenID: String(key+1), 
+          //     attributes: activefetchAPI.data.attributes,
+          //     // opensea_data: opensea_api_res.data.assets[0],
+          //     rarity_score: 0,
+          //     normalized_rarity_score: 0,
+          //     image: activefetchAPI.data.image,
+          //     title: activefetchAPI.data.title? activefetchAPI.data.title: "" ,
+          //     name: activefetchAPI.data.name? activefetchAPI.data.name: "" 
+          //   }
+
+          //   allTokens = [...allTokens , newToken]
+
+          //   // activefetchAPI.data.attributes.map((attribute: Attribute)=> {
+          //         // dispatch(setCountOfAllAttribute(attribute));
+          //   // }) 
+          // }
+
+          let allTokens: any = [];
+          let requests:any = [];
+          let request2: any = [];
+
+          dispatch(setIsSnipping({action: "started"}))
+
+
+          //for 1000 or less FTs
           for(var i = from;  i <= to;  i=i+1) {
-                     
-            // const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}`
-            // let opensea_api_res =  await axios.get( opensea_api ) as any
-            // // console.log("opensea_api_res", opensea_api_res.data.assets[0])  
-
             let activeURL =  url.replace("extension" , String(i))
             console.log(`step 6: active URl of NFT`, i, activeURL )
             let API =  axios.get( activeURL ) as any  
-            requests.push(API);      
-            
-            dispatch(setIsSnipping({action: "started"})) 
-            
+            requests = [...requests  , API]            
+          }
+
+          //for 1000 or less FTs
+          for(var i = from;  i <= to;  i=i+30) {
+            const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
+            // `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}`
+            console.log("open_sea Api", opensea_api)
+            const opensea_api_res = axios.get(opensea_api)
+            request2 = [...request2  , opensea_api_res]
           }
           
-
-
-
-          let allTokens: any=[]
-         
-            axios.all(requests).then(axios.spread((...responses) => {
-
-                async.parallel([
-                async function(){
-                  responses.slice(0,999).map((activefetchAPI:any, key:number)=>{
-                  console.log(activefetchAPI.data)
-                  const newToken=
-                  {
-                    tokenID: String(key+1), 
+            async.series([
+            async function(){
+                const responses = await axios.all(requests);
+                console.log("responses", responses)
+                responses.map((activefetchAPI:any, key:number)=>{
+                console.log(activefetchAPI.data)
+                  const newToken: any = {
+                    tokenID: String(key + from), 
                     attributes: activefetchAPI.data.attributes,
-                    // opensea_data: opensea_api_res.data.assets[0],
+                    opensea_data: "Hello World",
+                    opensea: {price: 0, permalink: ""},
                     rarity_score: 0,
                     normalized_rarity_score: 0,
                     image: activefetchAPI.data.image,
                     title: activefetchAPI.data.title? activefetchAPI.data.title: "" ,
                     name: activefetchAPI.data.name? activefetchAPI.data.name: "" 
                   }
+                  allTokens = [...allTokens , newToken]
+                  console.log("allTokens one by one", allTokens)
 
-                  allTokens.push(newToken)
-
-                  activefetchAPI.data.attributes.map((attribute: Attribute)=> {
-                        dispatch(setCountOfAllAttribute(attribute));
-                  }) 
-
-                })
-              },
-
-              ], (err:any) => {
-                if(err){
-                  console.error(err);
-                }
-                console.log("allTokens",allTokens)
-              });
-
-
-
-
-              
-              
+                  dispatch(setCountOfAllAttribute(activefetchAPI.data.attributes as Attribute[]));
+                  // activefetchAPI.data.attributes.map((attribute: Attribute)=> {
+                  // }) 
+              })
+              console.log("allTokens", allTokens) 
               dispatch(addTokenInList(allTokens as AttributesOfEachToekn[]))
-              // dispatch(setCountOfAllAttribute(countOfAllAttribute as CountOfEachAttribute[]));
-              dispatch(setIsSnipping({action: "completed"}))    
-              
-              
-
-              // responses.map((res: any) => {
-              //   console.log(res.data)
-              // })
-            }))
-
+            },
+            async function(){
+               let flatResponse:any = [];
+              const responses = await axios.all(request2)
+              responses.map((response: any) => {
+                flatResponse = [...flatResponse, response.data.assets]
+               })
+               dispatch(setOpenseaData(flatResponse.flat()))
+            },
+            ], (err:any) => {
+              if(err){
+                console.error(err);
+              }
+              console.log("allTokens",allTokens)
+              dispatch(setIsSnipping({action: "completed"}))
+            });
+         
+    
         }
+      }
     }
-  }
     catch(e) { 
       alert("Unable to fetch information. Make sure you have installed and enabled Moesif CORS extention")
       // dispatch(setLoadingNFTs(false)

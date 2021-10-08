@@ -13,7 +13,8 @@ export interface Attribute {
 export interface AttributesOfEachToekn {
   tokenID: string
   attributes: Attribute[],
-  opensea_data?: any
+  opensea_data: any,
+  opensea: {price: number, permalink: string},
   rarity_score: number, 
   normalized_rarity_score: number, 
   image: string,
@@ -204,23 +205,33 @@ const dataSlice = createSlice({
     },
 
     sortByRarityScore(state) {
-      console.log("Sorting start", state.list_of_all_tokens)
+      console.log("Sorting start by Rarity", state.list_of_all_tokens)
       if(state.list_of_all_tokens){
         state.list_of_all_tokens = state.list_of_all_tokens.sort( (a, b) => {
             return b.rarity_score - a.rarity_score;
           });
       }
-      console.log("Sorting End", state.list_of_all_tokens)
+      console.log("Sorting End by Rarity", state.list_of_all_tokens)
     },
 
     sortByTokenID(state) {
-      console.log("Sorting start", state.list_of_all_tokens)
+      console.log("Sorting start by ID", state.list_of_all_tokens)
       if(state.list_of_all_tokens){
         state.list_of_all_tokens.sort( (a, b) => {
             return Number(a.tokenID) - Number(b.tokenID);
           });
       }
-      console.log("Sorting End", state.list_of_all_tokens)
+      console.log("Sorting End by ID" , state.list_of_all_tokens)
+    },
+
+    sortByPrice(state) {
+      console.log("Sorting start by price", state.list_of_all_tokens)
+      if(state.list_of_all_tokens){
+        state.list_of_all_tokens.sort( (a, b) => {
+            return Number(b.opensea.price) - Number(a.opensea.price);
+          });
+      }
+      console.log("Sorting End by price", state.list_of_all_tokens)
     },
 
     setAvailableAttributes(
@@ -307,54 +318,74 @@ const dataSlice = createSlice({
       }
     },
 
-    setCountOfAllAttribute(state, { payload }: PayloadAction<Attribute>) {
+    setCountOfAllAttribute(state, { payload }: PayloadAction<Attribute[] >) {
 
       if (state.countOfAllAttribute !== null) {
         state.countOfAllAttribute.map(
           (countOfEachAttribute: CountOfEachAttribute) => {
 
+            payload.map((attribute: Attribute) => {
+
             // Find the trait type
-            if (countOfEachAttribute.trait_type === payload.trait_type) {
+              if (countOfEachAttribute.trait_type === attribute.trait_type) {
 
-              // initiate the trait count array to store all the trait values and add first trait value
-              if (countOfEachAttribute.trait_count === null) {
-                const new_trait_count = { value: payload.value, count: 1 };
-                countOfEachAttribute.trait_count = [new_trait_count];
-                countOfEachAttribute.total_variations++;
-              } 
-
-              // Trait array already existed. 
-              else {
-
-                // Check if value already present or not
-                const checkValue = (obj: any) => obj.value === String(payload.value);
-                const isPresent = countOfEachAttribute.trait_count.some(checkValue)
-                const isPresent2 = countOfEachAttribute.trait_count.find((elem: any) => elem.value === String(payload.value))
-
-                // Value matched, increase its count by one
-                  if (isPresent2) {
-                  countOfEachAttribute.trait_count &&
-                    countOfEachAttribute.trait_count.map((trait) => {
-                      if (trait.value === payload.value) {
-                        trait.count++;
-                      }
-                    });
+                // initiate the trait count array to store all the trait values and add first trait value
+                if (countOfEachAttribute.trait_count === null) {
+                  const new_trait_count = { value: attribute.value, count: 1 };
+                  countOfEachAttribute.trait_count = [new_trait_count];
+                  countOfEachAttribute.total_variations++;
                 } 
 
-                // Value doesn't match, add a new entry and increase the count of variations by one
+                // Trait array already existed. 
                 else {
-                  const new_trait_count = { value: payload.value, count: 1 };
-                  countOfEachAttribute.trait_count = [
-                    ...countOfEachAttribute.trait_count,
-                    new_trait_count,
-                  ];
-                  countOfEachAttribute.total_variations++;
+
+                  // Check if value already present or not
+                  const checkValue = (obj: any) => obj.value === String(attribute.value);
+                  const isPresent = countOfEachAttribute.trait_count.some(checkValue)
+                  // const isPresent2 = countOfEachAttribute.trait_count.find((elem: any) => elem.value === String(payload.value))
+
+                  // Value matched, increase its count by one
+                    if (isPresent) {
+                    countOfEachAttribute.trait_count &&
+                      countOfEachAttribute.trait_count.map((trait) => {
+                        if (trait.value === attribute.value) {
+                          trait.count++;
+                        }
+                      });
+                  } 
+
+                  // Value doesn't match, add a new entry and increase the count of variations by one
+                  else {
+                    const new_trait_count = { value: attribute.value, count: 1 };
+                    countOfEachAttribute.trait_count = [
+                      ...countOfEachAttribute.trait_count,
+                      new_trait_count,
+                    ];
+                    countOfEachAttribute.total_variations++;
+                  }
                 }
               }
-            }
+            })
           }
-        );
+        )
       }
+    },
+
+    setOpenseaData(state, {payload}:PayloadAction< any>){
+      console.log("payoad recieved in SetopenSeaData", payload)
+      state?.list_of_all_tokens?.map((token:AttributesOfEachToekn ) => {
+        payload.map((openseaAsset: any) => {
+          if(token.tokenID === openseaAsset.token_id){
+            const onSale = openseaAsset?.sell_orders && openseaAsset?.sell_orders[0] ? true:false;
+            const price = onSale ? Math.round(openseaAsset?.sell_orders[0].current_price) : 0
+
+            console.log("openseaAsset matched with Token", openseaAsset, JSON.stringify(token))
+            token.opensea_data = openseaAsset
+
+            token.opensea = {price: price, permalink: openseaAsset.permalink}
+          }
+        })
+      })
     },
 
     setLoadingContractData(state, {payload}: PayloadAction<{action: "started"|"completed", value: boolean}>){
@@ -412,6 +443,6 @@ const dataSlice = createSlice({
 // Extract the action creators object and the reducer
 const { actions, reducer } = dataSlice
 // Extract and export each action creator by name
-export const {  reSetSnipping, setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
+export const { sortByPrice, setOpenseaData, reSetSnipping, setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
 // Export the reducer, either as a default or named export
 export default reducer

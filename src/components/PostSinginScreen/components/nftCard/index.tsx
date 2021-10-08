@@ -32,7 +32,8 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   };
   const handleClose = () => setOpen(false);
 
-  const onSale = token?.opensea_data?.sell_orders && token?.opensea_data?.sell_orders[0]? true:false; 
+  // const onSale = token?.opensea_data?.sell_orders && token?.opensea_data?.sell_orders[0]? true:false; 
+  const onSale = token.opensea.price > 0 ? true:false; 
 
   return (
     <div>
@@ -61,11 +62,21 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
             {token.name? token.name: "No name avaiable"}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Token ID: {token.tokenID}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
             Rarity Score: { normalization ? Math.round(token.normalized_rarity_score) : Math.round(token.rarity_score)}
           </Typography>          
+          
+            {
+              onSale? 
+              <div className="price-container"> 
+                Price: 
+                <span className="price">
+                <img src={ether} alt="ether" width="8px" height="10px" />
+                </span>
+                {web3.utils.fromWei((token.opensea.price).toString(), "ether") } 
+                </div>:
+                <div> Price: - </div>  
+            }
+            
         </CardContent>
       </CardActionArea>
     </Card>
@@ -99,7 +110,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
               <img src={token.image} alt={token.name} height="300" width="300" /> 
             </div>
             <div className="NFT-Opensea-Container">
-              <div> {token.opensea_data?.sell_orders ? "Open to sale": "Not open to sale"} </div>
+            <div> {token.opensea_data?.sell_orders ? "Open to sale": "Not open to sale"} </div>
             {
               onSale? 
               <div className="price-container"> 
@@ -107,9 +118,9 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
                 <span className="price">
                 <img src={ether} alt="ether" width="12px" height="15px" />
                 </span>
-                {web3.utils.fromWei(Math.round(token.opensea_data?.sell_orders[0]?.current_price).toString(), "ether") } 
+                {web3.utils.fromWei((token.opensea.price).toString(), "ether") } 
                 </div>:
-              null
+              null 
             }
             {
               token.opensea_data?.permalink ?
@@ -133,9 +144,9 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
           <div className="NFT-rarity-details-attributes-heading"> Attributes and Scores</div>
           <div className="NFT-rarity-details-attributes"> 
             {
-              token.attributes && token.attributes?.map((attribute: Attribute) => {
+              token.attributes && token.attributes?.map((attribute: Attribute, key:number) => {
                 return(
-                  <div>
+                  <div key={key}> 
                    {` ${attribute.trait_type} : ${attribute.value} (${normalization ? 
                     Math.round(attribute.value_normalized_rarity_score) : Math.round(attribute.value_rarity_score)})`}
                   </div>

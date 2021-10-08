@@ -2,7 +2,7 @@ import  React, {useEffect, useState} from "react";
 import "./style.css";
 // import { intervalToDuration, formatDistanceToNow } from 'date-fns'
 import { useSelector, useDispatch } from 'react-redux';
-import { sortByTokenID, sortByRarityScore, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute } from '../../../store';
+import { sortByPrice, sortByTokenID, sortByRarityScore, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute } from '../../../store';
 const Web3 = require("web3");
 import Switch from '@mui/material/Switch';
 import Button from '@mui/material/Button';
@@ -52,6 +52,10 @@ const NFTCards = () => {
     if(e === 2){
       dispatch(sortByTokenID())
     }
+    if(e === 3){
+      dispatch(sortByPrice())
+    }
+    
   };
       
   const handleNormalization = () => {
@@ -116,7 +120,7 @@ const NFTCards = () => {
   };
 
   const numberOfItems = list_of_all_tokens && list_of_all_tokens.length | 0;
-  const numberPerPage = 32
+  const numberPerPage = 50
   const numberOfPages = Math.ceil(numberOfItems/numberPerPage)
 
   const handleInputLength = () => {
@@ -134,6 +138,10 @@ const NFTCards = () => {
   useEffect(()=> {
     handlePage(0,1)
   }, [sortBy, showNFTs])
+
+  useEffect(()=> {
+    findRarityScore()
+  }, [isSnipping.completed])
 
 
 
@@ -176,8 +184,9 @@ const NFTCards = () => {
                             label="Sort By"
                             onChange={(e) => handleSort(Number(e.target.value))}
                           >
-                            <MenuItem value={1} className="menu-item"> {`${" "}Rarity Score`}</MenuItem>
+                            <MenuItem value={1}> Rarity Score </MenuItem>
                             <MenuItem value={2}> Token ID</MenuItem>
+                            <MenuItem value={3}> Price </MenuItem>
                           </Select>
                         </FormControl>
                       </Box>
@@ -251,8 +260,8 @@ const NFTCards = () => {
                  :
                  isSnipping.started  && isSnipping.completed && !showNFTs ?
                  <div>
-                      <div className="check-rarity-text">Amazing. we are ready to check rarity of NFTs. Lets go</div>
-                      <div className="check-rarity-button-container"> <Button onClick={()=> findRarityScore()} variant="contained"> Check rarity </Button></div>
+                      {/* <div className="check-rarity-text">Amazing. we are ready to check rarity of NFTs. Lets go</div>
+                      <div className="check-rarity-button-container"> <Button onClick={()=> findRarityScore()} variant="contained"> Check rarity </Button></div> */}
                       <FinalRarityReport />
                  </div> 
                  :
