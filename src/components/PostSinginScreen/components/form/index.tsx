@@ -72,90 +72,72 @@ const NFTForm = () => {
 
       if(url){
         let fetchAPI =  await axios.get( url1 ) as any          
-        console.log("new", fetchAPI.data.attributes)
-        console.log("step 2: Fetched attributes from URL ", fetchAPI.data.attributes)
-        
-        let countOfAllAttribute: CountOfEachAttribute[] | null = [];
-        let countOfAllAttribute2:any = {}
-        
+           
         if(fetchAPI){
           
           dispatch(setInitialCountOfAllAttribute2(fetchAPI.data.attributes as Attribute[]))
 
-          let allTokens: any = [];
-          let allTokens2: any = {};
-          let requests:any = [];
-          let request2: any = [];
-
-          dispatch(setIsSnipping({action: "started"}))
-
-
-          // for 1000 or less FTs
-          for(var i = from;  i <= to;  i=i+1) {
-            let activeURL =  url.replace("extension" , String(i))
-            console.log(`step 6: active URl of NFT`, i, activeURL )
-            let API =  axios.get( activeURL ) as any  
-            requests = [...requests  , API]            
-          }
-
-          //for 1000 or less FTs
-          for(var i = from;  i <= to;  i=i+30) {
-             const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
-            // const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&token_ids=${i+30}&token_ids=${i+31}&token_ids=${i+32}&token_ids=${i+33}&token_ids=${i+34}&token_ids=${i+35}&token_ids=${i+36}&token_ids=${i+37}&token_ids=${i+38}&token_ids=${i+39}&limit=40`
-            // `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}`
-            console.log("open_sea Api", opensea_api)
-            const opensea_api_res = axios.get(opensea_api)
-            request2 = [...request2  , opensea_api_res]
-          }
           
-            async.series([
-            async function(){
-                const responses = await axios.all(requests);
-                console.log("responses", responses)
+          dispatch(setIsSnipping({action: "started"}))
+          
+          const range = to-from + 1
+            
 
-                responses.map((activefetchAPI:any, key:number)=>{
-                console.log(activefetchAPI.data)
-                  const newToken: any = {
-                    tokenID: String(key + from), 
-                    attributes: activefetchAPI.data.attributes,
-                    opensea: {price: 0, permalink: ""},
-                    rarity_score: 0,
-                    normalized_rarity_score: 0,
-                    image: activefetchAPI.data.image,
-                    title: activefetchAPI.data.title? activefetchAPI.data.title: "" ,
-                    name: activefetchAPI.data.name? activefetchAPI.data.name: "" 
-                  }
-
-                  // dispatch(addTokenInList2(newToken))
-                  // allTokens.push(newToken)
-                  allTokens2[String(key + from)] = newToken
-                  console.log("speed test", allTokens)
-                  dispatch(setCountOfAllAttribute2(activefetchAPI.data.attributes as Attribute[]))
-
-                })
-                console.log("allTokens one by one", allTokens)
-                dispatch(addTokenInList3(allTokens2))
+            let allTokens: any = {};
+            let requests:any = [];
+            let request2: any = [];
 
 
-                // addTokenInList3
-             },
-            async function(){
-               let flatResponse:any = [];
-              const responses = await axios.all(request2)
-              responses.map((response: any) => {
-                flatResponse = [...flatResponse, response.data.assets]
-               })
-               dispatch(setOpenseaData2(flatResponse.flat()))
-            },
-            ], (err:any) => {
-              if(err){
-                console.error(err);
+  
+            console.log("Important: more than 0 entered")
+
+
+            for(var i = from;  i <= to;  i=i+1) {
+
+              let activeURL =  url.replace("extension" , String(i))
+              console.log(`step 6: active URl of NFT`, i, activeURL )
+              let activefetchAPI: any = await axios.get( activeURL )
+              // requests.push(request)
+
+                const newToken: any = {
+                  tokenID: String(i), 
+                  attributes: activefetchAPI.data.attributes,
+                  opensea: {price: 0, permalink: ""},
+                  rarity_score: 0,
+                  normalized_rarity_score: 0,
+                  image: activefetchAPI.data.image,
+                  title: activefetchAPI.data.title? activefetchAPI.data.title: "",
+                  name: activefetchAPI.data.name? activefetchAPI.data.name: "" 
+                }
+                // allTokens[String(key + from)] = newToken
+                dispatch(setCountOfAllAttribute2(activefetchAPI.data.attributes as Attribute[]))
+                dispatch(addTokenInList2(newToken))
+
               }
-              console.log("allTokens",allTokens)
+
+              for(var i=from; i <= to; i = i + 30){
+                const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
+                console.log("open_sea Api", opensea_api)
+                const opensea_api_res = axios.get(opensea_api)
+                request2 = [...request2  , opensea_api_res]
+            
+              }
+              
+              const responses1 = await axios.all(requests);
+              console.log("responses", responses1)
+            
+              let flatResponse:any = [];
+              const responses2 = await axios.all(request2)
+              responses2.map((response: any) => {
+                flatResponse = [...flatResponse, response.data.assets]
+              })
+
+              dispatch(setOpenseaData2(flatResponse.flat()))
+              
               dispatch(setIsSnipping({action: "completed"}))
-            });
-         
-    
+
+
+
         }
       }
     }

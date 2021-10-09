@@ -308,6 +308,9 @@ const dataSlice = createSlice({
       console.log("payload in addTokenInList2 ", payload)
 
           state.list_of_all_tokens2[payload.tokenID] = payload
+
+          // state.list_of_all_tokens = Object.values(state.list_of_all_tokens2)
+
       
     },
 
@@ -315,6 +318,9 @@ const dataSlice = createSlice({
       console.log("payload in addTokenInList3 ", payload)
 
           state.list_of_all_tokens2 = {...state.list_of_all_tokens2, ...payload}
+
+          // state.list_of_all_tokens = Object.values(state.list_of_all_tokens2)
+
       
     },
 
@@ -456,7 +462,6 @@ const dataSlice = createSlice({
 
     setInitialCountOfAllAttribute2(state, { payload }: PayloadAction<Attribute[] >) {
       payload.forEach((attribute) => {
-        // state.countOfAllAttribute2[attribute.trait_type] = {trait_count: {}, total_variations: 0}
         state.countOfAllAttribute2[attribute.trait_type] = {trait_type: attribute.trait_type, trait_count: {}, total_variations: 0};
 
       })

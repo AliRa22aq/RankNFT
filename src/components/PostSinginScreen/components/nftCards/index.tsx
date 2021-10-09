@@ -2,7 +2,7 @@ import  React, {useEffect, useState} from "react";
 import "./style.css";
 // import { intervalToDuration, formatDistanceToNow } from 'date-fns'
 import { useSelector, useDispatch } from 'react-redux';
-import { convertInList, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, CountOfEachAttribute2Values, CountOfEachAttribute2, sortByPrice, sortByTokenID, sortByRarityScore, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute, setCountOfAllAttribute2 } from '../../../store';
+import { AttributesOfEachToekn2, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, CountOfEachAttribute2Values, CountOfEachAttribute2, sortByPrice, sortByTokenID, sortByRarityScore, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute, setCountOfAllAttribute2 } from '../../../store';
 const Web3 = require("web3");
 import Switch from '@mui/material/Switch';
 import Button from '@mui/material/Button';
@@ -37,7 +37,7 @@ const NFTCards = () => {
   const { countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
   
   
-  console.log("list_of_all_tokens", list_of_all_tokens)
+  console.log("list_of_all_tokens", list_of_all_tokens2)
 
   
 
@@ -170,25 +170,26 @@ const NFTCards = () => {
       })
     }
     
-    // dispatch(convertInList())
     dispatch(sortByRarityScore())
     handleInputLength()
     setShowNFTs(true)
   
     
   }
+
   const handlePage = (event: any, value: number) => {
     console.log(value)
     setPage(value)
     handleInputLength()
   };
 
-  const numberOfItems = list_of_all_tokens && list_of_all_tokens.length | 0;
+  const numberOfItems = Object.values(list_of_all_tokens2).length;
   const numberPerPage = 50
   const numberOfPages = Math.ceil(numberOfItems/numberPerPage)
 
   const handleInputLength = () => {
-    set_list_of_NFTs_for_currentPage(list_of_all_tokens && list_of_all_tokens.slice((page-1)*numberPerPage, page*numberPerPage))
+    set_list_of_NFTs_for_currentPage( Object.values(list_of_all_tokens2 as AttributesOfEachToekn2)
+                                        .slice((page-1)*numberPerPage, page*numberPerPage))
     console.log(list_of_NFTs_for_currentPage)
   }
 
@@ -204,7 +205,6 @@ const NFTCards = () => {
   }, [sortBy, showNFTs])
 
   useEffect(()=> {
-    // findRarityScore()
     findRarityScore2()
   }, [isSnipping.completed])
 
@@ -224,7 +224,7 @@ const NFTCards = () => {
     <div className="cards-container">
   
       {
-        showNFTs ? 
+        // showNFTs ? 
         // <Grid item xs={12} style={{display: "flex",  minWidth: 300}}>
           <div className="NFT-Secreen">
 
@@ -290,50 +290,50 @@ const NFTCards = () => {
             
           </div>
 
-            :
+          //   :
 
-          <div className="before-NFT-Secreen">
-              {
-                  !isSnipping.requested && !isSnipping.started  && !isSnipping.completed ? 
-                 <div className="before-NFT-welcome-Secreen"> 
+          // <div className="before-NFT-Secreen">
+          //     {
+          //         !isSnipping.requested && !isSnipping.started  && !isSnipping.completed ? 
+          //        <div className="before-NFT-welcome-Secreen"> 
 
-                   <div className="before-NFT-welcome-Secreen-text1">
-                      Welcome. Please Enter an NFT contract address and load it to snip
-                  </div>
+          //          <div className="before-NFT-welcome-Secreen-text1">
+          //             Welcome. Please Enter an NFT contract address and load it to snip
+          //         </div>
 
-                  <div className="before-NFT-welcome-Secreen-rules-header">
-                      Rules of snipping
-                  </div>
+          //         <div className="before-NFT-welcome-Secreen-rules-header">
+          //             Rules of snipping
+          //         </div>
 
-                  <div className="before-NFT-welcome-Secreen-rules">
-                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-                  </div>
+          //         <div className="before-NFT-welcome-Secreen-rules">
+          //             <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
+          //             <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
+          //             <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
+          //             <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
+          //             <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
+          //             <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
+          //         </div>
 
-                 </div>
-                  : 
-                  isSnipping.requested && !isSnipping.started  && !isSnipping.completed ? 
-                  <div> Wait we are fetching data </div> :                 
-                  isSnipping.started  && !isSnipping.completed ? 
-                 <div>
-                   <RarityReport /> 
-                </div>                 
-                 :
-                 isSnipping.started  && isSnipping.completed && !showNFTs ?
-                 <div>
-                      {/* <div className="check-rarity-text">Amazing. we are ready to check rarity of NFTs. Lets go</div>
-                      <div className="check-rarity-button-container"> <Button onClick={()=> findRarityScore()} variant="contained"> Check rarity </Button></div> */}
-                      <FinalRarityReport />
-                 </div> 
-                 :
-                 null
-              }
+          //        </div>
+          //         : 
+          //         isSnipping.requested && !isSnipping.started  && !isSnipping.completed ? 
+          //         <div> Wait we are fetching data </div> :                 
+          //         isSnipping.started  && !isSnipping.completed ? 
+          //        <div>
+          //          <RarityReport /> 
+          //       </div>                 
+          //        :
+          //        isSnipping.started  && isSnipping.completed && !showNFTs ?
+          //        <div>
+          //             {/* <div className="check-rarity-text">Amazing. we are ready to check rarity of NFTs. Lets go</div>
+          //             <div className="check-rarity-button-container"> <Button onClick={()=> findRarityScore()} variant="contained"> Check rarity </Button></div> */}
+          //             <FinalRarityReport />
+          //        </div> 
+          //        :
+          //        null
+          //     }
 
-          </div>
+          // </div>
 
 
       }

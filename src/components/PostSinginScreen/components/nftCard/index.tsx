@@ -33,7 +33,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   const handleClose = () => setOpen(false);
 
   // const onSale = token?.opensea_data?.sell_orders && token?.opensea_data?.sell_orders[0]? true:false; 
-  const onSale = token.opensea.price > 0 ? true:false; 
+  const onSale = token.opensea.price && token.opensea.price > 0 ? true:false; 
 
   return (
     <div>
