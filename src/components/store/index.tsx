@@ -10,6 +10,10 @@ export interface Attribute {
   value_normalized_rarity_score: number
 }
 
+export interface Attribute2 {
+  [trait_type :string] : Attribute
+}
+
 export interface AttributesOfEachToekn {
   tokenID: string
   attributes: Attribute[],
@@ -23,6 +27,10 @@ export interface AttributesOfEachToekn {
   name?: string,
 }
 
+export interface AttributesOfEachToekn2 {
+  [tokenID: string] : AttributesOfEachToekn
+}
+
 export interface TraitCount {
   value: string,
   count: number
@@ -34,10 +42,27 @@ export interface CountOfEachAttribute {
   total_variations: number
 }
 
+
+export interface CountOfEachAttribute2Values {
+  trait_type: string,
+  trait_count: any, 
+  total_variations: number
+}
+
+export interface CountOfEachAttribute2 {
+  [key: string]: CountOfEachAttribute2Values
+}
+
+
 export interface RarityScoreOfValue {
+  trait_type: string,
   value :string, 
   rarity_score: number ,
   normalized_rarity_score: number ,
+}
+
+export interface RarityScoreOfValue2 {
+  [value :string] : RarityScoreOfValue
 }
 
 
@@ -76,10 +101,18 @@ interface DataType {
     subscriptionPeriod: number,
     uploadedContractAddress: string,
     allAvailableAttributes: CountOfEachAttribute[] | null,
+
     list_of_all_tokens: AttributesOfEachToekn[] | null,
+    list_of_all_tokens2: AttributesOfEachToekn2,
+
     countOfAllAttribute: CountOfEachAttribute[] | null,
-    projectInfo: ProjectInfo | null,
+    countOfAllAttribute2:CountOfEachAttribute2
+
     rarityScoreOfAllValues: RarityScoreOfValue[] | null,
+    rarityScoreOfAllValues2: RarityScoreOfValue2,
+
+
+    projectInfo: ProjectInfo | null,
     loading_contractData: Loading,
     isSnipping: Loading,
 
@@ -105,9 +138,13 @@ const initialState: DataType = {
     uploadedContractAddress: "",
     allAvailableAttributes: null,
     list_of_all_tokens: null,
+    list_of_all_tokens2: {},
     countOfAllAttribute: null,
-    projectInfo: null,
+    countOfAllAttribute2: {},
     rarityScoreOfAllValues: null,
+    rarityScoreOfAllValues2: {},
+
+    projectInfo: null,
     loading_contractData: {requested: false, started: false, completed: false},
     isSnipping: {requested: false, started: false, completed: false},
 
@@ -252,10 +289,7 @@ const dataSlice = createSlice({
       }
     },
 
-    addTokenInList(
-      state,
-      { payload }: PayloadAction<AttributesOfEachToekn[] | null>
-    ) {
+    addTokenInList( state, { payload }: PayloadAction<AttributesOfEachToekn[] | null> ) {
       // console.log("payload added ", payload)
       if (payload === null) {
         state.list_of_all_tokens = null;
@@ -266,6 +300,21 @@ const dataSlice = createSlice({
           state.list_of_all_tokens = payload;
         }
       }
+    },
+
+    
+    addTokenInList2( state, { payload }: PayloadAction<AttributesOfEachToekn> ) {
+      console.log("payload in addTokenInList2 ", payload)
+
+          state.list_of_all_tokens2[payload.tokenID] = payload
+      
+    },
+
+    addTokenInList3( state, { payload }: PayloadAction<AttributesOfEachToekn2> ) {
+      console.log("payload in addTokenInList3 ", payload)
+
+          state.list_of_all_tokens2 = {...state.list_of_all_tokens2, ...payload}
+      
     },
 
     setRarityScoreToAttributeValue(
@@ -309,6 +358,42 @@ const dataSlice = createSlice({
        
     },
 
+    setRarityScoreToAttributeValue2(state, { payload }: PayloadAction<RarityScoreOfValue> ) {
+
+
+      state.rarityScoreOfAllValues2[payload.value] = payload;
+
+    },
+    
+    // setRarityScoreToAttributeValueZ(state, { payload }: PayloadAction<RarityScoreOfValue> ) {
+
+
+    //   state.rarityScoreOfAllValues2[payload.value] = payload;
+
+    // },
+
+    setRarityScoreToEachNFTAttribuValue2( state, { payload }: PayloadAction<RarityScoreOfValue> ) {
+      
+      // console.log("lis of all tokens ", state.list_of_all_tokens)
+
+      Object.values(state.list_of_all_tokens2).map((token) => {
+
+        token.attributes.map((attribute) => {
+            if (attribute.value === payload.value) {
+              
+              attribute.value_rarity_score = payload.rarity_score;
+              attribute.value_normalized_rarity_score = payload.normalized_rarity_score;
+
+              token.rarity_score = token.rarity_score + payload.rarity_score;
+              token.normalized_rarity_score = token.normalized_rarity_score + payload.normalized_rarity_score;
+            }
+        })
+
+      })
+
+       
+    },
+
 
     setInitalCountOfAllAttribute( state, { payload }: PayloadAction<CountOfEachAttribute[] | null> ) {
       if (payload === null) {
@@ -321,33 +406,34 @@ const dataSlice = createSlice({
     setCountOfAllAttribute(state, { payload }: PayloadAction<Attribute[] >) {
 
       if (state.countOfAllAttribute !== null) {
-        state.countOfAllAttribute.map(
+        state.countOfAllAttribute.forEach(
           (countOfEachAttribute: CountOfEachAttribute) => {
 
-            payload.map((attribute: Attribute) => {
+            payload.forEach((attribute: Attribute) => {
 
             // Find the trait type
-              if (countOfEachAttribute.trait_type === attribute.trait_type) {
+              // if (state.countOfAllAttribute?.find(e => e.trait_type == attribute.trait_type)){ 
+                 if (countOfEachAttribute.trait_type === attribute.trait_type) {
 
                 // initiate the trait count array to store all the trait values and add first trait value
                 if (countOfEachAttribute.trait_count === null) {
                   const new_trait_count = { value: attribute.value, count: 1 };
                   countOfEachAttribute.trait_count = [new_trait_count];
                   countOfEachAttribute.total_variations++;
-                } 
+                }
 
                 // Trait array already existed. 
                 else {
 
                   // Check if value already present or not
-                  const checkValue = (obj: any) => obj.value === String(attribute.value);
-                  const isPresent = countOfEachAttribute.trait_count.some(checkValue)
-                  // const isPresent2 = countOfEachAttribute.trait_count.find((elem: any) => elem.value === String(payload.value))
+                  // const checkValue = (obj: any) => obj.value === String(attribute.value);
+                  // const isPresent = countOfEachAttribute.trait_count.some(checkValue)
+                  const isPresent = countOfEachAttribute.trait_count.find(e => e.value == attribute.value)
 
-                  // Value matched, increase its count by one
+                   // Value matched, increase its count by one
                     if (isPresent) {
-                    countOfEachAttribute.trait_count &&
-                      countOfEachAttribute.trait_count.map((trait) => {
+                    // countOfEachAttribute.trait_count &&
+                      countOfEachAttribute.trait_count.forEach((trait) => {
                         if (trait.value === attribute.value) {
                           trait.count++;
                         }
@@ -371,21 +457,64 @@ const dataSlice = createSlice({
       }
     },
 
+
+    setInitialCountOfAllAttribute2(state, { payload }: PayloadAction<Attribute[] >) {
+      payload.forEach((attribute) => {
+        // state.countOfAllAttribute2[attribute.trait_type] = {trait_count: {}, total_variations: 0}
+        state.countOfAllAttribute2[attribute.trait_type] = {trait_type: attribute.trait_type, trait_count: {}, total_variations: 0};
+
+      })
+
+    },
+
+    setCountOfAllAttribute2(state, { payload }: PayloadAction<Attribute[] >) {
+
+      payload.forEach((attribute) => {
+        if (!state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value]) {
+            state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value] = {value: attribute.value, count: 1};
+            state.countOfAllAttribute2[attribute.trait_type].total_variations+=1;
+        }
+        else state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].count +=1;
+    
+      })
+
+
+    },
+
+
+
     setOpenseaData(state, {payload}:PayloadAction< any>){
-      console.log("payoad recieved in SetopenSeaData", payload)
       state?.list_of_all_tokens?.map((token:AttributesOfEachToekn ) => {
         payload.map((openseaAsset: any) => {
           if(token.tokenID === openseaAsset.token_id){
             const onSale = openseaAsset?.sell_orders && openseaAsset?.sell_orders[0] ? true:false;
             const price = onSale ? Math.round(openseaAsset?.sell_orders[0].current_price) : 0
 
-            console.log("openseaAsset matched with Token", openseaAsset, JSON.stringify(token))
+            // console.log("openseaAsset matched with Token", openseaAsset, JSON.stringify(token))
             token.opensea_data = openseaAsset
 
             token.opensea = {price: price, permalink: openseaAsset.permalink}
           }
         })
       })
+    },
+
+    setOpenseaData2(state, {payload}:PayloadAction< any>){
+
+      console.log("opensea payload", payload)
+
+        payload.map((openseaAsset: any) => {
+          console.log("opensea Asset", openseaAsset)
+          const onSale = openseaAsset?.sell_orders && openseaAsset?.sell_orders[0] ? true:false;
+          const price = onSale ? Math.round(openseaAsset?.sell_orders[0].current_price) : 0
+
+          if(state.list_of_all_tokens2[openseaAsset.token_id]){
+            state.list_of_all_tokens2[openseaAsset.token_id].opensea.permalink = openseaAsset.permalink
+            state.list_of_all_tokens2[openseaAsset.token_id].opensea.price = price    
+            console.log(" opensea token after update", state.list_of_all_tokens2[openseaAsset.token_id])
+          }
+
+        })
     },
 
     setLoadingContractData(state, {payload}: PayloadAction<{action: "started"|"completed", value: boolean}>){
@@ -443,6 +572,6 @@ const dataSlice = createSlice({
 // Extract the action creators object and the reducer
 const { actions, reducer } = dataSlice
 // Extract and export each action creator by name
-export const { sortByPrice, setOpenseaData, reSetSnipping, setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
+export const  {setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, addTokenInList3, setOpenseaData2, addTokenInList2, setCountOfAllAttribute2, setInitialCountOfAllAttribute2, sortByPrice, setOpenseaData, reSetSnipping, setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
 // Export the reducer, either as a default or named export
 export default reducer

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import "./style.css";
 import { useDispatch, useSelector } from 'react-redux';
-import { setOpenseaData, TraitCount, reSetSnipping, setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress, setAvailableAttributes, CountOfEachAttribute, addTokenInList, AttributesOfEachToekn } from '../../../store';
+import {setOpenseaData2, addTokenInList3, addTokenInList2, setCountOfAllAttribute2, setInitialCountOfAllAttribute2, setOpenseaData, TraitCount, reSetSnipping, setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress, setAvailableAttributes, CountOfEachAttribute, addTokenInList, AttributesOfEachToekn } from '../../../store';
 import Grid from "@mui/material/Grid";
 import { Form, Formik, Field } from "formik";
 import { TextField} from 'formik-material-ui';
@@ -38,16 +38,17 @@ const NFTForm = () => {
 
   const provider = new Web3.providers.HttpProvider('https://mainnet.infura.io')
 
+  const { countOfAllAttribute2, list_of_all_tokens2 } = useSelector((state: any) => state);
+  // console.log("countOfAllAttribute2", countOfAllAttribute2)
+  // console.log("list_of_all_tokens2", list_of_all_tokens2)
 
   const dispatch = useDispatch();
+
+  
   const [data, setData] = useState<Data>(initialData);
   const [loading, setLoading] = useState(false);
   const [needURI, setneedURI] = useState(false);
   const [needRange, setNeedrange] = useState(false);
-  // const [countOfAllAttributeLocal, setCountOfAllAttributeLocal] = useState<CountOfEachAttribute[] | null>(null);
-  
-  // console.log("countOfAllAttributeLocal", countOfAllAttributeLocal)
-   
 
 
   let schema1 = yup.object().shape({
@@ -75,131 +76,20 @@ const NFTForm = () => {
         console.log("step 2: Fetched attributes from URL ", fetchAPI.data.attributes)
         
         let countOfAllAttribute: CountOfEachAttribute[] | null = [];
+        let countOfAllAttribute2:any = {}
         
         if(fetchAPI){
           
+          dispatch(setInitialCountOfAllAttribute2(fetchAPI.data.attributes as Attribute[]))
 
-          fetchAPI.data.attributes.map((attribute: Attribute) => {
-
-            var dataToDispatch: CountOfEachAttribute = {
-                  trait_type :attribute.trait_type, 
-                  trait_count: null,
-                  total_variations: 0
-            }
-            dispatch(setAvailableAttributes(dataToDispatch as CountOfEachAttribute))
-            
-            if(countOfAllAttribute === null){
-              countOfAllAttribute  = [dataToDispatch]
-            }
-            if(countOfAllAttribute !== null){
-              countOfAllAttribute  = [...countOfAllAttribute , dataToDispatch]
-            }
-            
-            })
-          
-          dispatch(setInitalCountOfAllAttribute(countOfAllAttribute))
-          // setCountOfAllAttributeLocal(countOfAllAttribute)
-
-          const setCountOfAllAttributeLocally = (attributeList : Attribute[]) => {
-            let updatedCountOfAll:CountOfEachAttribute[];
-            let updatedCountOfEach:CountOfEachAttribute;
-            let index: number = 0;
-        
-            if(countOfAllAttribute !== null) {
-
-            console.log("Functions started", countOfAllAttribute)
-
-            countOfAllAttribute?.forEach(
-                (countOfEach: CountOfEachAttribute) => {
-        
-                  attributeList.map((attribute: Attribute) => {
-                  
-                  if(countOfAllAttribute){
-                    index = countOfAllAttribute.findIndex((obj) => obj.trait_type == attribute.trait_type) | 0;
-                  }
-                    
-                  // Find the trait type
-                    if (countOfEach.trait_type === attribute.trait_type) {
-        
-                      // initiate the trait count array to store all the trait values and add first trait value
-                      if (countOfEach.trait_count === null) {
-        
-                        const new_trait_count = { value: attribute.value, count: 1 };
-                        updatedCountOfEach = {
-                          trait_type: attribute.trait_type,
-                          trait_count: [new_trait_count],
-                          total_variations: 1
-                        }
-
-                        if(countOfAllAttribute){
-                          // countOfAllAttribute = [
-                          //     ...countOfAllAttribute,
-                               countOfAllAttribute[index] = updatedCountOfEach
-                            // ]
-
-                            console.log(countOfAllAttribute)
-                        }
-
-                      } 
-
-        
-                      // Trait array already existed. 
-                      // else {
-                      //   // Check if value already present or not
-                      //   const checkValue = (obj: any) => obj.value === String(attribute.value);
-                      //   const isPresent = countOfEach.trait_count.some(checkValue)
-                      //   // const isPresent2 = countOfEachAttribute.trait_count.find((elem: any) => elem.value === String(payload.value))
-        
-                      //   // Value matched, increase its count by one
-                      //     if (isPresent) {
-                      //         countOfEach.trait_count.forEach((trait) =>{
-                      //           if (trait.value === attribute.value) {
-                      //               trait.count++;
-                      //           }
-                      //       })
-                      //      } 
-        
-                      //   // // Value doesn't match, add a new entry and increase the count of variations by one
-                      //     else {
-                      //       const new_trait_count = { value: attribute.value, count: 1 };
-                      //       countOfEach.trait_count = [
-                      //         ...countOfEach.trait_count,
-                      //         new_trait_count,
-                      //       ];
-                      //       countOfEach.total_variations++;
-                      //     }
-        
-                      // }
-        
-        
-                    }
-        
-                  })
-        
-                }
-        
-            )
-            
-
-        
-        
-        
-        
-            }
-            
-          }
-        
-        
-
-
-          let allTokens: any = [];
+          let allTokens: any = {};
           let requests:any = [];
           let request2: any = [];
 
           dispatch(setIsSnipping({action: "started"}))
 
 
-          //for 1000 or less FTs
+          // for 1000 or less FTs
           for(var i = from;  i <= to;  i=i+1) {
             let activeURL =  url.replace("extension" , String(i))
             console.log(`step 6: active URl of NFT`, i, activeURL )
@@ -209,7 +99,8 @@ const NFTForm = () => {
 
           //for 1000 or less FTs
           for(var i = from;  i <= to;  i=i+30) {
-            const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
+             const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
+            // const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&token_ids=${i+30}&token_ids=${i+31}&token_ids=${i+32}&token_ids=${i+33}&token_ids=${i+34}&token_ids=${i+35}&token_ids=${i+36}&token_ids=${i+37}&token_ids=${i+38}&token_ids=${i+39}&limit=40`
             // `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}`
             console.log("open_sea Api", opensea_api)
             const opensea_api_res = axios.get(opensea_api)
@@ -220,12 +111,12 @@ const NFTForm = () => {
             async function(){
                 const responses = await axios.all(requests);
                 console.log("responses", responses)
+
                 responses.map((activefetchAPI:any, key:number)=>{
                 console.log(activefetchAPI.data)
                   const newToken: any = {
                     tokenID: String(key + from), 
                     attributes: activefetchAPI.data.attributes,
-                    opensea_data: "Hello World",
                     opensea: {price: 0, permalink: ""},
                     rarity_score: 0,
                     normalized_rarity_score: 0,
@@ -233,23 +124,25 @@ const NFTForm = () => {
                     title: activefetchAPI.data.title? activefetchAPI.data.title: "" ,
                     name: activefetchAPI.data.name? activefetchAPI.data.name: "" 
                   }
-                  allTokens = [...allTokens , newToken]
-                  console.log("allTokens one by one", allTokens)
 
-                  dispatch(setCountOfAllAttribute(activefetchAPI.data.attributes as Attribute[]));
-                  // setCountOfAllAttributeLocally(activefetchAPI.data.attributes as Attribute[])
+                  // dispatch(addTokenInList2(newToken))
+                  allTokens[String(key + from)] = newToken
+                  dispatch(setCountOfAllAttribute2(activefetchAPI.data.attributes as Attribute[]))
 
                 })
-              console.log("allTokens", allTokens) 
-              dispatch(addTokenInList(allTokens as AttributesOfEachToekn[]))
-            },
+                console.log("allTokens one by one", allTokens)
+                dispatch(addTokenInList3(allTokens))
+
+
+                addTokenInList3
+             },
             async function(){
                let flatResponse:any = [];
               const responses = await axios.all(request2)
               responses.map((response: any) => {
                 flatResponse = [...flatResponse, response.data.assets]
                })
-               dispatch(setOpenseaData(flatResponse.flat()))
+               dispatch(setOpenseaData2(flatResponse.flat()))
             },
             ], (err:any) => {
               if(err){
@@ -427,22 +320,10 @@ const NFTForm = () => {
             validationSchema={schema1} 
             onSubmit={async (values, { setSubmitting, setFieldValue  }) => {
             
-              // if(!values.uri){
                 dispatch(setUploadedContractAddress(values.address))
                 console.log("yesssss")  
                 fetchData(values.address, values.uri, setFieldValue)  
 
-                // resetForm()
-              //   setSubmitting(false)
-              // }
-              // if(values.uri){
-              //   // setNeedrange(false)
-              //   setData(pre => {return {...pre, baseTokenURI:  values.uri}}) 
-              //   // resetForm()
-              //   setneedURI(false)
-              //   setSubmitting(false)
-              //   setNeedrange(true)
-              // }
             }}>
 
     {() => (

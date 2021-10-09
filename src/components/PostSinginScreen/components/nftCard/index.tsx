@@ -110,7 +110,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
               <img src={token.image} alt={token.name} height="300" width="300" /> 
             </div>
             <div className="NFT-Opensea-Container">
-            <div> {token.opensea_data?.sell_orders ? "Open to sale": "Not open to sale"} </div>
+            <div> {onSale ? "Open to sale": "Not open to sale"} </div>
             {
               onSale? 
               <div className="price-container"> 
@@ -124,7 +124,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
             }
             {
               token.opensea_data?.permalink ?
-               <div><a href={token.opensea_data?.permalink}  target="_blank" > see on Opensea </a> </div>:
+               <div><a href={token.opensea.permalink}  target="_blank" > see on Opensea </a> </div>:
               null
             }
             </div>

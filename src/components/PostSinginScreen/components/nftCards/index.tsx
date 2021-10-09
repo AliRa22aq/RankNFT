@@ -2,7 +2,7 @@ import  React, {useEffect, useState} from "react";
 import "./style.css";
 // import { intervalToDuration, formatDistanceToNow } from 'date-fns'
 import { useSelector, useDispatch } from 'react-redux';
-import { sortByPrice, sortByTokenID, sortByRarityScore, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute } from '../../../store';
+import { setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, CountOfEachAttribute2Values, CountOfEachAttribute2, sortByPrice, sortByTokenID, sortByRarityScore, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute, setCountOfAllAttribute2 } from '../../../store';
 const Web3 = require("web3");
 import Switch from '@mui/material/Switch';
 import Button from '@mui/material/Button';
@@ -34,11 +34,10 @@ const NFTCards = () => {
   const [sortBy, setSortBy] = React.useState<number>(1);
 
   
-  const { isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
+  const { countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
   
   
-  // console.log("list_of_all_tokens", list_of_all_tokens)
-  // console.log("rarityScoreOfAllValues",  rarityScoreOfAllValues)
+  console.log("list_of_all_tokens2", list_of_all_tokens2)
 
   
 
@@ -65,7 +64,6 @@ const NFTCards = () => {
   const findRarityScore = () => {
 
     dispatch(setRarityScoreToAttributeValue(null))
-
 
     const totalSupply:number = projectInfo && projectInfo.range.range
     console.log("totalSupply ", totalSupply)
@@ -96,9 +94,15 @@ const NFTCards = () => {
           const normalized_score = rarity_score * average_trait_count / attribute_count_in_categories;
           const final_normalized_score = normalized_score / 2;
 
+          // const rarity_score_of_each_value: RarityScoreOfValue = {
+          //   value: eachValue.value,  rarity_score: rarity_score , normalized_rarity_score:  final_normalized_score
+          // }
           const rarity_score_of_each_value: RarityScoreOfValue = {
-            value: eachValue.value,  rarity_score: rarity_score , normalized_rarity_score:  final_normalized_score
-          }
+            trait_type: eachAttribute.trait_type,
+            value: eachValue.value,  
+            rarity_score: rarity_score , 
+            normalized_rarity_score:  final_normalized_score
+      }
 
           console.log("aliiiii", rarity_score_of_each_value)
           dispatch(setRarityScoreToAttributeValue(rarity_score_of_each_value))
@@ -113,18 +117,76 @@ const NFTCards = () => {
 
   }
  
+
+  const findRarityScore2 = () => {
+
+    dispatch(setRarityScoreToAttributeValue(null))
+
+    const totalSupply:number = projectInfo && projectInfo.range.range
+    console.log("totalSupply ", totalSupply)
+
+    // Normalized Scoring
+    if(countOfAllAttribute2){
+  
+      console.log("Normalization is on")
+      let traits_count = 0;
+
+      console.log("countOfAllAttribute2 ", countOfAllAttribute2)
+      
+      Object.values(countOfAllAttribute2).map((eachAttribute: any) => {
+        console.log("countOfAllAttribute2 ", eachAttribute)
+          traits_count = traits_count + eachAttribute.total_variations
+        })
+        
+
+         console.log("countOfAllAttribute2 Values", Object.keys(countOfAllAttribute2))
+        const attribute_count_in_categories = Object.keys(countOfAllAttribute2).length;
+        const average_trait_count = traits_count/attribute_count_in_categories;
+        
+        console.log("countOfAllAttribute2 attribute_count_in_categories",attribute_count_in_categories )
+        console.log("countOfAllAttribute2 average_trait_count",average_trait_count )
+        
+          Object.values(countOfAllAttribute2).map((eachAttribute: any) => {
+          
+              Object.values(eachAttribute.trait_count).map((eachValue: any) => {
+            
+                  const chance_of_occuring = eachValue.count/totalSupply;
+                  const rarity_score = 1/chance_of_occuring;
+
+          const normalized_score = rarity_score * average_trait_count / attribute_count_in_categories;
+          const final_normalized_score = normalized_score / 2;
+
+          const rarity_score_of_each_value: RarityScoreOfValue = {
+                trait_type: eachAttribute.trait_type,
+                value: eachValue.value,  
+                rarity_score: rarity_score , 
+                normalized_rarity_score:  final_normalized_score
+          }
+
+          console.log("countOfAllAttribute2 ", rarity_score_of_each_value)
+          dispatch(setRarityScoreToAttributeValue2(rarity_score_of_each_value))
+          dispatch(setRarityScoreToEachNFTAttribuValue2(rarity_score_of_each_value))
+         })
+      })
+    }
+    dispatch(sortByRarityScore())
+    handleInputLength()
+    setShowNFTs(true)
+  
+    
+  }
   const handlePage = (event: any, value: number) => {
     console.log(value)
     setPage(value)
     handleInputLength()
   };
 
-  const numberOfItems = list_of_all_tokens && list_of_all_tokens.length | 0;
+  const numberOfItems = Object.keys(list_of_all_tokens2).length;
   const numberPerPage = 50
   const numberOfPages = Math.ceil(numberOfItems/numberPerPage)
 
   const handleInputLength = () => {
-    set_list_of_NFTs_for_currentPage(list_of_all_tokens && list_of_all_tokens.slice((page-1)*numberPerPage, page*numberPerPage))
+    set_list_of_NFTs_for_currentPage((Object.values(list_of_all_tokens2) as AttributesOfEachToekn[] ).slice((page-1)*numberPerPage, page*numberPerPage))
     console.log(list_of_NFTs_for_currentPage)
   }
 
@@ -140,7 +202,8 @@ const NFTCards = () => {
   }, [sortBy, showNFTs])
 
   useEffect(()=> {
-    findRarityScore()
+    // findRarityScore()
+    findRarityScore2()
   }, [isSnipping.completed])
 
 
