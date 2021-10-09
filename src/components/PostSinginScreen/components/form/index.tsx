@@ -95,23 +95,28 @@ const NFTForm = () => {
             for(var i = from;  i <= to;  i=i+1) {
 
               let activeURL =  url.replace("extension" , String(i))
-              console.log(`step 6: active URl of NFT`, i, activeURL )
-              let activefetchAPI: any = await axios.get( activeURL )
-              // requests.push(request)
+              console.log( i, activeURL )
 
-                const newToken: any = {
-                  tokenID: String(i), 
-                  attributes: activefetchAPI.data.attributes,
-                  opensea: {price: 0, permalink: ""},
-                  rarity_score: 0,
-                  normalized_rarity_score: 0,
-                  image: activefetchAPI.data.image,
-                  title: activefetchAPI.data.title? activefetchAPI.data.title: "",
-                  name: activefetchAPI.data.name? activefetchAPI.data.name: "" 
-                }
-                // allTokens[String(key + from)] = newToken
-                dispatch(setCountOfAllAttribute2(activefetchAPI.data.attributes as Attribute[]))
-                dispatch(addTokenInList2(newToken))
+                 await axios.get( activeURL,  {data: i}).then((res: any)=> {
+                   
+                   console.log("res ", res.config.data)
+
+                   const newToken: any = {
+                     tokenID: String(res.config.data),  
+                     attributes: res.data.attributes,
+                     opensea: {price: 0, permalink: ""},
+                     rarity_score: 0,
+                     normalized_rarity_score: 0,
+                     image: res.data.image,
+                     title: res.data.title? res.data.title: "",
+                     name: res.data.name? res.data.name: "" 
+                   }
+                   dispatch(setCountOfAllAttribute2(res.data.attributes as Attribute[]))
+                   dispatch(addTokenInList2(newToken))                        
+
+                 })
+
+
 
               }
 
