@@ -123,7 +123,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
               null 
             }
             {
-              token.opensea_data?.permalink ?
+              token.opensea.permalink?
                <div><a href={token.opensea.permalink}  target="_blank" > see on Opensea </a> </div>:
               null
             }

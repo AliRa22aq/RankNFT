@@ -82,7 +82,8 @@ const NFTForm = () => {
           
           dispatch(setInitialCountOfAllAttribute2(fetchAPI.data.attributes as Attribute[]))
 
-          let allTokens: any = {};
+          let allTokens: any = [];
+          let allTokens2: any = {};
           let requests:any = [];
           let request2: any = [];
 
@@ -126,15 +127,17 @@ const NFTForm = () => {
                   }
 
                   // dispatch(addTokenInList2(newToken))
-                  allTokens[String(key + from)] = newToken
+                  // allTokens.push(newToken)
+                  allTokens2[String(key + from)] = newToken
+                  console.log("speed test", allTokens)
                   dispatch(setCountOfAllAttribute2(activefetchAPI.data.attributes as Attribute[]))
 
                 })
                 console.log("allTokens one by one", allTokens)
-                dispatch(addTokenInList3(allTokens))
+                dispatch(addTokenInList3(allTokens2))
 
 
-                addTokenInList3
+                // addTokenInList3
              },
             async function(){
                let flatResponse:any = [];

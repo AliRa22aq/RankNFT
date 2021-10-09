@@ -2,7 +2,7 @@ import  React, {useEffect, useState} from "react";
 import "./style.css";
 // import { intervalToDuration, formatDistanceToNow } from 'date-fns'
 import { useSelector, useDispatch } from 'react-redux';
-import { setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, CountOfEachAttribute2Values, CountOfEachAttribute2, sortByPrice, sortByTokenID, sortByRarityScore, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute, setCountOfAllAttribute2 } from '../../../store';
+import { convertInList, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, CountOfEachAttribute2Values, CountOfEachAttribute2, sortByPrice, sortByTokenID, sortByRarityScore, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute, setCountOfAllAttribute2 } from '../../../store';
 const Web3 = require("web3");
 import Switch from '@mui/material/Switch';
 import Button from '@mui/material/Button';
@@ -37,7 +37,7 @@ const NFTCards = () => {
   const { countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
   
   
-  console.log("list_of_all_tokens2", list_of_all_tokens2)
+  console.log("list_of_all_tokens", list_of_all_tokens)
 
   
 
@@ -169,6 +169,8 @@ const NFTCards = () => {
          })
       })
     }
+    
+    // dispatch(convertInList())
     dispatch(sortByRarityScore())
     handleInputLength()
     setShowNFTs(true)
@@ -181,12 +183,12 @@ const NFTCards = () => {
     handleInputLength()
   };
 
-  const numberOfItems = Object.keys(list_of_all_tokens2).length;
+  const numberOfItems = list_of_all_tokens && list_of_all_tokens.length | 0;
   const numberPerPage = 50
   const numberOfPages = Math.ceil(numberOfItems/numberPerPage)
 
   const handleInputLength = () => {
-    set_list_of_NFTs_for_currentPage((Object.values(list_of_all_tokens2) as AttributesOfEachToekn[] ).slice((page-1)*numberPerPage, page*numberPerPage))
+    set_list_of_NFTs_for_currentPage(list_of_all_tokens && list_of_all_tokens.slice((page-1)*numberPerPage, page*numberPerPage))
     console.log(list_of_NFTs_for_currentPage)
   }
 
