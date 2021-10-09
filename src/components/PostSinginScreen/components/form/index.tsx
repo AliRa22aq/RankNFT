@@ -97,12 +97,11 @@ const NFTForm = () => {
               let activeURL =  url.replace("extension" , String(i))
               console.log( i, activeURL )
 
-                 await axios.get( activeURL,  {data: i}).then((res: any)=> {
-                   
+                 axios.get( activeURL,  {data: i}).then((res: any)=> {
                    console.log("res ", res.config.data)
 
                    const newToken: any = {
-                     tokenID: String(res.config.data),  
+                     tokenID: res.config.data,  
                      attributes: res.data.attributes,
                      opensea: {price: 0, permalink: ""},
                      rarity_score: 0,
