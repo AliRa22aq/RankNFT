@@ -54,13 +54,19 @@ const NFTForm = () => {
   const [loading, setLoading] = useState(false);
   const [needURI, setneedURI] = useState(false);
   const [needRange, setNeedrange] = useState(false);
-  const [delay, setDelay] = useState(20);
+  const [delayNFT, setDelayNFT] = useState(20);
+  const [delayOpensea, setDelayOpensea] = useState(50);
 
-  const handleDelay = (ms: any) => {
-    setDelay(ms)
+  const handleDelayNFT = (ms: any) => {
+    setDelayNFT(ms)
     console.log("ms: ", ms)
   }
 
+  const handleDelayOpensea = (ms: any) => {
+    setDelayOpensea(ms)
+    console.log("ms: ", ms)
+
+  }
 
   let schema1 = yup.object().shape({
     address: yup.string().length(42, "not a contract address").required(),
@@ -96,15 +102,14 @@ const NFTForm = () => {
 
             let allTokens: any = {};
             let requests:any = [];
-            let request2: any = [];
 
 
 
             const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
               for(var i = from;  i <= to;  i=i+1) {
-                console.log("Loop delay", delay )
-                await delayFn(delay);
+                console.log("Loop delayNFT", delayNFT )
+                await delayFn(delayNFT);
 
                 let activeURL =  url.replace("extension" , String(i))
                 console.log("Loop #",  i, activeURL )
@@ -129,27 +134,247 @@ const NFTForm = () => {
               }
 
 
-
-              for(var i=from; i <= to; i = i + 30){
-                const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
-                console.log("open_sea Api", opensea_api)
-                const opensea_api_res = axios.get(opensea_api)
-                request2 = [...request2  , opensea_api_res]
-            
-              }
-              
-              const responses1 = await axios.all(requests);
-              console.log("responses", responses1)
-            
+              let request2: any = [];
               let flatResponse:any = [];
-              const responses2 = await axios.all(request2)
-              responses2.map((response: any) => {
-                flatResponse = [...flatResponse, response.data.assets]
-              })
 
-              dispatch(setOpenseaData2(flatResponse.flat()))
+
+              async.series([
+                // async function(){
+                //   console.log("First functions started")
+                //   for(var i = from;  i <= to;  i=i+30) {
+                //     // await delayFn(delayNFT);
+                //     const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
+                //     console.log("open_sea Api", opensea_api)
+                //     const opensea_api_res: any = await axios.get(opensea_api)
+                //     // request2 = [...request2  , opensea_api_res]        
+                //     dispatch(setOpenseaData2(opensea_api_res.data.assets))
+                //   }
+                // },
+                async function(){
+                  console.log("First functions started")
+                  for(var i = from;  i <= to;  i=i+30) {
+                    await delayFn(delayOpensea);
+                    const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
+                    console.log("open_sea Api", opensea_api)
+                    axios.get(opensea_api).then((res: any) => {
+                      dispatch(setOpenseaData2(res.data.assets))
+                    })
+                  }
+                },
+                // async function(){
+                //   console.log("First functions started")
+                //   await delayFn(delayNFT*100);
+
+                //   for(var i = from;  i <= to && i <= 1000;  i=i+30) {
+                //     // await delayFn(delayNFT);
+                //     const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
+                //     console.log("open_sea Api", opensea_api)
+                //     const opensea_api_res = axios.get(opensea_api)
+                //     request2 = [...request2  , opensea_api_res]        
+                    
+                //   }
+                //   console.log("First functions Ended")
+                //   const responses2 = await axios.all(request2)
+                //   responses2.map((response: any) => {
+                //     flatResponse = [...flatResponse, response.data.assets]
+                //   })
+                //   dispatch(setOpenseaData2(flatResponse.flat()))
+                //   await delayFn(delayNFT*50);
+                //   request2 = [];
+                //   flatResponse= [];    
+                //   console.log("Nullling ", request2, flatResponse)
+                //   await delayFn(delayNFT*300);
+
+                // },
+                // async function(){
+                //   console.log("Second functions started")
+                //   await delayFn(delayNFT*100);
+
+                //   for(var i = 1001;  i <= to && i <= 2000;  i=i+30) {
+                //     // await delayFn(delayNFT);
+                //     const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
+                //     console.log("open_sea Api", opensea_api)
+                //     const opensea_api_res = axios.get(opensea_api)
+                //     request2 = [...request2  , opensea_api_res]        
+                    
+                //   }
+                //   console.log("2nd functions Ended")
+                //   const responses2 = await axios.all(request2)
+                //   responses2.map((response: any) => {
+                //     flatResponse = [...flatResponse, response.data.assets]
+                //   })
+                //   dispatch(setOpenseaData2(flatResponse.flat()))
+                //   await delayFn(delayNFT*50);
+                //   request2 = [];
+                //   flatResponse= [];    
+                //   console.log("Nullling ", request2, flatResponse)
+                //   await delayFn(delayNFT*300);
+
+                // },
+                // async function(){
+                //   console.log("3rd functions started")
+                //   await delayFn(delayNFT*100);
+
+                //   for(var i = 2001;  i <= to && i <= 3000;  i=i+30) {
+                //     // await delayFn(delayNFT);
+                //     const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
+                //     console.log("open_sea Api", opensea_api)
+                //     const opensea_api_res = axios.get(opensea_api)
+                //     request2 = [...request2  , opensea_api_res]        
+                    
+                //   }
+                //   console.log("3rd functions Ended")
+                //   const responses2 = await axios.all(request2)
+                //   responses2.map((response: any) => {
+                //     flatResponse = [...flatResponse, response.data.assets]
+                //   })
+                //   dispatch(setOpenseaData2(flatResponse.flat()))
+                //   await delayFn(delayNFT*50);
+                //   request2 = [];
+                //   flatResponse= [];    
+                //   console.log("Nullling ", request2, flatResponse)
+                //   await delayFn(delayNFT*300);
+
+                // },
+                // async function(){
+                //   console.log("4th functions started")
+                //   await delayFn(delayNFT*100);
+
+                //   for(var i = 3001;  i <= to && i <= 4000;  i=i+30) {
+                //     // await delayFn(delayNFT);
+                //     const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
+                //     console.log("open_sea Api", opensea_api)
+                //     const opensea_api_res = axios.get(opensea_api)
+                //     request2 = [...request2  , opensea_api_res]        
+                    
+                //   }
+                //   console.log("4th functions Ended")
+                //   const responses2 = await axios.all(request2)
+                //   responses2.map((response: any) => {
+                //     flatResponse = [...flatResponse, response.data.assets]
+                //   })
+                //   dispatch(setOpenseaData2(flatResponse.flat()))
+                //   await delayFn(delayNFT*50);
+                //   request2 = [];
+                //   flatResponse= [];    
+                //   console.log("Nullling ", request2, flatResponse)
+                //   await delayFn(delayNFT*300);
+
+                // },
+                // async function(){
+                //   console.log("5th functions started")
+                //   await delayFn(delayNFT*100);
+
+                //   for(var i = 4001;  i <= to && i <= 5000;  i=i+30) {
+                //     // await delayFn(delayNFT);
+                //     const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
+                //     console.log("open_sea Api", opensea_api)
+                //     const opensea_api_res = axios.get(opensea_api)
+                //     request2 = [...request2  , opensea_api_res]        
+                    
+                //   }
+                //   console.log("5th functions Ended")
+                //   const responses2 = await axios.all(request2)
+                //   responses2.map((response: any) => {
+                //     flatResponse = [...flatResponse, response.data.assets]
+                //   })
+                //   dispatch(setOpenseaData2(flatResponse.flat()))
+                //   await delayFn(delayNFT*30);
+                //   request2 = [];
+                //   flatResponse= [];    
+                //   console.log("Nullling ", request2, flatResponse)
+                //   await delayFn(delayNFT*300);
+
+                // },
+
+            ]);
+
+
+
+
+
+
+              // if(to > 2500){
+    //           for(var i = 2501;  i <= to+30;  i=i+30) {
+    //             // console.log("Loop delayNFT", delayNFT )
+    //             await delayFn(delayNFT);
+                
+    //             const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
+    //             // console.log("open_sea Api", opensea_api)
+
+    //             axios.get( opensea_api, {data: i} ).then((res: any) => {
+    //               console.log("Opensea res of Loop #",res.config.data ,res)          
+    //             })
+
+    // ``          }
+              // }
+
+              // await delayFn(delayNFT*5);
+
+              // if(to > 5000){
+    //           for(var i = 5001;  i <= to+30;  i=i+30) {
+    //             // console.log("Loop delayNFT", delayNFT )
+    //             await delayFn(delayNFT);
+                
+    //             const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
+    //             // console.log("open_sea Api", opensea_api)
+
+    //               axios.get( opensea_api, {data: i} ).then((res: any) => {
+    //                 console.log("Opensea res of Loop #",res.config.data ,res)          
+    //               })
+
+    // ``          }
+              // }
+
+              // await delayFn(delayNFT*5);
+
+
+              // if(to > 7500){
+    //             for(var i = 7501;  i <= to+30;  i=i+30) {
+    //             await delayFn(delayNFT);
+    //             const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
+    //             // console.log("open_sea Api", opensea_api)
+    //             axios.get( opensea_api, {data: i} ).then((res: any) => {
+    //               console.log("Opensea res of Loop #",res.config.data ,res)
+    //             })
+    // ``          }
+              // }
+
+
+
+              // const responses1 = await axios.all(requests);
+              // console.log("responses", responses1)
+            
+              // let flatResponse:any = [];
+              // const responses2 = await axios.all(request2)
+              // responses2.map((response: any) => {
+              //   flatResponse = [...flatResponse, response.data.assets]
+              // })
+
+              // dispatch(setOpenseaData2(flatResponse.flat()))
               
-              dispatch(setIsSnipping({action: "completed"}))
+              // dispatch(setIsSnipping({action: "completed"}))
+
+              // for(var i=from; i <= to; i = i + 30){
+              //   const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
+              //   console.log("open_sea Api", opensea_api)
+              //   const opensea_api_res = axios.get(opensea_api)
+              //   request2 = [...request2  , opensea_api_res]
+            
+              // }
+              
+              // const responses1 = await axios.all(requests);
+              // console.log("responses", responses1)
+            
+              // let flatResponse:any = [];
+              // const responses2 = await axios.all(request2)
+              // responses2.map((response: any) => {
+              //   flatResponse = [...flatResponse, response.data.assets]
+              // })
+
+              // dispatch(setOpenseaData2(flatResponse.flat()))
+              
+              // dispatch(setIsSnipping({action: "completed"}))
 
 
 
@@ -472,9 +697,11 @@ const NFTForm = () => {
       </div>
 
         <div> 
-          <p>Set Delay in ms</p>
-          <input value={delay} onChange={(e) => handleDelay(e.target.value)} />
-          
+          <p>Set NFT Delay in ms</p>
+          <input value={delayNFT} onChange={(e) => handleDelayNFT(e.target.value)} />
+          <br />
+          <p>Set Opensea Delay in ms</p>
+          <input value={delayOpensea} onChange={(e) => handleDelayOpensea(e.target.value)} />
         </div>
 
     </div>
