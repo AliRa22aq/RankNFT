@@ -97,8 +97,12 @@ const NFTForm = () => {
               let activeURL =  url.replace("extension" , String(i))
               console.log( i, activeURL )
 
-                 axios.get( activeURL,  {data: i}).then((res: any)=> {
-                   console.log("res ", res.config.data)
+                 axios.get( activeURL,  {data: i}).then( (res: any)=> {
+
+                   
+                    setTimeout(() => {
+                        console.log('Waiting')
+                    }, 20)
 
                    const newToken: any = {
                      tokenID: res.config.data,  
@@ -112,10 +116,7 @@ const NFTForm = () => {
                    }
                    dispatch(setCountOfAllAttribute2(res.data.attributes as Attribute[]))
                    dispatch(addTokenInList2(newToken))                        
-
                  })
-
-
 
               }
 
