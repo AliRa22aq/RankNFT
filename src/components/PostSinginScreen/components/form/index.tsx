@@ -54,6 +54,12 @@ const NFTForm = () => {
   const [loading, setLoading] = useState(false);
   const [needURI, setneedURI] = useState(false);
   const [needRange, setNeedrange] = useState(false);
+  const [delay, setDelay] = useState(20);
+
+  const handleDelay = (ms: any) => {
+    setDelay(ms)
+    console.log("ms: ", ms)
+  }
 
 
   let schema1 = yup.object().shape({
@@ -94,10 +100,11 @@ const NFTForm = () => {
 
 
 
-            const delay = (ms:number) => new Promise((r) => setTimeout(r, ms));
+            const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
               for(var i = from;  i <= to;  i=i+1) {
-                await delay(30);
+                console.log("Loop delay", delay )
+                await delayFn(delay);
 
                 let activeURL =  url.replace("extension" , String(i))
                 console.log("Loop #",  i, activeURL )
@@ -458,11 +465,17 @@ const NFTForm = () => {
             )}
         </Formik> :
         null
+
     }
 
             
       </div>
 
+        <div> 
+          <p>Set Delay in ms</p>
+          <input value={delay} onChange={(e) => handleDelay(e.target.value)} />
+          
+        </div>
 
     </div>
 
