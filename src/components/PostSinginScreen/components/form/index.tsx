@@ -14,6 +14,10 @@ import * as yup from 'yup';
 import async  from "async";
 // import parallel from 'async/parallel';
 
+ 
+
+ 
+
 
 
 interface Data {
@@ -43,6 +47,7 @@ const NFTForm = () => {
   // console.log("list_of_all_tokens2", list_of_all_tokens2)
 
   const dispatch = useDispatch();
+
 
   
   const [data, setData] = useState<Data>(initialData);
@@ -88,37 +93,35 @@ const NFTForm = () => {
             let request2: any = [];
 
 
-  
-            console.log("Important: more than 0 entered")
 
+            const delay = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
-            for(var i = from;  i <= to;  i=i+1) {
+              for(var i = from;  i <= to;  i=i+1) {
+                await delay(30);
 
-              let activeURL =  url.replace("extension" , String(i))
-              console.log( i, activeURL )
-
-                 axios.get( activeURL,  {data: i}).then( (res: any)=> {
-
-                   
-                    setTimeout(() => {
-                        console.log('Waiting')
-                    }, 20)
-
-                   const newToken: any = {
-                     tokenID: res.config.data,  
-                     attributes: res.data.attributes,
-                     opensea: {price: 0, permalink: ""},
-                     rarity_score: 0,
-                     normalized_rarity_score: 0,
-                     image: res.data.image,
-                     title: res.data.title? res.data.title: "",
-                     name: res.data.name? res.data.name: "" 
-                   }
-                   dispatch(setCountOfAllAttribute2(res.data.attributes as Attribute[]))
-                   dispatch(addTokenInList2(newToken))                        
-                 })
+                let activeURL =  url.replace("extension" , String(i))
+                console.log("Loop #",  i, activeURL )
+                     
+                axios.get( activeURL,  {data: i})
+                .then((res: any) => {
+                  console.log("waited res of Loop #", res.config.data, res)
+                  const newToken: any = {
+                    tokenID: res.config.data,  
+                    attributes: res.data.attributes,
+                    opensea: {price: 0, permalink: ""},
+                    rarity_score: 0,
+                    normalized_rarity_score: 0,
+                    image: res.data.image,
+                    title: res.data.title? res.data.title: "",
+                    name: res.data.name? res.data.name: "" 
+                  }
+                  dispatch(setCountOfAllAttribute2(res.data.attributes as Attribute[]))
+                  dispatch(addTokenInList2(newToken)) 
+                })
 
               }
+
+
 
               for(var i=from; i <= to; i = i + 30){
                 const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
