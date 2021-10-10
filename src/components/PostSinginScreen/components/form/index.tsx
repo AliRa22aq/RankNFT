@@ -374,7 +374,7 @@ const NFTForm = () => {
 
               // dispatch(setOpenseaData2(flatResponse.flat()))
               
-              // dispatch(setIsSnipping({action: "completed"}))
+              dispatch(setIsSnipping({action: "completed"}))
 
 
 
