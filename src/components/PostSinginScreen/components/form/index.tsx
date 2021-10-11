@@ -54,8 +54,8 @@ const NFTForm = () => {
   const [loading, setLoading] = useState(false);
   const [needURI, setneedURI] = useState(false);
   const [needRange, setNeedrange] = useState(false);
-  const [delayNFT, setDelayNFT] = useState(10);
-  const [delayOpensea, setDelayOpensea] = useState(50);
+  const [delayNFT, setDelayNFT] = useState(20);
+  const [delayOpensea, setDelayOpensea] = useState(20);
 
   const handleDelayNFT = (ms: any) => {
     setDelayNFT(ms)
@@ -96,7 +96,7 @@ const NFTForm = () => {
           
           dispatch(setIsSnipping({action: "started"}))         
           // const range = to-from + 1
-          // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
+          const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
             
 
             let allTokens: any = [];
@@ -104,72 +104,72 @@ const NFTForm = () => {
             let allRequests:any = [];
 
 
-            for(var i = from;  i <= to;  i=i+1) {
-              let activeURL =  url.replace("extension" , String(i))
-              console.log(`step 6: active URl of NFT`, i, activeURL )
-              let API =  axios.get( activeURL,  {data: i} ) as any  
-              allRequests = [...allRequests  ,  API]
-            }
+            // for(var i = from;  i <= to;  i=i+1) {
+            //   let activeURL =  url.replace("extension" , String(i))
+            //   console.log(`step 6: active URl of NFT`, i, activeURL )
+            //   let API =  axios.get( activeURL,  {data: i} ) as any  
+            //   allRequests = [...allRequests  ,  API]
+            // }
             
-              const responses:any = await Promise.allSettled(allRequests); 
+            //   const responses:any = await Promise.allSettled(allRequests); 
               
-              responses.forEach((result:any, key: number) => {
-                      if(result.status == 'fulfilled'){
-                      const newTokens: any = {
-                        tokenID: result.value.config.data,  
-                        attributes: result.value.data.attributes,
-                        opensea: {price: 0, permalink: ""},
-                        rarity_score: 0,
-                        normalized_rarity_score: 0,
-                        image: result.value.data.image,
-                        title: result.value.data.title? result.value.title: "",
-                        name: result.value.data.name? result.value.data.name: "" 
-                      }
-                      allTokens.push(newTokens)
-                      allAttributes.push( result.value.data.attributes)
-                      console.log("done")
-                  } else {
-                    console.error("Unable to fetch")
-                  }
+            //   responses.forEach((result:any, key: number) => {
+            //           if(result.status == 'fulfilled'){
+            //           const newTokens: any = {
+            //             tokenID: result.value.config.data,  
+            //             attributes: result.value.data.attributes,
+            //             opensea: {price: 0, permalink: ""},
+            //             rarity_score: 0,
+            //             normalized_rarity_score: 0,
+            //             image: result.value.data.image,
+            //             title: result.value.data.title? result.value.title: "",
+            //             name: result.value.data.name? result.value.data.name: "" 
+            //           }
+            //           allTokens.push(newTokens)
+            //           allAttributes.push( result.value.data.attributes)
+            //           console.log("done")
+            //       } else {
+            //         console.error("Unable to fetch")
+            //       }
 
-              });
+            //   });
 
-              console.log("allTokens", allTokens)
-              dispatch(addTokenInList3(allTokens))
-              console.log("allAttributes", allAttributes)
-              dispatch(setCountOfAllAttribute3(allAttributes))              
+            //   console.log("allTokens", allTokens)
+            //   dispatch(addTokenInList3(allTokens))
+            //   console.log("allAttributes", allAttributes)
+            //   dispatch(setCountOfAllAttribute3(allAttributes))              
             
 
               
-              let allRequest2: any = [];
-              let allOpenSeaResponses:any = [];
-              let flatResponse:any = [];
+            //   let allRequest2: any = [];
+            //   let allOpenSeaResponses:any = [];
+            //   let flatResponse:any = [];
 
 
-              for(var i = from;  i <= to;  i=i+30) {
-                const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
-                console.log("open_sea Api", opensea_api)
-                let API =  axios.get( opensea_api,  {data: i} ) as any  
-                allRequest2 = [...allRequest2  , API]            
-              }
+            //   for(var i = from;  i <= to;  i=i+30) {
+            //     const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
+            //     console.log("open_sea Api", opensea_api)
+            //     let API =  axios.get( opensea_api,  {data: i} ) as any  
+            //     allRequest2 = [...allRequest2  , API]            
+            //   }
 
-              const responses2:any = await Promise.allSettled(allRequest2);
-              console.log("Combined responses of opensea ", responses2)
+            //   const responses2:any = await Promise.allSettled(allRequest2);
+            //   console.log("Combined responses of opensea ", responses2)
 
-              responses2.map((result: any, key: number) => {
-                if(result.status == 'fulfilled'){
-                  console.log(result.value.data.assets)
-                  allOpenSeaResponses.push(result.value.data.assets)
-                } else {
-                  console.error("Unable to fetch")
-                }
+            //   responses2.map((result: any, key: number) => {
+            //     if(result.status == 'fulfilled'){
+            //       console.log(result.value.data.assets)
+            //       allOpenSeaResponses.push(result.value.data.assets)
+            //     } else {
+            //       console.error("Unable to fetch")
+            //     }
 
-              })
-              console.log("all OpenSea Responses ",  allOpenSeaResponses.flat())
-              dispatch(setOpenseaData2(allOpenSeaResponses.flat()))
+            //   })
+            //   console.log("all OpenSea Responses ",  allOpenSeaResponses.flat())
+            //   dispatch(setOpenseaData2(allOpenSeaResponses.flat()))
 
+            // dispatch(setIsSnipping({action: "completed"}))
 
-              dispatch(setIsSnipping({action: "completed"}))
 
 
               // for(var i = from;  i <= to;  i=i+1) {
@@ -232,63 +232,63 @@ const NFTForm = () => {
 
               // Solution 3
 
-              // for(var i = from;  i <= to;  i=i+1) {
-              //   console.log("Loop delayNFT", delayNFT )
-              //   await delayFn(delayNFT);
+              for(var i = from;  i <= to;  i=i+1) {
+                console.log("Loop delayNFT", delayNFT )
+                await delayFn(delayNFT);
 
-              //   let activeURL =  url.replace("extension" , String(i))
-              //   console.log("Loop #",  i, activeURL )
+                let activeURL =  url.replace("extension" , String(i))
+                console.log("Loop #",  i, activeURL )
                      
-              //   axios.get( activeURL,  {data: i})
-              //   .then((res: any) => {
-              //     console.log("waited res of Loop #", res.config.data, res)
+                axios.get( activeURL,  {data: i})
+                .then((res: any) => {
+                  console.log("waited res of Loop #", res.config.data, res)
 
-              //         const newTokens: any = {
-              //           tokenID: res.config.data,  
-              //           attributes: res.data.attributes,
-              //           opensea: {price: 0, permalink: ""},
-              //           rarity_score: 0,
-              //           normalized_rarity_score: 0,
-              //           image: res.data.image,
-              //           title: res.data.title? res.data.title: "",
-              //           name: res.data.name? res.data.name: "" 
-              //         }
+                      const newTokens: any = {
+                        tokenID: res.config.data,  
+                        attributes: res.data.attributes,
+                        opensea: {price: 0, permalink: ""},
+                        rarity_score: 0,
+                        normalized_rarity_score: 0,
+                        image: res.data.image,
+                        title: res.data.title? res.data.title: "",
+                        name: res.data.name? res.data.name: "" 
+                      }
 
-              //     allTokens.push(newTokens)
-              //     allAttributes.push(res.data.attributes)
-              //   })
+                  allTokens.push(newTokens)
+                  allAttributes.push(res.data.attributes)
+                })
 
-              // }
-              // await delayFn(1000);
-              // console.log("allTokens", allTokens)
-              // dispatch(addTokenInList3(allTokens))
-              // console.log("allAttributes", allAttributes)
-              // dispatch(setCountOfAllAttribute3(allAttributes))              
+              }
+              await delayFn(2000);
+              console.log("allTokens", allTokens)
+              dispatch(addTokenInList3(allTokens))
+              console.log("allAttributes", allAttributes)
+              dispatch(setCountOfAllAttribute3(allAttributes))              
 
 
               // await delayFn(5000);
 
               // dispatch(setCountOfAllAttribute2(res.data.attributes as Attribute[]))
 
-              // let request2: any = [];
-              // let allOpenSeaResponses:any = [];
-              // let flatResponse:any = [];
+              let request2: any = [];
+              let allOpenSeaResponses:any = [];
+              let flatResponse:any = [];
 
               // OK
-              // console.log("First functions started")
-              // for(var i = from;  i <= to;  i=i+30) {
-              //   await delayFn(delayOpensea);
-              //   const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
-              //   console.log("open_sea Api", opensea_api)
-              //   axios.get(opensea_api).then((res: any) => {
-              //     allOpenSeaResponses.push(res.data.assets)
-              //   })
-              // }
-              // await delayFn(1000);
-              // console.log("allOpenSeaResponses ",  allOpenSeaResponses.flat())
-              // dispatch(setOpenseaData2(allOpenSeaResponses.flat()))
+              console.log("First functions started")
+              for(var i = from;  i <= to;  i=i+30) {
+                await delayFn(delayOpensea);
+                const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
+                console.log("open_sea Api", opensea_api)
+                axios.get(opensea_api).then((res: any) => {
+                  allOpenSeaResponses.push(res.data.assets)
+                })
+              }
+              await delayFn(2000);
+              console.log("allOpenSeaResponses ",  allOpenSeaResponses.flat())
+              dispatch(setOpenseaData2(allOpenSeaResponses.flat()))
 
-              // dispatch(setIsSnipping({action: "completed"}))
+              dispatch(setIsSnipping({action: "completed"}))
 
 
               async.series([
@@ -588,7 +588,7 @@ const NFTForm = () => {
   const startSnipping = async (from: number, to: number) => {
     dispatch(reSetSnipping()) 
     dispatch(setLoadingNFTs(false))
-    dispatch(setIsSnipping({action: "requested"}))    
+    dispatch(setIsSnipping({action: "requested"}))
 
 
     dispatch(setProjectRange({from: from, to: to, range: to - from + 1}))
@@ -767,16 +767,15 @@ const NFTForm = () => {
 
     }
 
-            
       </div>
 
-        {/* <div> 
+        <div> 
           <p>Set NFT Delay in ms</p>
           <input value={delayNFT} onChange={(e) => handleDelayNFT(e.target.value)} />
           <br />
           <p>Set Opensea Delay in ms</p>
           <input value={delayOpensea} onChange={(e) => handleDelayOpensea(e.target.value)} />
-        </div> */}
+        </div>
 
     </div>
 

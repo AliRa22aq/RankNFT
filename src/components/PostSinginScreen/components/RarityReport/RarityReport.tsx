@@ -5,21 +5,23 @@ import { CountOfEachAttribute } from '../../../store';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 
+import { CountOfEachAttribute2Values } from '../../../store';
+
 
 
 
 
 const RarityReport = () => {
-    const { countOfAllAttribute } = useSelector((state: any) => state);
+    const { countOfAllAttribute, countOfAllAttribute2 } = useSelector((state: any) => state);
 
-    // useEffect(()=> {
+    console.log("countOfAllAttribute2 ", countOfAllAttribute2)
 
-    // }, [countOfAllAttribute])
+
 
     return(
         <div className="Loading-NFTs-Data-container">
         {
-            countOfAllAttribute ?
+            countOfAllAttribute2 ?
             // <div>
 
                   <div className="Loading-NFTs-Data">
@@ -35,7 +37,7 @@ const RarityReport = () => {
                           Total Variations found in Attributes so far
                       </div> 
                   {
-                      countOfAllAttribute.map((attribute: CountOfEachAttribute, key: number) => {
+                      Object.values(countOfAllAttribute2 as CountOfEachAttribute2Values).map((attribute: CountOfEachAttribute, key: number) => {
                         return (
                           // <div key= {key}>{key+1}:  {attribute.trait_type}  <span> {attribute.total_variations} </span> </div>
                           <div key= {key} className="Loading-NFTs-Attribute"> 

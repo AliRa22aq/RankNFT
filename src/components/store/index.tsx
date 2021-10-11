@@ -469,7 +469,6 @@ const dataSlice = createSlice({
       }
     },
 
-
     setInitialCountOfAllAttribute2(state, { payload }: PayloadAction<Attribute[] >) {
       payload.forEach((attribute) => {
         state.countOfAllAttribute2[attribute.trait_type] = {trait_type: attribute.trait_type, trait_count: {}, total_variations: 0};
@@ -503,8 +502,6 @@ const dataSlice = createSlice({
         })    
       })
     },
-
-
 
     setOpenseaData(state, {payload}:PayloadAction< any>){
       state?.list_of_all_tokens?.map((token:AttributesOfEachToekn ) => {

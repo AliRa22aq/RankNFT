@@ -121,7 +121,7 @@ const NFTCards = () => {
 
     dispatch(setRarityScoreToAttributeValue(null))
 
-    const totalSupply:number = projectInfo && projectInfo.range.range
+    const totalSupply:number = projectInfo && projectInfo.range && projectInfo.range.range
     console.log("totalSupply ", totalSupply)
 
     // Normalized Scoring
@@ -200,8 +200,6 @@ const NFTCards = () => {
     handleInputLength()
   }, [page])
 
-
-
   useEffect(()=> {
     handlePage(0,1)
   }, [sortBy, showNFTs])
@@ -210,23 +208,23 @@ const NFTCards = () => {
     findRarityScore2()
   }, [isSnipping.completed])
 
-
-
   useEffect(()=> {
     if(list_of_all_tokens === null){
       setShowNFTs(false)
       set_list_of_NFTs_for_currentPage(null)
       handlePage(0,1)
     }
-  }, [isSnipping.requested])
+  }, [isSnipping.started])
 
+  // useEffect(()=> {
+  // }, [countOfAllAttribute2])
 
 
   return (
     <div className="cards-container">
   
       {
-        // showNFTs ? 
+        showNFTs ? 
         // <Grid item xs={12} style={{display: "flex",  minWidth: 300}}>
           <div className="NFT-Secreen">
 
@@ -289,50 +287,50 @@ const NFTCards = () => {
             
           </div>
 
-          //   :
+            :
 
-          // <div className="before-NFT-Secreen">
-          //     {
-          //         !isSnipping.requested && !isSnipping.started  && !isSnipping.completed ? 
-          //        <div className="before-NFT-welcome-Secreen"> 
+          <div className="before-NFT-Secreen">
+              {
+                  !isSnipping.requested && !isSnipping.started  && !isSnipping.completed ? 
+                 <div className="before-NFT-welcome-Secreen"> 
 
-          //          <div className="before-NFT-welcome-Secreen-text1">
-          //             Welcome. Please Enter an NFT contract address and load it to snip
-          //         </div>
+                   <div className="before-NFT-welcome-Secreen-text1">
+                      Welcome. Please Enter an NFT contract address and load it to snip
+                  </div>
 
-          //         <div className="before-NFT-welcome-Secreen-rules-header">
-          //             Rules of snipping
-          //         </div>
+                  <div className="before-NFT-welcome-Secreen-rules-header">
+                      Rules of snipping
+                  </div>
 
-          //         <div className="before-NFT-welcome-Secreen-rules">
-          //             <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-          //             <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-          //             <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-          //             <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-          //             <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-          //             <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-          //         </div>
+                  <div className="before-NFT-welcome-Secreen-rules">
+                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
+                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
+                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
+                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
+                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
+                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
+                  </div>
 
-          //        </div>
-          //         : 
-          //         isSnipping.requested && !isSnipping.started  && !isSnipping.completed ? 
-          //         <div> Wait we are fetching data </div> :                 
-          //         isSnipping.started  && !isSnipping.completed ? 
-          //        <div>
-          //          <RarityReport /> 
-          //       </div>                 
-          //        :
-          //        isSnipping.started  && isSnipping.completed && !showNFTs ?
-          //        <div>
-          //             {/* <div className="check-rarity-text">Amazing. we are ready to check rarity of NFTs. Lets go</div>
-          //             <div className="check-rarity-button-container"> <Button onClick={()=> findRarityScore()} variant="contained"> Check rarity </Button></div> */}
-          //             <FinalRarityReport />
-          //        </div> 
-          //        :
-          //        null
-          //     }
+                 </div>
+                  :
+                  isSnipping.requested && !isSnipping.started  && !isSnipping.completed ? 
+                  <div> Wait we are fetching data </div> :                 
+                  isSnipping.requested && isSnipping.started  && !isSnipping.completed ? 
+                 <div>
+                   <RarityReport /> 
+                </div>                 
+                 :
+                //  isSnipping.started  && isSnipping.completed && !showNFTs ?
+                //  <div>
+                //       {/* <div className="check-rarity-text">Amazing. we are ready to check rarity of NFTs. Lets go</div>
+                //       <div className="check-rarity-button-container"> <Button onClick={()=> findRarityScore()} variant="contained"> Check rarity </Button></div> */}
+                //       <FinalRarityReport />
+                //  </div> 
+                //  :
+                 null
+              }
 
-          // </div>
+          </div>
 
 
       }
