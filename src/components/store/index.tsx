@@ -535,6 +535,9 @@ const dataSlice = createSlice({
           }
 
         })
+
+        state.list_of_all_tokens = Object.values(state.list_of_all_tokens2)
+
     },
 
     setLoadingContractData(state, {payload}: PayloadAction<{action: "started"|"completed", value: boolean}>){

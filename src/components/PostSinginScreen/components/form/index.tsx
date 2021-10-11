@@ -55,7 +55,7 @@ const NFTForm = () => {
   const [needURI, setneedURI] = useState(false);
   const [needRange, setNeedrange] = useState(false);
   const [delayNFT, setDelayNFT] = useState(0);
-  const [delayOpensea, setDelayOpensea] = useState(0);
+  const [delayOpensea, setDelayOpensea] = useState(300);
 
   const handleDelayNFT = (ms: any) => {
     setDelayNFT(ms)
@@ -267,6 +267,7 @@ const NFTForm = () => {
 
 
               // await delayFn(5000);
+              dispatch(setIsSnipping({action: "completed"}))
 
               // dispatch(setCountOfAllAttribute2(res.data.attributes as Attribute[]))
 
@@ -288,7 +289,6 @@ const NFTForm = () => {
               console.log("allOpenSeaResponses ",  allOpenSeaResponses.flat())
               dispatch(setOpenseaData2(allOpenSeaResponses.flat()))
 
-              dispatch(setIsSnipping({action: "completed"}))
 
               async.series([
                 // async function(){
