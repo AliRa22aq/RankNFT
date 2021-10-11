@@ -314,12 +314,12 @@ const dataSlice = createSlice({
       
     },
 
-    addTokenInList3( state, { payload }: PayloadAction<AttributesOfEachToekn2> ) {
+    addTokenInList3( state, { payload }: PayloadAction<AttributesOfEachToekn[]> ) {
       console.log("payload in addTokenInList3 ", payload)
 
-          state.list_of_all_tokens2 = {...state.list_of_all_tokens2, ...payload}
-
-          // state.list_of_all_tokens = Object.values(state.list_of_all_tokens2)
+      payload.map((token: AttributesOfEachToekn) => {
+        state.list_of_all_tokens2[token.tokenID] = token        
+      })
 
       
     },
@@ -479,7 +479,19 @@ const dataSlice = createSlice({
     
       })
 
+    },
 
+    setCountOfAllAttribute3(state, { payload }: PayloadAction<Attribute[][] >) {
+
+      payload.forEach((attributes) => {
+        attributes.forEach((attribute) => {
+          if (!state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value]) {
+              state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value] = {value: attribute.value, count: 1};
+              state.countOfAllAttribute2[attribute.trait_type].total_variations+=1;
+          }
+          else state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].count +=1;
+        })    
+      })
     },
 
 
@@ -577,6 +589,6 @@ const dataSlice = createSlice({
 // Extract the action creators object and the reducer
 const { actions, reducer } = dataSlice
 // Extract and export each action creator by name
-export const  {convertInList, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, addTokenInList3, setOpenseaData2, addTokenInList2, setCountOfAllAttribute2, setInitialCountOfAllAttribute2, sortByPrice, setOpenseaData, reSetSnipping, setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
+export const  {setCountOfAllAttribute3, convertInList, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, addTokenInList3, setOpenseaData2, addTokenInList2, setCountOfAllAttribute2, setInitialCountOfAllAttribute2, sortByPrice, setOpenseaData, reSetSnipping, setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
 // Export the reducer, either as a default or named export
 export default reducer
