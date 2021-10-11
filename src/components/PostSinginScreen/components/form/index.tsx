@@ -54,8 +54,8 @@ const NFTForm = () => {
   const [loading, setLoading] = useState(false);
   const [needURI, setneedURI] = useState(false);
   const [needRange, setNeedrange] = useState(false);
-  const [delayNFT, setDelayNFT] = useState(20);
-  const [delayOpensea, setDelayOpensea] = useState(20);
+  const [delayNFT, setDelayNFT] = useState(0);
+  const [delayOpensea, setDelayOpensea] = useState(0);
 
   const handleDelayNFT = (ms: any) => {
     setDelayNFT(ms)
@@ -268,7 +268,7 @@ const NFTForm = () => {
 
               // await delayFn(5000);
 
-              dispatch(setCountOfAllAttribute2(res.data.attributes as Attribute[]))
+              // dispatch(setCountOfAllAttribute2(res.data.attributes as Attribute[]))
 
               let request2: any = [];
               let allOpenSeaResponses:any = [];
@@ -289,35 +289,6 @@ const NFTForm = () => {
               dispatch(setOpenseaData2(allOpenSeaResponses.flat()))
 
               dispatch(setIsSnipping({action: "completed"}))
-
-            //   let allRequest2: any = [];
-            //   let allOpenSeaResponses:any = [];
-
-
-            //   for(var i = from;  i <= to;  i=i+30) {
-            //     const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
-            //     console.log("open_sea Api", opensea_api)
-            //     let API =  axios.get( opensea_api,  {data: i} ) as any  
-            //     allRequest2 = [...allRequest2  , API]            
-            //   }
-
-            //   const responses2:any = await Promise.allSettled(allRequest2);
-            //   console.log("Combined responses of opensea ", responses2)
-
-            //   responses2.map((result: any, key: number) => {
-            //     if(result.status == 'fulfilled'){
-            //       console.log(result.value.data.assets)
-            //       allOpenSeaResponses.push(result.value.data.assets)
-            //     } else {
-            //       console.error("Unable to fetch")
-            //     }
-
-            //   })
-            //   console.log("all OpenSea Responses ",  allOpenSeaResponses.flat())
-            //   dispatch(setOpenseaData2(allOpenSeaResponses.flat()))
-
-            // dispatch(setIsSnipping({action: "completed"}))
-
 
               async.series([
                 // async function(){
