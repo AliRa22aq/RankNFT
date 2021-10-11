@@ -37,7 +37,7 @@ const NFTCards = () => {
   const { countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
   
   
-  console.log("list_of_all_tokens", list_of_all_tokens2)
+  console.log("list_of_all_tokens", list_of_all_tokens)
 
   
 
@@ -117,7 +117,6 @@ const NFTCards = () => {
 
   }
  
-
   const findRarityScore2 = () => {
 
     dispatch(setRarityScoreToAttributeValue(null))
@@ -183,12 +182,15 @@ const NFTCards = () => {
     handleInputLength()
   };
 
-  const numberOfItems = Object.values(list_of_all_tokens2).length;
+  // const numberOfItems = Object.values(list_of_all_tokens2).length;
+  const numberOfItems = list_of_all_tokens?.length | 0 ;
   const numberPerPage = 50
   const numberOfPages = Math.ceil(numberOfItems/numberPerPage)
 
   const handleInputLength = () => {
-    set_list_of_NFTs_for_currentPage( Object.values(list_of_all_tokens2 as AttributesOfEachToekn2)
+    // set_list_of_NFTs_for_currentPage( Object.values(list_of_all_tokens2 as AttributesOfEachToekn2)
+    //                                     .slice((page-1)*numberPerPage, page*numberPerPage))
+    set_list_of_NFTs_for_currentPage( list_of_all_tokens && list_of_all_tokens
                                         .slice((page-1)*numberPerPage, page*numberPerPage))
     console.log(list_of_NFTs_for_currentPage)
   }
@@ -262,17 +264,14 @@ const NFTCards = () => {
             <div className="NFTs-container">
               <Grid container>
                 {
-                      list_of_NFTs_for_currentPage && list_of_NFTs_for_currentPage.map((token: AttributesOfEachToekn, key:number) => {
-                    
+                  list_of_NFTs_for_currentPage && list_of_NFTs_for_currentPage.map((token: AttributesOfEachToekn, key:number) => {  
                       return (
                         <div className="NFTs-card" key={key}> 
                           <Grid item xs={12}>
                           <NFTCard 
                               token = {token} 
                               normalization = {normalization}
-                              
                               />
-
                           </Grid>
                         </div>
                       )            
@@ -354,7 +353,7 @@ export default NFTCards;
   // <div> Crypto Kitties: 0x06012c8cf97bead5deae237070f9587f8e7a266d </div> 
   // <div> Crypto Punks: 0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb </div>
   // <div> BearsOnTheBlock: 0x02aa731631c6d7f8241d74f906f5b51724ab98f8 </div>
-  // <div> Testing: 0x2cfcbf304415d87611E89fd284Ed362Cf6bA5141 </div>
+  // <div> Testing:                      0x2cfcbf304415d87611E89fd284Ed362Cf6bA5141 </div>
   // <div> Testing: 0xA66CC78067fd1E6Aa3eEC4CcdFF88D81527F92c1 </div>
   // <div> WannabeMusicClub: 0x402491a577373995fF3382e6da3c282cb0564902 </div> https://api.wannabesmusic.club/json/1
 

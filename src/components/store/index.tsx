@@ -243,6 +243,16 @@ const dataSlice = createSlice({
 
     sortByRarityScore(state) {
       console.log("Sorting start by Rarity", state.list_of_all_tokens)
+
+      // Get an array of the keys:
+      // let keys = Object.keys(state.list_of_all_tokens2);
+
+      // Then sort by using the keys to lookup the values in the original object:
+      // keys.sort(function(a, b) { 
+      //     return state.list_of_all_tokens2[a].rarity_score - state.list_of_all_tokens2[b].rarity_score 
+      //   });
+        // console.log(newww)
+
       if(state.list_of_all_tokens){
         state.list_of_all_tokens = state.list_of_all_tokens.sort( (a, b) => {
             return b.rarity_score - a.rarity_score;

@@ -85,7 +85,7 @@ const NFTForm = () => {
     console.log("step 1: Snipping started with URL ", tokenURI)
     try{
       let url1 = tokenURI;
-      let url = tokenURI.replace("1" , "extension");
+      let url = tokenURI.replace("321" , "extension");
 
       if(url){
         let fetchAPI =  await axios.get( url1 ) as any          
@@ -93,12 +93,10 @@ const NFTForm = () => {
         if(fetchAPI){
           
           dispatch(setInitialCountOfAllAttribute2(fetchAPI.data.attributes as Attribute[]))
-
           
-          dispatch(setIsSnipping({action: "started"}))
-          
-          const range = to-from + 1
-          const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
+          dispatch(setIsSnipping({action: "started"}))         
+          // const range = to-from + 1
+          // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
             
 
             let allTokens: any = [];
@@ -115,7 +113,7 @@ const NFTForm = () => {
             
               const responses:any = await Promise.allSettled(allRequests); 
               
-              responses.forEach((result:any) => {
+              responses.forEach((result:any, key: number) => {
                       if(result.status == 'fulfilled'){
                       const newTokens: any = {
                         tokenID: result.value.config.data,  
@@ -158,7 +156,7 @@ const NFTForm = () => {
               const responses2:any = await Promise.allSettled(allRequest2);
               console.log("Combined responses of opensea ", responses2)
 
-              responses2.map((result: any) => {
+              responses2.map((result: any, key: number) => {
                 if(result.status == 'fulfilled'){
                   console.log(result.value.data.assets)
                   allOpenSeaResponses.push(result.value.data.assets)
@@ -500,7 +498,7 @@ const NFTForm = () => {
       if(URl === ""){
         try{
           console.log("asset ", "trying 1")
-          const tokenURI1 = await MyContract.methods.tokenURI(1).call();
+          const tokenURI1 = await MyContract.methods.tokenURI(321).call();
 
           setData(pre => {return {...pre, baseTokenURI: tokenURI1}}) 
 
@@ -772,13 +770,13 @@ const NFTForm = () => {
             
       </div>
 
-        <div> 
+        {/* <div> 
           <p>Set NFT Delay in ms</p>
           <input value={delayNFT} onChange={(e) => handleDelayNFT(e.target.value)} />
           <br />
           <p>Set Opensea Delay in ms</p>
           <input value={delayOpensea} onChange={(e) => handleDelayOpensea(e.target.value)} />
-        </div>
+        </div> */}
 
     </div>
 
