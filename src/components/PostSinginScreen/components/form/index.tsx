@@ -259,7 +259,7 @@ const NFTForm = () => {
                 })
 
               }
-              // await delayFn(2000);
+              await delayFn(3000);
               console.log("allTokens", allTokens)
               dispatch(addTokenInList3(allTokens))
               console.log("allAttributes", allAttributes)
@@ -284,7 +284,7 @@ const NFTForm = () => {
                   allOpenSeaResponses.push(res.data.assets)
                 })
               }
-              // await delayFn(2000);
+              await delayFn(3000);
               console.log("allOpenSeaResponses ",  allOpenSeaResponses.flat())
               dispatch(setOpenseaData2(allOpenSeaResponses.flat()))
 
