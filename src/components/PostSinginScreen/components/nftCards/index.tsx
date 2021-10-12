@@ -136,7 +136,7 @@ const NFTCards = () => {
       
     //   // // const opensea_api  = `https://api.opensea.io/api/v1/assets?asset_contract_address=${state?.projectInfo?.contractAddress}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
       
-      const top20 = sorted.slice(0,100)
+      const top20 = sorted.slice(0,1000)
       let link = initialLink;
       top20.forEach((token: any) => {
         console.log(`${token.tokenID} ->  ${token.rarity_score}`)
