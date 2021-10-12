@@ -129,7 +129,6 @@ const NFTCards = () => {
 
     console.log("sorted", sorted)
 
-    let tope20OpenSeaResponses:any = [];
     let arrayOfLinks: any = [];
     let count = 1
     const initialLink = `https://api.opensea.io/api/v1/assets?asset_contract_address=${projectInfo?.contractAddress}`;
@@ -150,19 +149,22 @@ const NFTCards = () => {
 
       console.log("arrayOfLinks", arrayOfLinks)
       
+      const opensea_apis: any = [];
+      const opensea_res: any = [];
       arrayOfLinks.forEach(async (opensea_api:any)=> {
-          axios.get(opensea_api)
-          .then((res: any) => {
-          console.log("open_sea Api res", res.data.assets)
-          tope20OpenSeaResponses.push(res.data.assets)
+          const api = axios.get(opensea_api)
+          opensea_apis.push(api)
         })
 
-      })
+        const openseaData: any = await axios.all(opensea_apis);
+        console.log("Combined responses of opensea ", openseaData)
 
-      await delayFn(5000);
+        openseaData.map((res: any) => {
+          opensea_res.push(res.data.assets)
+        })
 
-      console.log("tope20OpenSeaResponses", tope20OpenSeaResponses.flat())
-      dispatch(setOpenseaData2(tope20OpenSeaResponses.flat()))   
+      console.log("opensea_res ",  opensea_res.flat())
+      dispatch(setOpenseaData2(opensea_res.flat()))   
 
       handleInputLength()
       setShowNFTs(true)
