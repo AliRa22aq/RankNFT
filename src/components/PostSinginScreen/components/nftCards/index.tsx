@@ -135,7 +135,7 @@ const NFTCards = () => {
       
     //   // // const opensea_api  = `https://api.opensea.io/api/v1/assets?asset_contract_address=${state?.projectInfo?.contractAddress}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
       
-      const top20 = sorted.slice(0,2000)
+      const top20 = sorted.slice(0,100)
       let link = initialLink;
       top20.forEach((token: any) => {
         console.log(`${token.tokenID} ->  ${token.rarity_score}`)
@@ -188,12 +188,12 @@ const NFTCards = () => {
       
     //   // // const opensea_api  = `https://api.opensea.io/api/v1/assets?asset_contract_address=${state?.projectInfo?.contractAddress}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
       
-      const top20 = sorted.slice(2000)
+      const ramaining80 = sorted.slice(100)
       let link = initialLink;
-      top20.forEach((token: any) => {
+      ramaining80.forEach((token: any) => {
         console.log(`${token.tokenID} ->  ${token.rarity_score}`)
         link = link.concat(`&token_ids=${token.tokenID}`);
-        if(count%30==0 || count === top20.length){
+        if(count%30==0 || count === ramaining80.length){
           arrayOfLinks.push(link.concat("&limit=30"))
           link = initialLink;
         }
@@ -202,21 +202,19 @@ const NFTCards = () => {
 
       console.log("remaining arrayOfLinks", arrayOfLinks)
       
-      const opensea_apis: any = [];
+      // const opensea_apis: any = [];
       const opensea_res: any = [];
       arrayOfLinks.forEach(async (opensea_api:any)=> {
-          const api = axios.get(opensea_api)
-          opensea_apis.push(api)
+          await delayFn(300)
+          axios.get(opensea_api).then((res: any) => {
+            opensea_res.push(res.data.assets)
+            console.log("remaining opensea_res", opensea_res)
+          })
         })
 
-        const openseaData: any = await axios.all(opensea_apis);
-        console.log("remaining Combined responses of opensea ", openseaData)
+      await delayFn(5000)
 
-        openseaData.map((res: any) => {
-          opensea_res.push(res.data.assets)
-        })
-
-      console.log("remaining opensea_res ",  opensea_res.flat())
+      console.log("final opensea_res ",  opensea_res.flat())
       dispatch(setOpenseaData2(opensea_res.flat()))   
 
       // handleInputLength()
