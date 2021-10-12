@@ -92,7 +92,7 @@ const NFTForm = () => {
            
         if(fetchAPI){
           
-          dispatch(setInitialCountOfAllAttribute2(fetchAPI.data.attributes as Attribute[]))
+          // dispatch(setInitialCountOfAllAttribute2(fetchAPI.data.attributes as Attribute[]))
           
           dispatch(setIsSnipping({action: "started"}))         
           // const range = to-from + 1
@@ -263,6 +263,7 @@ const NFTForm = () => {
               console.log("allTokens", allTokens)
               dispatch(addTokenInList3(allTokens))
               console.log("allAttributes", allAttributes)
+              console.log("Last")
               dispatch(setCountOfAllAttribute3(allAttributes))              
 
               await delayFn(5000);

@@ -332,6 +332,7 @@ const dataSlice = createSlice({
     },
 
     setRarityScoreToAttributeValue(
+
       state,
       { payload }: PayloadAction<RarityScoreOfValue | null>
     ) {
@@ -549,21 +550,38 @@ const dataSlice = createSlice({
 
     setCountOfAllAttribute2(state, { payload }: PayloadAction<Attribute[] >) {
 
+    //   if (!totalCounts[attribute.trait_type])
+    //   totalCounts[attribute.trait_type] = {trait_type: attribute.trait_type, trait_count: {}, total_variations: 0};
+
+    // if (!totalCounts[attribute.trait_type].trait_count[attribute.value]) {
+    //   totalCounts[attribute.trait_type].trait_count[attribute.value] = {value: attribute.value, count: 1};
+    //   totalCounts[attribute.trait_type].total_variations+=1;
+    // }
+    // else totalCounts[attribute.trait_type].trait_count[attribute.value].count +=1;
+
+
+      console.log("payload in setCOunt", payload)
       payload.forEach((attribute) => {
+        if (!state.countOfAllAttribute2[attribute.trait_type])
+            state.countOfAllAttribute2[attribute.trait_type] = {trait_type: attribute.trait_type, trait_count: {}, total_variations: 0};
+
         if (!state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value]) {
             state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value] = {value: attribute.value, count: 1};
             state.countOfAllAttribute2[attribute.trait_type].total_variations+=1;
         }
         else state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].count +=1;
-    
       })
 
     },
 
     setCountOfAllAttribute3(state, { payload }: PayloadAction<Attribute[][] >) {
+      console.log("Last in")
 
       payload.forEach((attributes) => {
         attributes.forEach((attribute) => {
+          if (!state.countOfAllAttribute2[attribute.trait_type])
+          state.countOfAllAttribute2[attribute.trait_type] = {trait_type: attribute.trait_type, trait_count: {}, total_variations: 0};
+
           if (!state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value]) {
               state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value] = {value: attribute.value, count: 1};
               state.countOfAllAttribute2[attribute.trait_type].total_variations+=1;
