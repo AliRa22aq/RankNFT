@@ -2,7 +2,7 @@ import  React, {useEffect, useState} from "react";
 import "./style.css";
 // import { intervalToDuration, formatDistanceToNow } from 'date-fns'
 import { useSelector, useDispatch } from 'react-redux';
-import { addTokenInList3, AttributesOfEachToekn2, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, CountOfEachAttribute2Values, CountOfEachAttribute2, sortByPrice, sortByTokenID, sortByRarityScore, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute, setCountOfAllAttribute2 } from '../../../store';
+import { setOpenseaData2, getTop20NFTs, addTokenInList3, AttributesOfEachToekn2, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, CountOfEachAttribute2Values, CountOfEachAttribute2, sortByPrice, sortByTokenID, sortByRarityScore, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute, setCountOfAllAttribute2 } from '../../../store';
 const Web3 = require("web3");
 import Switch from '@mui/material/Switch';
 import Button from '@mui/material/Button';
@@ -12,6 +12,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import NFTCard from "../nftCard";
 import RarityReport from "../RarityReport/RarityReport";
 import FinalRarityReport from "../RarityReport/FinalRarityReport";
+import axios from "axios";
 
 // import { OpenSeaPort, Network  } from 'opensea-js'
 import Box from '@mui/material/Box';
@@ -34,10 +35,10 @@ const NFTCards = () => {
   const [sortBy, setSortBy] = React.useState<number>(1);
 
   
-  const { countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
+  const { list_of_all_tokens_top_20, countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
   
   
-  console.log("list_of_all_tokens", list_of_all_tokens)
+  console.log("list_of_all_tokens_top_20", list_of_all_tokens_top_20)
 
   
 
@@ -116,10 +117,63 @@ const NFTCards = () => {
     setShowNFTs(true)
 
   }
- 
-  const findRarityScore2 = () => {
 
-    dispatch(setRarityScoreToAttributeValue(null))
+  const getTopRatedNFTs = async () => {
+    const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
+
+    console.log("list_of_all_tokens", list_of_all_tokens)
+
+    const sorted = Object.values(list_of_all_tokens2).sort( (a:any, b:any) => {
+      return b.rarity_score - a.rarity_score;
+    });
+
+    console.log("sorted", sorted)
+
+    let tope20OpenSeaResponses:any = [];
+    let arrayOfLinks: any = [];
+    let count = 1
+    const initialLink = `https://api.opensea.io/api/v1/assets?asset_contract_address=${projectInfo?.contractAddress}`;
+      
+    //   // // const opensea_api  = `https://api.opensea.io/api/v1/assets?asset_contract_address=${state?.projectInfo?.contractAddress}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
+      
+      const top20 = sorted.slice(0,100)
+      let link = initialLink;
+      top20.forEach((token: any) => {
+        console.log(`${token.tokenID} ->  ${token.rarity_score}`)
+        link = link.concat(`&token_ids=${token.tokenID}`);
+        if(count%30==0 || count === top20.length){
+          arrayOfLinks.push(link.concat("&limit=30"))
+          link = initialLink;
+        }
+        count++
+      })
+
+      console.log("arrayOfLinks", arrayOfLinks)
+      
+      arrayOfLinks.forEach(async (opensea_api:any)=> {
+          axios.get(opensea_api)
+          .then((res: any) => {
+          console.log("open_sea Api res", res.data.assets)
+          tope20OpenSeaResponses.push(res.data.assets)
+        })
+
+      })
+
+      await delayFn(5000);
+
+      console.log("tope20OpenSeaResponses", tope20OpenSeaResponses.flat())
+      dispatch(setOpenseaData2(tope20OpenSeaResponses.flat()))   
+
+      handleInputLength()
+      setShowNFTs(true)
+
+    }
+    
+  const findRarityScore2 = async () => {
+
+    // dispatch(setRarityScoreToAttributeValue(null))
+    const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
+
 
     const totalSupply:number = projectInfo && projectInfo.range && projectInfo.range.range
     console.log("totalSupply ", totalSupply)
@@ -168,13 +222,17 @@ const NFTCards = () => {
          })
       })
     }
+    // dispatch(sortByRarityScore())
+    //  await delayFn(3000);
+
+      // getTopRatedNFTs();
+      // handleInputLength()
+      // setShowNFTs(true)
     
-    dispatch(sortByRarityScore())
-    handleInputLength()
-    setShowNFTs(true)
-  
     
   }
+
+
 
   const handlePage = (event: any, value: number) => {
     console.log(value)
@@ -198,7 +256,7 @@ const NFTCards = () => {
 
   useEffect(()=> {
     handleInputLength()
-  }, [page])
+  }, [page, list_of_all_tokens])
 
   useEffect(()=> {
     handlePage(0,1)
@@ -209,6 +267,12 @@ const NFTCards = () => {
   }, [isSnipping.completed])
 
   useEffect(()=> {
+    getTopRatedNFTs()
+  }, [list_of_all_tokens_top_20])
+
+  
+
+  useEffect(()=> {
     if(list_of_all_tokens === null){
       setShowNFTs(false)
       set_list_of_NFTs_for_currentPage(null)
@@ -216,8 +280,7 @@ const NFTCards = () => {
     }
   }, [isSnipping.started])
 
-  // useEffect(()=> {
-  // }, [countOfAllAttribute2])
+
 
 
   return (

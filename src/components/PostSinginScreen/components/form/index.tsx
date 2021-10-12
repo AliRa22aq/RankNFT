@@ -42,7 +42,7 @@ const NFTForm = () => {
 
   const provider = new Web3.providers.HttpProvider('https://mainnet.infura.io')
 
-  const { countOfAllAttribute2, list_of_all_tokens2 } = useSelector((state: any) => state);
+  const { countOfAllAttribute2, list_of_all_tokens2, list_of_all_tokens } = useSelector((state: any) => state);
   // console.log("countOfAllAttribute2", countOfAllAttribute2)
   // console.log("list_of_all_tokens2", list_of_all_tokens2)
 
@@ -54,7 +54,7 @@ const NFTForm = () => {
   const [loading, setLoading] = useState(false);
   const [needURI, setneedURI] = useState(false);
   const [needRange, setNeedrange] = useState(false);
-  const [delayNFT, setDelayNFT] = useState(0);
+  const [delayNFT, setDelayNFT] = useState(10);
   const [delayOpensea, setDelayOpensea] = useState(300);
 
   const handleDelayNFT = (ms: any) => {
@@ -259,35 +259,32 @@ const NFTForm = () => {
                 })
 
               }
-              await delayFn(3000);
-              console.log("allAttributes", allAttributes)
-              dispatch(setCountOfAllAttribute3(allAttributes))              
+              await delayFn(5000);
               console.log("allTokens", allTokens)
               dispatch(addTokenInList3(allTokens))
+              console.log("allAttributes", allAttributes)
+              dispatch(setCountOfAllAttribute3(allAttributes))              
 
-
-              // await delayFn(5000);
+              await delayFn(5000);
               dispatch(setIsSnipping({action: "completed"}))
 
-              // dispatch(setCountOfAllAttribute2(res.data.attributes as Attribute[]))
-
-              let request2: any = [];
-              let allOpenSeaResponses:any = [];
-              let flatResponse:any = [];
+              // let request2: any = [];
+              // let allOpenSeaResponses:any = [];
+              // let flatResponse:any = [];
 
               // OK
-              console.log("First functions started")
-              for(var i = from;  i <= to;  i=i+30) {
-                await delayFn(delayOpensea);
-                const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
-                console.log("open_sea Api", opensea_api)
-                axios.get(opensea_api).then((res: any) => {
-                  allOpenSeaResponses.push(res.data.assets)
-                })
-              }
-              await delayFn(3000);
-              console.log("allOpenSeaResponses ",  allOpenSeaResponses.flat())
-              dispatch(setOpenseaData2(allOpenSeaResponses.flat()))
+              // console.log("First functions started")
+              // for(var i = from;  i <= to;  i=i+30) {
+              //   await delayFn(delayOpensea);
+              //   const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
+              //   console.log("open_sea Api", opensea_api)
+              //   axios.get(opensea_api).then((res: any) => {
+              //     allOpenSeaResponses.push(res.data.assets)
+              //   })
+              // }
+              // await delayFn(3000);
+              // console.log("allOpenSeaResponses ",  allOpenSeaResponses.flat())
+              // dispatch(setOpenseaData2(allOpenSeaResponses.flat()))
 
 
               async.series([
@@ -585,7 +582,7 @@ const NFTForm = () => {
     }
 
   const startSnipping = async (from: number, to: number) => {
-    dispatch(reSetSnipping()) 
+    dispatch(reSetSnipping())
     dispatch(setLoadingNFTs(false))
     dispatch(setIsSnipping({action: "requested"}))
 
@@ -713,7 +710,7 @@ const NFTForm = () => {
 
 {
       needRange ?
-        <Formik initialValues={{ from: 1, to: 20 }}  
+        <Formik initialValues={{ from: 1, to: 100 }}  
                 validationSchema={schema2} 
                 onSubmit={async (values, { setSubmitting, resetForm, setFieldValue,  }) => {
               startSnipping(values.from, values.to)
