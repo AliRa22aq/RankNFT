@@ -399,13 +399,13 @@ const dataSlice = createSlice({
       if(state.list_of_all_tokens_top_20 === null){
         state.list_of_all_tokens_top_20 = Object.values(state.list_of_all_tokens2)
       }
+      else if (state.list_of_all_tokens_remaining === null){
+        state.list_of_all_tokens_remaining = Object.values(state.list_of_all_tokens2)
+        state.list_of_all_tokens = Object.values(state.list_of_all_tokens2)
+      }
       else {
         state.list_of_all_tokens = Object.values(state.list_of_all_tokens2)
       }
-
-
-      
-
        
     },
 
