@@ -14,12 +14,13 @@ import Web3 from "web3";
 import ether from '../../../assets/etherSymbol.png'
 // @ts-ignore
 import CornerRibbon from "react-corner-ribbon";
+import undefined from '../../../assets/undefined.png'
 
 
 
 interface Props {
   token : AttributesOfEachToekn,
-  normalization: boolean
+  normalization: boolean,
 }
 
 const NFTCard: FC<Props> = ({token, normalization}) => {
@@ -34,6 +35,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
 
   // const onSale = token?.opensea_data?.sell_orders && token?.opensea_data?.sell_orders[0]? true:false; 
   const onSale = token.opensea.price && token.opensea.price > 0 ? true:false; 
+
 
   return (
     <div>
@@ -55,7 +57,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
             component="img"
             height="200"
             image={token.image}
-            alt={token.name? token.name: "nothing"}
+            alt={undefined}
           />
         <CardContent>
           <Typography gutterBottom variant="body2" component="div">

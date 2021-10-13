@@ -2,7 +2,7 @@ import  React, {useEffect, useState} from "react";
 import "./style.css";
 // import { intervalToDuration, formatDistanceToNow } from 'date-fns'
 import { useSelector, useDispatch } from 'react-redux';
-import { setOpenseaData2, getTop20NFTs, addTokenInList3, AttributesOfEachToekn2, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, CountOfEachAttribute2Values, CountOfEachAttribute2, sortByPrice, sortByTokenID, sortByRarityScore, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute, setCountOfAllAttribute2 } from '../../../store';
+import {  setOnlyOnSaleState, setOpenseaData2, getTop20NFTs, addTokenInList3, AttributesOfEachToekn2, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, CountOfEachAttribute2Values, CountOfEachAttribute2, sortByPrice, sortByTokenID, sortByRarityScore, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute, setCountOfAllAttribute2 } from '../../../store';
 const Web3 = require("web3");
 import Switch from '@mui/material/Switch';
 import Button from '@mui/material/Button';
@@ -29,6 +29,7 @@ const NFTCards = () => {
   
   const dispatch = useDispatch();
   const [normalization, setNormalization] = useState(true)
+  const [onlyOnSale, setOnlyOnSale] = useState(false)
   const [showNFTs, setShowNFTs] = useState(false)
   const [page, setPage] = useState(1)
   const [list_of_NFTs_for_currentPage, set_list_of_NFTs_for_currentPage] = useState<AttributesOfEachToekn[] | null>([])
@@ -38,22 +39,29 @@ const NFTCards = () => {
   const { list_of_all_tokens_remaining, list_of_all_tokens_top_20, countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
   
   
-  console.log("remaining", list_of_all_tokens_remaining)
+  console.log("list_of_all_tokens_onSale", list_of_all_tokens)
 
-  
 
   const handleSort = (e: number) => {
     // console.log(e)
     setSortBy(e);
     if(e === 1){
-      dispatch(sortByRarityScore())
-
+      dispatch(sortByRarityScore("decs"))
     }
     if(e === 2){
-      dispatch(sortByTokenID())
+      dispatch(sortByRarityScore("accs"))
     }
     if(e === 3){
-      dispatch(sortByPrice())
+      dispatch(sortByPrice("decs"))
+    }
+    if(e === 4){
+      dispatch(sortByPrice("accs"))
+    }
+    if(e === 5){
+      dispatch(sortByTokenID("decs"))
+    }
+    if(e === 6){
+      dispatch(sortByTokenID("accs"))
     }
     
   };
@@ -61,6 +69,14 @@ const NFTCards = () => {
   const handleNormalization = () => {
     setNormalization(!normalization)
   }
+
+  const handleOnSale = () => {
+    dispatch(setOnlyOnSaleState(!onlyOnSale))
+    setOnlyOnSale(!onlyOnSale)
+
+    
+  }
+  
 
   const findRarityScore = () => {
 
@@ -112,7 +128,7 @@ const NFTCards = () => {
         })
       })
     }
-    dispatch(sortByRarityScore())
+    // dispatch(sortByRarityScore())
     handleInputLength()
     setShowNFTs(true)
 
@@ -350,7 +366,8 @@ const NFTCards = () => {
             
                 <div className="normalization-container"> 
                   <FormGroup>
-                      <FormControlLabel onChange={handleNormalization} control={<Switch defaultChecked />} label="Normalization" />
+                    <span> <FormControlLabel onChange={handleOnSale} control={<Switch />} label="On sale" /></span>
+                    <span> <FormControlLabel onChange={handleNormalization} control={<Switch defaultChecked />} label="Normalization" /></span>
                   </FormGroup>
                       {/* <Button onClick={findRarityScore} variant="contained"> Check rarity </Button> */}
                 </div> 
@@ -367,9 +384,12 @@ const NFTCards = () => {
                             label="Sort By"
                             onChange={(e) => handleSort(Number(e.target.value))}
                           >
-                            <MenuItem value={1}> Rarity Score </MenuItem>
-                            <MenuItem value={2}> Token ID</MenuItem>
-                            <MenuItem value={3}> Price </MenuItem>
+                            <MenuItem value={1}> {`Rarity Score (high -> low)`} </MenuItem>
+                            <MenuItem value={2}> {`Rarity Score (low -> high)`} </MenuItem>
+                            <MenuItem value={3}> {`Price (high -> low)`} </MenuItem>
+                            <MenuItem value={4}> {`Price (low -> high)`} </MenuItem>
+                            <MenuItem value={5}> {`Token ID (high -> low)`} </MenuItem>
+                            <MenuItem value={6}> {`Token ID (low -> high)`} </MenuItem>
                           </Select>
                         </FormControl>
                       </Box>
