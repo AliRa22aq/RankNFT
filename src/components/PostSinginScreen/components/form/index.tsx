@@ -14,11 +14,6 @@ import * as yup from 'yup';
 import async  from "async";
 // import parallel from 'async/parallel';
 
- 
-
- 
-
-
 
 interface Data {
   contractInfo: {contractFunctions: any, contractAddrs: string},
@@ -770,13 +765,13 @@ const NFTForm = () => {
 
       </div>
 
-        <div> 
+        {/* <div> 
           <p>Set NFT Delay in ms</p>
           <input value={delayNFT} onChange={(e) => handleDelayNFT(e.target.value)} />
           <br />
           <p>Set Opensea Delay in ms</p>
           <input value={delayOpensea} onChange={(e) => handleDelayOpensea(e.target.value)} />
-        </div>
+        </div> */}
 
     </div>
 

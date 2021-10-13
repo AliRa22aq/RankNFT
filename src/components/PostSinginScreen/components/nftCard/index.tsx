@@ -25,7 +25,7 @@ interface Props {
 
 const NFTCard: FC<Props> = ({token, normalization}) => {
 
-  console.log("image", token.image)
+  // console.log("image", token.image)
   const check = token.image.includes("ipfs://");
 
   const imageOfNFT = check ? 

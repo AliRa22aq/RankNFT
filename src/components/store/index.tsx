@@ -627,7 +627,6 @@ const dataSlice = createSlice({
     },
 
     setCountOfAllAttribute3(state, { payload }: PayloadAction<Attribute[][] >) {
-      console.log("Last in")
 
       payload.forEach((attributes) => {
         attributes.forEach((attribute) => {
@@ -641,6 +640,9 @@ const dataSlice = createSlice({
           else state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].count +=1;
         })    
       })
+
+      console.log("countOfAllAttribute2", state.countOfAllAttribute2)
+
     },
 
     setOpenseaData(state, {payload}:PayloadAction< any>){
@@ -724,10 +726,13 @@ const dataSlice = createSlice({
       state.countOfAllAttribute2 = {},      
       state.list_of_all_tokens= null,
       state.list_of_all_tokens2= {},
+      state.list_of_all_tokens_top_20 =  null,
+      state.list_of_all_tokens_remaining = null,
       state.countOfAllAttribute= null,
       state.countOfAllAttribute2 = {},
       state.rarityScoreOfAllValues= null,
       state.isSnipping= { requested: false, started: false, completed: false }
+  
     
     },
 

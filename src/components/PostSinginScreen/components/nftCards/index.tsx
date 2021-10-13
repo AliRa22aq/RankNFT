@@ -28,7 +28,7 @@ import Stack from '@mui/material/Stack';
 const NFTCards = () => {
   
   const dispatch = useDispatch();
-  const [normalization, setNormalization] = useState(true)
+  const [normalization, setNormalization] = useState(false)
   const [onlyOnSale, setOnlyOnSale] = useState(false)
   const [showNFTs, setShowNFTs] = useState(false)
   const [page, setPage] = useState(1)
@@ -39,7 +39,7 @@ const NFTCards = () => {
   const { list_of_all_tokens_remaining, list_of_all_tokens_top_20, countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
   
   
-  console.log("list_of_all_tokens_onSale", list_of_all_tokens)
+  // console.log("list_of_all_tokens_onSale", list_of_all_tokens)
 
 
   const handleSort = (e: number) => {
@@ -71,10 +71,9 @@ const NFTCards = () => {
   }
 
   const handleOnSale = () => {
+    handlePage(0,1)
     dispatch(setOnlyOnSaleState(!onlyOnSale))
-    setOnlyOnSale(!onlyOnSale)
-
-    
+    setOnlyOnSale(!onlyOnSale)    
   }
   
 
@@ -83,12 +82,12 @@ const NFTCards = () => {
     dispatch(setRarityScoreToAttributeValue(null))
 
     const totalSupply:number = projectInfo && projectInfo.range.range
-    console.log("totalSupply ", totalSupply)
+    // console.log("totalSupply ", totalSupply)
 
     // Normalized Scoring
     if(countOfAllAttribute){
   
-      console.log("Normalization is on")
+      // console.log("Normalization is on")
       let traits_count = 0;
       
       countOfAllAttribute.map((eachAttribute: CountOfEachAttribute) => {
@@ -98,8 +97,8 @@ const NFTCards = () => {
       const attribute_count_in_categories = countOfAllAttribute.length;
       const average_trait_count = traits_count/countOfAllAttribute.length;
       
-      console.log("traits_count",traits_count )
-      console.log("attribute_count_in_categories",attribute_count_in_categories )
+      // console.log("traits_count",traits_count )
+      // console.log("attribute_count_in_categories",attribute_count_in_categories )
 
       countOfAllAttribute.map((eachAttribute: CountOfEachAttribute) => {
 
@@ -121,7 +120,7 @@ const NFTCards = () => {
             normalized_rarity_score:  final_normalized_score
       }
 
-          console.log("aliiiii", rarity_score_of_each_value)
+          // console.log("aliiiii", rarity_score_of_each_value)
           dispatch(setRarityScoreToAttributeValue(rarity_score_of_each_value))
           dispatch(setRarityScoreToEachNFTAttribuValue(rarity_score_of_each_value))
 
@@ -130,20 +129,20 @@ const NFTCards = () => {
     }
     // dispatch(sortByRarityScore())
     handleInputLength()
-    setShowNFTs(true)
+    // setShowNFTs(true)
 
   }
 
   const getTopRatedNFTs = async () => {
     const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
-    console.log("list_of_all_tokens", list_of_all_tokens)
+    // console.log("list_of_all_tokens", list_of_all_tokens)
 
     const sorted = Object.values(list_of_all_tokens2).sort( (a:any, b:any) => {
       return b.rarity_score - a.rarity_score;
     });
 
-    console.log("sorted", sorted)
+    // console.log("sorted", sorted)
 
     let arrayOfLinks: any = [];
     let count = 1
@@ -163,7 +162,7 @@ const NFTCards = () => {
         count++
       })
 
-      console.log("arrayOfLinks", arrayOfLinks)
+      // console.log("arrayOfLinks", arrayOfLinks)
       
       const opensea_apis: any = [];
       const opensea_res: any = [];
@@ -173,7 +172,7 @@ const NFTCards = () => {
         })
 
         const openseaData: any = await axios.all(opensea_apis);
-        console.log("Combined responses of opensea ", openseaData)
+        // console.log("Combined responses of opensea ", openseaData)
 
         openseaData.map((res: any) => {
           opensea_res.push(res.data.assets)
@@ -190,13 +189,13 @@ const NFTCards = () => {
   const getRemainingNFTs = async () => {
     const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
-    console.log("remaining", list_of_all_tokens)
+    // console.log("remaining", list_of_all_tokens)
 
     const sorted = Object.values(list_of_all_tokens2).sort( (a:any, b:any) => {
       return b.rarity_score - a.rarity_score;
     });
 
-    console.log("remaining sorted", sorted)
+    // console.log("remaining sorted", sorted)
 
     let arrayOfLinks: any = [];
     let count = 1
@@ -216,7 +215,7 @@ const NFTCards = () => {
         count++
       })
 
-      console.log("remaining arrayOfLinks", arrayOfLinks)
+      // console.log("remaining arrayOfLinks", arrayOfLinks)
       
       // const opensea_apis: any = [];
       const opensea_res: any = [];
@@ -224,7 +223,7 @@ const NFTCards = () => {
           await delayFn(300)
           axios.get(opensea_api).then((res: any) => {
             opensea_res.push(res.data.assets)
-            console.log("remaining opensea_res", opensea_res)
+            // console.log("remaining opensea_res", opensea_res)
           })
         })
 
@@ -234,7 +233,7 @@ const NFTCards = () => {
       dispatch(setOpenseaData2(opensea_res.flat()))   
 
       dispatch(setIsSnipping({action: "allowSnipping"}))
-      // setShowNFTs(true)
+      setShowNFTs(true)
 
   }
     
@@ -245,28 +244,28 @@ const NFTCards = () => {
 
 
     const totalSupply:number = projectInfo && projectInfo.range && projectInfo.range.range
-    console.log("totalSupply ", totalSupply)
+    // console.log("totalSupply ", totalSupply)
 
     // Normalized Scoring
     if(countOfAllAttribute2){
   
-      console.log("Normalization is on")
+      // console.log("Normalization is on")
       let traits_count = 0;
 
-      console.log("countOfAllAttribute2 ", countOfAllAttribute2)
+      // console.log("countOfAllAttribute2 ", countOfAllAttribute2)
       
       Object.values(countOfAllAttribute2).map((eachAttribute: any) => {
-        console.log("countOfAllAttribute2 ", eachAttribute)
+        // console.log("countOfAllAttribute2 ", eachAttribute)
           traits_count = traits_count + eachAttribute.total_variations
         })
         
 
-         console.log("countOfAllAttribute2 Values", Object.keys(countOfAllAttribute2))
+        //  console.log("countOfAllAttribute2 Values", Object.keys(countOfAllAttribute2))
         const attribute_count_in_categories = Object.keys(countOfAllAttribute2).length;
         const average_trait_count = traits_count/attribute_count_in_categories;
         
-        console.log("countOfAllAttribute2 attribute_count_in_categories",attribute_count_in_categories )
-        console.log("countOfAllAttribute2 average_trait_count",average_trait_count )
+        // console.log("countOfAllAttribute2 attribute_count_in_categories",attribute_count_in_categories )
+        // console.log("countOfAllAttribute2 average_trait_count",average_trait_count )
         
           Object.values(countOfAllAttribute2).map((eachAttribute: any) => {
           
@@ -285,7 +284,7 @@ const NFTCards = () => {
                 normalized_rarity_score:  final_normalized_score
           }
 
-          console.log("countOfAllAttribute2 ", rarity_score_of_each_value)
+          // console.log("countOfAllAttribute2 ", rarity_score_of_each_value)
           dispatch(setRarityScoreToAttributeValue2(rarity_score_of_each_value))
           dispatch(setRarityScoreToEachNFTAttribuValue2(rarity_score_of_each_value))
          })
@@ -304,7 +303,7 @@ const NFTCards = () => {
 
 
   const handlePage = (event: any, value: number) => {
-    console.log(value)
+    // console.log(value)
     setPage(value)
     handleInputLength()
   };
@@ -319,7 +318,7 @@ const NFTCards = () => {
     //                                     .slice((page-1)*numberPerPage, page*numberPerPage))
     set_list_of_NFTs_for_currentPage( list_of_all_tokens && list_of_all_tokens
                                         .slice((page-1)*numberPerPage, page*numberPerPage))
-    console.log(list_of_NFTs_for_currentPage)
+    // console.log(list_of_NFTs_for_currentPage)
   }
 
 
@@ -353,7 +352,7 @@ const NFTCards = () => {
 
 
 
-
+console.log("showNFTs", showNFTs)
   return (
     <div className="cards-container">
   
@@ -367,7 +366,7 @@ const NFTCards = () => {
                 <div className="normalization-container"> 
                   <FormGroup>
                     <span> <FormControlLabel onChange={handleOnSale} control={<Switch />} label="On sale" /></span>
-                    <span> <FormControlLabel onChange={handleNormalization} control={<Switch defaultChecked />} label="Normalization" /></span>
+                    <span> <FormControlLabel onChange={handleNormalization} control={<Switch  />} label="Normalization" /></span>
                   </FormGroup>
                       {/* <Button onClick={findRarityScore} variant="contained"> Check rarity </Button> */}
                 </div> 
@@ -415,8 +414,8 @@ const NFTCards = () => {
                 }
 
                 <div className="pagination-container">
-                  <Stack spacing={2}>
-                    <Pagination count={numberOfPages} page={page} onChange={handlePage}/>
+                  <Stack spacing={5}>
+                    <Pagination count={numberOfPages} page={page} siblingCount={4} boundaryCount={2} onChange={handlePage}/>
                   </Stack>
                 </div>
 
