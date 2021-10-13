@@ -402,7 +402,17 @@ const dataSlice = createSlice({
 
 
     setRarityScoreToEachNFTAttribuValue2( state, { payload }: PayloadAction<RarityScoreOfValue> ) {
-      
+              
+              // state.list_of_all_tokens2[payload.trait_type].attributes?.map((attribute) => {
+              //   if(attribute.value === payload.value){
+              //     attribute.value_rarity_score = payload.rarity_score
+              //     attribute.value_normalized_rarity_score = payload.normalized_rarity_score
+              //   }
+              // });
+              
+              // state.list_of_all_tokens2[payload.trait_type].rarity_score += payload.rarity_score;
+              // state.list_of_all_tokens2[payload.trait_type].normalized_rarity_score += payload.normalized_rarity_score;
+
       Object.values(state.list_of_all_tokens2).map((token) => {
 
         token.attributes.map((attribute) => {
@@ -417,6 +427,8 @@ const dataSlice = createSlice({
         })
 
       })
+
+
 
       if(state.list_of_all_tokens_top_20 === null){
         state.list_of_all_tokens_top_20 = Object.values(state.list_of_all_tokens2)
@@ -682,7 +694,7 @@ const dataSlice = createSlice({
 
     },
 
-    setIsSnipping(state, {payload}: PayloadAction<{action: "requested"|"started"|"completed"| null}>){
+    setIsSnipping(state, {payload}: PayloadAction<{action: "allowSnipping"|"requested"|"started"|"completed"| null}>){
 
       if(payload.action === null){
         state.isSnipping =  {requested: false, started: false, completed: false}
@@ -699,14 +711,21 @@ const dataSlice = createSlice({
         if(payload.action === "completed"){
           state.isSnipping =  {requested: true, started: true, completed: true}
         }
+        if(payload.action === "allowSnipping"){
+          state.isSnipping =  {requested: true, started: false, completed: true}
+        }
+        
       }
     },
 
     reSetSnipping(state){
 
       state.allAvailableAttributes= null,
+      state.countOfAllAttribute2 = {},      
       state.list_of_all_tokens= null,
+      state.list_of_all_tokens2= {},
       state.countOfAllAttribute= null,
+      state.countOfAllAttribute2 = {},
       state.rarityScoreOfAllValues= null,
       state.isSnipping= { requested: false, started: false, completed: false }
     

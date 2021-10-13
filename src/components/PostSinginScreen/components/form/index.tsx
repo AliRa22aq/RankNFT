@@ -42,7 +42,7 @@ const NFTForm = () => {
 
   const provider = new Web3.providers.HttpProvider('https://mainnet.infura.io')
 
-  const { countOfAllAttribute2, list_of_all_tokens2, list_of_all_tokens } = useSelector((state: any) => state);
+  const { projectInfo, isSnipping, countOfAllAttribute2, list_of_all_tokens2, list_of_all_tokens } = useSelector((state: any) => state);
   // console.log("countOfAllAttribute2", countOfAllAttribute2)
   // console.log("list_of_all_tokens2", list_of_all_tokens2)
 
@@ -75,7 +75,7 @@ const NFTForm = () => {
 
   let schema2 = yup.object().shape({
     from: yup.number().positive().moreThan(0, "should be more than 1").lessThan(yup.ref("to"), "not a valid range ").required(),
-    to: yup.number().positive().moreThan(yup.ref("from"), "not a valid range ").moreThan(1, "should be more than 1").required()
+    to: yup.number().positive().lessThan(projectInfo?.totalSupply + 1, "Should be less then total supply").moreThan(yup.ref("from"), "not a valid range ").moreThan(1, "should be more than 1").required()
   });
 
   
@@ -462,9 +462,12 @@ const NFTForm = () => {
 
   const fetchData = async  ( contractAdrs : string, URl:string, setFieldValue: any ) => {
 
+      
       setData(initialData)
       setNeedrange(false)
       setLoading(true)
+
+
 
       // TODO: Ask ben to provide Infure API Kye
       var web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/92a3eada72834b629e28ff80ba4af4d0'))  
@@ -749,6 +752,7 @@ const NFTForm = () => {
                       color="primary"
                       type="submit"
                       className="form-button"
+                      disabled={isSnipping.started? true: false}
                       >
                     <div >Snip </div> 
 

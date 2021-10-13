@@ -24,6 +24,13 @@ interface Props {
 }
 
 const NFTCard: FC<Props> = ({token, normalization}) => {
+
+  console.log("image", token.image)
+  const check = token.image.includes("ipfs://");
+
+  const imageOfNFT = check ? 
+                     token.image?.replace("ipfs://", "https://ipfs.io/ipfs/") :
+                     token.image
   
   const web3 = new Web3(window.ethereum);  
 
@@ -56,7 +63,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
           <CardMedia
             component="img"
             height="200"
-            image={token.image}
+            image={imageOfNFT}
             alt={undefined}
           />
         <CardContent>
@@ -109,7 +116,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
         <div className="NFT-image"> 
             <div>
 
-              <img src={token.image} alt={token.name} height="300" width="300" /> 
+              <img src={imageOfNFT} alt={token.name} height="300" width="300" /> 
             </div>
             <div className="NFT-Opensea-Container">
             <div> {onSale ? "Open to sale": "Not open to sale"} </div>
