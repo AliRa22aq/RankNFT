@@ -51,7 +51,7 @@ const NFTForm = () => {
   const [loading, setLoading] = useState(false);
   const [needURI, setneedURI] = useState(false);
   const [needRange, setNeedrange] = useState(false);
-  const [delayNFT, setDelayNFT] = useState(50);
+  const [delayNFT, setDelayNFT] = useState(20);
   const [delayOpensea, setDelayOpensea] = useState(300);
 
   const handleDelayNFT = (ms: any) => {
@@ -234,7 +234,7 @@ const NFTForm = () => {
               console.log("Loop starting with ",  from, to, url)
               for(var i = from;  i <= to;  i=i+1) {
                 // console.log("Loop delayNFT", delayNFT )
-                await delayFn(100);
+                await delayFn(delayNFT);
 
                 let activeURL =  url.replace("extension" , String(i))
                 console.log("Loop #",  i, activeURL )
@@ -759,16 +759,28 @@ const NFTForm = () => {
                   </Grid>
 
                   <div className="form-button-container">
+                    {
+                    !isSnipping.started?
                     <Button
                       variant="contained"
                       color="primary"
                       type="submit"
                       className="form-button"
-                      disabled={isSnipping.started? true: false}
+                      // disabled={isSnipping.started? true: false}
                       >
-                    <div >Snip </div> 
-
+                                <div >Snip </div> 
+                    </Button> :
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={()=> {dispatch(reSetSnipping())}}
+                      className="form-button"
+                      // disabled={isSnipping.started? true: false}
+                      >
+                                <div >Reset </div> 
                     </Button>
+
+                    }
                   </div>
         
                 </Grid>  

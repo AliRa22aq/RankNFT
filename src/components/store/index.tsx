@@ -272,12 +272,12 @@ const dataSlice = createSlice({
       if(state.list_of_all_tokens){
         if(payload === "accs"){
         state.list_of_all_tokens.sort( (a, b) => {
-            return Number(b.tokenID) - Number(a.tokenID);
+            return Number(a.tokenID) - Number(b.tokenID);
           });
         }
         if(payload === "decs"){
           state.list_of_all_tokens.sort( (a, b) => {
-              return Number(a.tokenID) - Number(b.tokenID);
+              return Number(b.tokenID) - Number(a.tokenID);
             });
           }
       }
