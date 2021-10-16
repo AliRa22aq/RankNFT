@@ -234,7 +234,7 @@ const NFTForm = () => {
               console.log("Loop starting with ",  from, to, url)
               for(var i = from;  i <= to;  i=i+1) {
                 // console.log("Loop delayNFT", delayNFT )
-                await delayFn(delayNFT);
+                // await delayFn(delayNFT);
 
                 let activeURL =  url.replace("extension" , String(i))
                 console.log("Loop #",  i, activeURL )
@@ -744,6 +744,7 @@ const NFTForm = () => {
                       type="number"
                       name="from"
                       label="From"
+                      minimum={0}
                       fullWidth
                       />
                   </Grid>
@@ -754,6 +755,7 @@ const NFTForm = () => {
                       type="number"
                       name="to"
                       label="To"
+                      minimum={0}
                       fullWidth
                       />
                   </Grid>
