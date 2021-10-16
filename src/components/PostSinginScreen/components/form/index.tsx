@@ -51,7 +51,7 @@ const NFTForm = () => {
   const [loading, setLoading] = useState(false);
   const [needURI, setneedURI] = useState(false);
   const [needRange, setNeedrange] = useState(false);
-  const [delayNFT, setDelayNFT] = useState(20);
+  const [delayNFT, setDelayNFT] = useState(10);
   const [delayOpensea, setDelayOpensea] = useState(300);
 
   const handleDelayNFT = (ms: any) => {
@@ -233,8 +233,10 @@ const NFTForm = () => {
 
               console.log("Loop starting with ",  from, to, url)
               for(var i = from;  i <= to;  i=i+1) {
+
+
                 // console.log("Loop delayNFT", delayNFT )
-                // await delayFn(delayNFT);
+                await delayFn(delayNFT);
 
                 let activeURL =  url.replace("extension" , String(i))
                 console.log("Loop #",  i, activeURL )
@@ -242,7 +244,10 @@ const NFTForm = () => {
                 axios.get( activeURL,  {data: i})
                 .then((res: any) => {
                   console.log("waited res of Loop #", res.config.data, res)
-
+                  console.log("isSnipping.stopExecutation", isSnipping.stopExecutation)
+                      if(isSnipping.stopExecutation){
+                        process.exit(1)
+                      }
                       const newTokens: any = {
                         tokenID: res.config.data,  
                         attributes: res.data.attributes,
@@ -595,6 +600,7 @@ const NFTForm = () => {
 
     dispatch(reSetSnipping())
     dispatch(setLoadingNFTs(false))
+    // dispatch(setIsSnipping({action: null}))
     dispatch(setIsSnipping({action: "requested"}))
 
 
@@ -614,6 +620,12 @@ const NFTForm = () => {
       fetchAllTokenData(url, from, to)
     }
       
+
+  }
+
+  const haltProgram = () => {
+    // window.stop();
+    dispatch(setIsSnipping({action: null}))
 
   }
 
@@ -762,27 +774,29 @@ const NFTForm = () => {
 
                   <div className="form-button-container">
                     {
-                    !isSnipping.started?
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      type="submit"
-                      className="form-button"
-                      // disabled={isSnipping.started? true: false}
-                      >
-                                <div >Snip </div> 
-                    </Button> :
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={()=> {dispatch(reSetSnipping())}}
-                      className="form-button"
-                      // disabled={isSnipping.started? true: false}
-                      >
-                                <div >Reset </div> 
-                    </Button>
+                      isSnipping.started && !isSnipping.completed ?
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={haltProgram}
+                          className="form-button"
+                          // disabled={isSnipping.started? true: false}
+                          >
+                                    <div >Reset </div>
+                        </Button> 
+                        :
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          type="submit"
+                          className="form-button"
+                          // disabled={isSnipping.started? true: false}
+                          >
+                                    <div >Snip </div>
+                        </Button>
 
                     }
+
                   </div>
         
                 </Grid>  
@@ -796,13 +810,13 @@ const NFTForm = () => {
 
       </div>
 
-        {/* <div> 
+        <div> 
           <p>Set NFT Delay in ms</p>
           <input value={delayNFT} onChange={(e) => handleDelayNFT(e.target.value)} />
-          <br />
+          {/* <br />
           <p>Set Opensea Delay in ms</p>
-          <input value={delayOpensea} onChange={(e) => handleDelayOpensea(e.target.value)} />
-        </div> */}
+          <input value={delayOpensea} onChange={(e) => handleDelayOpensea(e.target.value)} /> */}
+        </div>
 
     </div>
 

@@ -83,7 +83,9 @@ export interface ProjectInfo {
 export interface Loading {
   requested: boolean,
   started: boolean,
-  completed: boolean
+  completed: boolean,
+  showNFTs: boolean,
+  stopExecutation: boolean
 }
 
 interface DataType {
@@ -153,8 +155,8 @@ const initialState: DataType = {
     rarityScoreOfAllValues2: {},
 
     projectInfo: null,
-    loading_contractData: {requested: false, started: false, completed: false},
-    isSnipping: {requested: false, started: false, completed: false},
+    loading_contractData: {requested: false, started: false, completed: false, showNFTs: false, stopExecutation: false},
+    isSnipping: {requested: false, started: false, completed: false, showNFTs: false, stopExecutation: false},
 
 
 }
@@ -404,16 +406,6 @@ const dataSlice = createSlice({
 
     setRarityScoreToEachNFTAttribuValue2( state, { payload }: PayloadAction<RarityScoreOfValue> ) {
               
-              // state.list_of_all_tokens2[payload.trait_type].attributes?.map((attribute) => {
-              //   if(attribute.value === payload.value){
-              //     attribute.value_rarity_score = payload.rarity_score
-              //     attribute.value_normalized_rarity_score = payload.normalized_rarity_score
-              //   }
-              // });
-              
-              // state.list_of_all_tokens2[payload.trait_type].rarity_score += payload.rarity_score;
-              // state.list_of_all_tokens2[payload.trait_type].normalized_rarity_score += payload.normalized_rarity_score;
-
       Object.values(state.list_of_all_tokens2).map((token) => {
 
         token.attributes.map((attribute) => {
@@ -463,73 +455,7 @@ const dataSlice = createSlice({
       }
     },
 
-    getTop20NFTs(state){
-
-      // const sorted = Object.values(state.list_of_all_tokens2).sort( (a, b) => {
-      //   return b.rarity_score - a.rarity_score;
-      // });
-
-      // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
-
-      // let tope20OpenSeaResponses:any = [];
-      // let arrayOfLinks: any = [];
-      // let count = 1
-      // const initialLink = `https://api.opensea.io/api/v1/assets?asset_contract_address=${state?.projectInfo?.contractAddress}`;
-      
-      // // const opensea_api  = `https://api.opensea.io/api/v1/assets?asset_contract_address=${state?.projectInfo?.contractAddress}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
-      
-      // const top20 = sorted.slice(0,100)
-      // let link = initialLink;
-      // top20.forEach((token) => {
-      //   console.log(`${token.tokenID} ->  ${token.rarity_score}`)
-
-      //   link = link.concat(`&token_ids=${token.tokenID}`);
-
-      //   if(count%30==0 || count === top20.length){
-      //     arrayOfLinks.push(link.concat("&limit=30"))
-      //     link = initialLink;
-      //   }
-
-      //   count++
-      // })
-
-      // console.log("arrayOfLinks", arrayOfLinks)
-      
-      // arrayOfLinks.forEach(async (opensea_api:any)=> {
-      //     await delayFn(300);
-
-      //     const res:any = await axios.get(opensea_api)
-      //     // .then((res: any) => {
-      //     console.log("open_sea Api res", res.data.assets)
-      //     tope20OpenSeaResponses.push(res.data.assets)
-      //   // })
-
-      // })
-
-
-
-
-      // console.log("tope20OpenSeaResponses", tope20OpenSeaResponses.flat())
-
-      // tope20OpenSeaResponses.flat().map((openseaAsset: any) => {
-      //   console.log("opensea Asset", openseaAsset)
-      //   const onSale = openseaAsset?.sell_orders && openseaAsset?.sell_orders[0] ? true:false;
-      //   const price = onSale ? Math.round(openseaAsset?.sell_orders[0].current_price) : 0
-
-      //   if(state.list_of_all_tokens2[openseaAsset.token_id]){
-      //     state.list_of_all_tokens2[openseaAsset.token_id].opensea.permalink = openseaAsset.permalink
-      //     state.list_of_all_tokens2[openseaAsset.token_id].opensea.price = price    
-      //     console.log(" opensea token after update", state.list_of_all_tokens2[openseaAsset.token_id])
-      //   }
-
-      // })
-
-      // state.list_of_all_tokens = Object.values(state.list_of_all_tokens2).sort( (a, b) => {
-      //   return b.rarity_score - a.rarity_score;
-      // });
-
-
-    },
+    getTop20NFTs(state){},
 
     setInitalCountOfAllAttribute( state, { payload }: PayloadAction<CountOfEachAttribute[] | null> ) {
       if (payload === null) {
@@ -687,27 +613,37 @@ const dataSlice = createSlice({
 
     },
 
-    setIsSnipping(state, {payload}: PayloadAction<{action: "allowSnipping"|"requested"|"started"|"completed"| null}>){
+    setIsSnipping(state, {payload}: PayloadAction<{
+      action: "allowSnipping"|"requested"|"started"|"completed"|"showNFTs"|"stop"|null}>
+      ){
 
       if(payload.action === null){
-        state.isSnipping =  {requested: false, started: false, completed: false}
+        state.isSnipping =  {requested: false, started: false, completed: false, showNFTs: false, stopExecutation: false}
       }
       else {
         if(payload.action === "requested"){
-          state.isSnipping =  {requested: true, started: false, completed: false}
+          state.isSnipping =  {requested: true, started: false, completed: false, showNFTs: false, stopExecutation: false}
         }
 
         if(payload.action === "started"){
-          state.isSnipping =  {requested: true, started: true, completed: false}
+          state.isSnipping =  {requested: true, started: true, completed: false, showNFTs: false, stopExecutation: false}
         }
   
         if(payload.action === "completed"){
-          state.isSnipping =  {requested: true, started: true, completed: true}
+          state.isSnipping =  {requested: true, started: true, completed: true, showNFTs: false, stopExecutation: false}
         }
+
+        if(payload.action === "showNFTs"){
+          state.isSnipping =  {requested: true, started: true, completed: true, showNFTs: true, stopExecutation: false}
+        }
+
         if(payload.action === "allowSnipping"){
-          state.isSnipping =  {requested: true, started: false, completed: true}
+          state.isSnipping =  {requested: true, started: false, completed: true, showNFTs: true, stopExecutation: false}
         }
-        
+        if(payload.action === "stop"){
+          state.isSnipping =  {requested: false, started: false, completed: false, showNFTs: false, stopExecutation: true}
+          // state.isSnipping =  {requested: false, started: false, completed: false, showNFTs: false, stopExecutation: false}
+        }
       }
     },
 
@@ -722,7 +658,7 @@ const dataSlice = createSlice({
       state.countOfAllAttribute= null,
       state.countOfAllAttribute2 = {},
       state.rarityScoreOfAllValues= null,
-      state.isSnipping= { requested: false, started: false, completed: false }
+      state.isSnipping =  {requested: false, started: false, completed: false, showNFTs: false, stopExecutation: false}
   
     
     },

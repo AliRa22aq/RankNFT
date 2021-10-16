@@ -30,7 +30,7 @@ const NFTCards = () => {
   const dispatch = useDispatch();
   const [normalization, setNormalization] = useState(false)
   const [onlyOnSale, setOnlyOnSale] = useState(false)
-  const [showNFTs, setShowNFTs] = useState(false)
+  // const [showNFTs, setShowNFTs] = useState(false)
   const [page, setPage] = useState(1)
   const [list_of_NFTs_for_currentPage, set_list_of_NFTs_for_currentPage] = useState<AttributesOfEachToekn[] | null>([])
   const [sortBy, setSortBy] = React.useState<number>(1);
@@ -71,16 +71,19 @@ const NFTCards = () => {
   }
 
   const handleOnSale = () => {
+
     if(onlyOnSale === false){
+      console.log("onlyOnsale", onlyOnSale)
+      setOnlyOnSale(true)
       handlePage(0,1)
       dispatch(setOnlyOnSaleState(!onlyOnSale))
-      setOnlyOnSale(!onlyOnSale)
       handleSort(3)    
     }
-    if(onlyOnSale === true){
+    else if(onlyOnSale === true){
+      console.log("onlyOnsale", onlyOnSale)
+      setOnlyOnSale(false)
       handlePage(0,1)
       dispatch(setOnlyOnSaleState(!onlyOnSale))
-      setOnlyOnSale(!onlyOnSale)
       handleSort(1)    
     }
   }
@@ -191,7 +194,9 @@ const NFTCards = () => {
       dispatch(setOpenseaData2(opensea_res.flat()))   
 
       handleInputLength()
-      setShowNFTs(true)
+      // setShowNFTs(true)
+      dispatch(setIsSnipping({action: "showNFTs"}))   
+
 
   }
 
@@ -241,8 +246,8 @@ const NFTCards = () => {
       console.log("final opensea_res ",  opensea_res.flat())
       dispatch(setOpenseaData2(opensea_res.flat()))   
 
-      dispatch(setIsSnipping({action: "allowSnipping"}))
-      setShowNFTs(true)
+      // dispatch(setIsSnipping({action: "allowSnipping"}))
+      // setShowNFTs(true)
 
   }
     
@@ -311,132 +316,73 @@ const NFTCards = () => {
 
 
   const handlePage = (event: any, value: number) => {
-    // console.log(value)
     setPage(value)
     handleInputLength()
   };
 
-  // const numberOfItems = Object.values(list_of_all_tokens2).length;
   const numberOfItems = list_of_all_tokens?.length | 0 ;
   const numberPerPage = 50
   const numberOfPages = Math.ceil(numberOfItems/numberPerPage)
 
   const handleInputLength = () => {
-    // set_list_of_NFTs_for_currentPage( Object.values(list_of_all_tokens2 as AttributesOfEachToekn2)
-    //                                     .slice((page-1)*numberPerPage, page*numberPerPage))
     set_list_of_NFTs_for_currentPage( list_of_all_tokens && list_of_all_tokens
                                         .slice((page-1)*numberPerPage, page*numberPerPage))
-    // console.log(list_of_NFTs_for_currentPage)
   }
 
 
   useEffect(()=> {
-    handleInputLength()
+    if(list_of_all_tokens2){
+      console.log("11111111111111111111")
+      handleInputLength()
+    }
   }, [page, list_of_all_tokens])
 
   useEffect(()=> {
-    handlePage(0,1)
-  }, [sortBy, showNFTs])
+    if(list_of_all_tokens2){
+      console.log("22222222222222")
+      handlePage(0,1)
+    } 
+  }, [sortBy])
 
   useEffect(()=> {
-    findRarityScore2()
+    console.log("333333333333333", list_of_all_tokens2) 
+    if(isSnipping.completed === true){
+      findRarityScore2()
+    }
   }, [isSnipping.completed])
 
   useEffect(()=> {
-    getTopRatedNFTs()
+    if(list_of_all_tokens_top_20) {
+      console.log("444444444444444444444444")
+      getTopRatedNFTs()
+    }
   }, [list_of_all_tokens_top_20])
 
   useEffect(()=> {
-    getRemainingNFTs()
+    if(list_of_all_tokens_remaining){
+      console.log("55555555555555555555555555")
+      getRemainingNFTs()
+    }
   }, [list_of_all_tokens_remaining])
 
   useEffect(()=> {
-    if(list_of_all_tokens === null){
-      setShowNFTs(false)
+    // if(list_of_all_tokens){
+      console.log("6666666666666666666666666")
       set_list_of_NFTs_for_currentPage(null)
       handlePage(0,1)
-    }
-  }, [isSnipping.started])
+    // }
+  },[isSnipping.started])
 
 
+  console.log("Initially ", isSnipping)
 
-console.log("showNFTs", showNFTs)
   return (
     <div className="cards-container">
-  
-      {
-        showNFTs ? 
-        // <Grid item xs={12} style={{display: "flex",  minWidth: 300}}>
-          <div className="NFT-Secreen">
-
-            <div className="input-container"> 
-            
-                <div className="normalization-container"> 
-                  <FormGroup>
-                    <span> <FormControlLabel onChange={handleOnSale} control={<Switch />} label="On sale" /></span>
-                    <span> <FormControlLabel onChange={handleNormalization} control={<Switch  />} label="Normalization" /></span>
-                  </FormGroup>
-                      {/* <Button onClick={findRarityScore} variant="contained"> Check rarity </Button> */}
-                </div> 
-
-                <div className="selection-container"> 
-                      <Box sx={{ minWidth: 150}}>
-                        <FormControl fullWidth>
-                          <InputLabel id="demo-simple-select-label"> Sort By</InputLabel>
-                          <Select
-                            variant="standard"
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select-helper"
-                            value={sortBy}
-                            label="Sort By"
-                            onChange={(e) => handleSort(Number(e.target.value))}
-                          >
-                            <MenuItem value={1}> {`Rarity Score (high -> low)`} </MenuItem>
-                            <MenuItem value={2}> {`Rarity Score (low -> high)`} </MenuItem>
-                            <MenuItem value={3}> {`Price (high -> low)`} </MenuItem>
-                            <MenuItem value={4}> {`Price (low -> high)`} </MenuItem>
-                            <MenuItem value={5}> {`Token ID (high -> low)`} </MenuItem>
-                            <MenuItem value={6}> {`Token ID (low -> high)`} </MenuItem>
-                          </Select>
-                        </FormControl>
-                      </Box>
-                </div>
-
-            </div>
-
-            <div className="NFTs-container">
-              <Grid container>
-                {
-                  list_of_NFTs_for_currentPage && list_of_NFTs_for_currentPage.map((token: AttributesOfEachToekn, key:number) => {  
-                      return (
-                        <div className="NFTs-card" key={key}> 
-                          <Grid item xs={12}>
-                          <NFTCard 
-                              token = {token} 
-                              normalization = {normalization}
-                              />
-                          </Grid>
-                        </div>
-                      )            
-                  })
-                }
-
-                <div className="pagination-container">
-                  <Stack spacing={5}>
-                    <Pagination count={numberOfPages} page={page} siblingCount={4} boundaryCount={2} onChange={handlePage}/>
-                  </Stack>
-                </div>
-
-              </Grid>
-            </div>
-            
-          </div>
-
-            :
-
+      
           <div className="before-NFT-Secreen">
               {
-                  !isSnipping.requested && !isSnipping.started  && !isSnipping.completed ? 
+                  !isSnipping.requested && !isSnipping.started  && !isSnipping.completed && !isSnipping.showNFTs ? 
+
                  <div className="before-NFT-welcome-Secreen"> 
 
                    <div className="before-NFT-welcome-Secreen-text1">
@@ -456,33 +402,85 @@ console.log("showNFTs", showNFTs)
                       <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
                   </div>
 
-                 </div>
-                  :
-                  isSnipping.requested && !isSnipping.started  && !isSnipping.completed ? 
+                 </div> :
+                  isSnipping.requested && !isSnipping.started  && !isSnipping.completed && !isSnipping.showNFTs? 
                   <div> Wait we are fetching data </div> :                 
-                  isSnipping.requested && isSnipping.started  && !isSnipping.completed ? 
-                 <div>
-                   <RarityReport /> 
-                </div>                 
-                 :
-                //  isSnipping.started  && isSnipping.completed && !showNFTs ?
-                //  <div>
-                //       {/* <div className="check-rarity-text">Amazing. we are ready to check rarity of NFTs. Lets go</div>
-                //       <div className="check-rarity-button-container"> <Button onClick={()=> findRarityScore()} variant="contained"> Check rarity </Button></div> */}
-                //       <FinalRarityReport />
-                //  </div> 
-                //  :
-                 null
+                  isSnipping.requested && isSnipping.started  && !isSnipping.completed && !isSnipping.showNFTs? 
+                 <div> <RarityReport /> </div> :
+                  isSnipping.requested && isSnipping.started  && isSnipping.completed && !isSnipping.showNFTs?
+                  <div> Wait we are processing the data. </div> :
+                  isSnipping.requested && isSnipping.started  && isSnipping.completed && isSnipping.showNFTs? 
+                  //  <NFTs /> 
+                  <div className="NFT-Secreen">
+
+                  <div className="input-container"> 
+                  
+                      <div className="normalization-container"> 
+                        <FormGroup>
+                          <span> <FormControlLabel onChange={handleOnSale} control={<Switch />} label="On sale" /></span>
+                          <span> <FormControlLabel onChange={handleNormalization} control={<Switch  />} label="Normalization" /></span>
+                        </FormGroup>
+                      </div> 
+            
+                      <div className="selection-container"> 
+                            <Box sx={{ minWidth: 150}}>
+                              <FormControl fullWidth>
+                                <InputLabel id="demo-simple-select-label"> Sort By</InputLabel>
+                                <Select
+                                  variant="standard"
+                                  labelId="demo-simple-select-label"
+                                  id="demo-simple-select-helper"
+                                  value={sortBy}
+                                  label="Sort By"
+                                  onChange={(e) => handleSort(Number(e.target.value))}
+                                >
+                                  <MenuItem value={1}> {`Rarity Score (high -> low)`} </MenuItem>
+                                  <MenuItem value={2}> {`Rarity Score (low -> high)`} </MenuItem>
+                                  <MenuItem value={3}> {`Price (high -> low)`} </MenuItem>
+                                  <MenuItem value={4}> {`Price (low -> high)`} </MenuItem>
+                                  <MenuItem value={5}> {`Token ID (high -> low)`} </MenuItem>
+                                  <MenuItem value={6}> {`Token ID (low -> high)`} </MenuItem>
+                                </Select>
+                              </FormControl>
+                            </Box>
+                      </div>
+            
+                  </div>
+            
+                  <div className="NFTs-container">
+                    <Grid container>
+                      {
+                        list_of_NFTs_for_currentPage && list_of_NFTs_for_currentPage.map((token: AttributesOfEachToekn, key:number) => {  
+                            return (
+                              <div className="NFTs-card" key={key}> 
+                                <Grid item xs={12}>
+                                <NFTCard 
+                                    token = {token} 
+                                    normalization = {normalization}
+                                    />
+                                </Grid>
+                              </div>
+                            )            
+                        })
+                      }
+            
+                      <div className="pagination-container">
+                        <Stack spacing={5}>
+                          <Pagination count={numberOfPages} page={page} siblingCount={4} boundaryCount={2} onChange={handlePage}/>
+                        </Stack>
+                      </div>
+            
+                    </Grid>
+                  </div>
+                  
+                  </div>
+            
+                  :
+                  null 
+
               }
 
           </div>
-
-
-      }
-
-
-
-
 
     </div>
 
@@ -490,6 +488,7 @@ console.log("showNFTs", showNFTs)
 };
 
 export default NFTCards;
+
 
 
 
