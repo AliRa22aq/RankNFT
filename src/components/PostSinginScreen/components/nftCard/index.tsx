@@ -41,7 +41,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   const handleClose = () => setOpen(false);
 
   // const onSale = token?.opensea_data?.sell_orders && token?.opensea_data?.sell_orders[0]? true:false; 
-  const onSale = token.opensea.price && token.opensea.price > 0 ? true:false; 
+  const onSale = token.opensea.price && Number(token.opensea.price) > 0 ? true:false; 
 
 
   return (
@@ -104,7 +104,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
             left: '50%',
             transform: 'translate(-50%, -50%)',
             width: 650,
-            height: 400,
+            height: 500,
             bgcolor: 'background.paper',
             border: '2px solid #000',
             boxShadow: 24,
@@ -116,7 +116,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
         <div className="NFT-image"> 
             <div>
 
-              <img src={imageOfNFT} alt={token.name} height="300" width="300" /> 
+              <img src={imageOfNFT} alt={token.name} height="400" width="400" /> 
             </div>
             <div className="NFT-Opensea-Container">
             <div> {onSale ? "Open to sale": "Not open to sale"} </div>

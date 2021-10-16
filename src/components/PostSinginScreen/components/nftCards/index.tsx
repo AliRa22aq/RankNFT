@@ -71,9 +71,18 @@ const NFTCards = () => {
   }
 
   const handleOnSale = () => {
-    handlePage(0,1)
-    dispatch(setOnlyOnSaleState(!onlyOnSale))
-    setOnlyOnSale(!onlyOnSale)    
+    if(onlyOnSale === false){
+      handlePage(0,1)
+      dispatch(setOnlyOnSaleState(!onlyOnSale))
+      setOnlyOnSale(!onlyOnSale)
+      handleSort(3)    
+    }
+    if(onlyOnSale === true){
+      handlePage(0,1)
+      dispatch(setOnlyOnSaleState(!onlyOnSale))
+      setOnlyOnSale(!onlyOnSale)
+      handleSort(1)    
+    }
   }
   
 
@@ -299,7 +308,6 @@ const NFTCards = () => {
     
     
   }
-
 
 
   const handlePage = (event: any, value: number) => {

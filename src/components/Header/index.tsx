@@ -16,7 +16,8 @@ import {
   setWhiteListed,
   setSubscriber,
   setOwner,
-  clearState
+  clearState,
+  reSetSnipping
 } from "../store";
 import InfoModal from "./InfoModel";
 import LOGO from '../assets/NFT_Sniper_logo.png'
@@ -110,6 +111,7 @@ const Header = () => {
 
   const logOut = async () => {
     dispatch(setLogout());
+    dispatch(reSetSnipping())
   };
 
   return (

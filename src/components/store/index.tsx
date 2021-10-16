@@ -19,7 +19,7 @@ export interface AttributesOfEachToekn {
   tokenID: string
   attributes: Attribute[],
   opensea_data: any,
-  opensea: {price: number, permalink: string},
+  opensea: {price: string, permalink: string},
   rarity_score: number, 
   normalized_rarity_score: number, 
   image: string,
@@ -74,6 +74,7 @@ interface Range {
 export interface ProjectInfo {
     contractAddress?: string,
     totalSupply:  number,
+    firstTokenIndex: number | null,
     name:  string,
     baseTokenURI?: string | null,
     range: Range | null
@@ -602,16 +603,6 @@ const dataSlice = createSlice({
 
     setCountOfAllAttribute2(state, { payload }: PayloadAction<Attribute[] >) {
 
-    //   if (!totalCounts[attribute.trait_type])
-    //   totalCounts[attribute.trait_type] = {trait_type: attribute.trait_type, trait_count: {}, total_variations: 0};
-
-    // if (!totalCounts[attribute.trait_type].trait_count[attribute.value]) {
-    //   totalCounts[attribute.trait_type].trait_count[attribute.value] = {value: attribute.value, count: 1};
-    //   totalCounts[attribute.trait_type].total_variations+=1;
-    // }
-    // else totalCounts[attribute.trait_type].trait_count[attribute.value].count +=1;
-
-
       console.log("payload in setCOunt", payload)
       payload.forEach((attribute) => {
         if (!state.countOfAllAttribute2[attribute.trait_type])
@@ -655,7 +646,7 @@ const dataSlice = createSlice({
             // console.log("openseaAsset matched with Token", openseaAsset, JSON.stringify(token))
             token.opensea_data = openseaAsset
 
-            token.opensea = {price: price, permalink: openseaAsset.permalink}
+            token.opensea = {price: String(price), permalink: openseaAsset.permalink}
           }
         })
       })
@@ -672,7 +663,7 @@ const dataSlice = createSlice({
 
           if(state.list_of_all_tokens2[openseaAsset.token_id]){
             state.list_of_all_tokens2[openseaAsset.token_id].opensea.permalink = openseaAsset.permalink
-            state.list_of_all_tokens2[openseaAsset.token_id].opensea.price = price    
+            state.list_of_all_tokens2[openseaAsset.token_id].opensea.price = String(price)    
             console.log(" opensea token after update", state.list_of_all_tokens2[openseaAsset.token_id])
           }
 
