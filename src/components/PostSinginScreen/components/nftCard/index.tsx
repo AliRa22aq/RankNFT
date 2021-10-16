@@ -11,7 +11,8 @@ import Modal from '@mui/material/Modal';
 import './styles.css'
 import {  Attribute, AttributesOfEachToekn } from '../../../store';
 import Web3 from "web3";
-import ether from '../../../assets/etherSymbol.png'
+import ether from '../../../assets/eth.svg'
+import OpenSea from '../../../assets/OpenSea.svg'
 // @ts-ignore
 import CornerRibbon from "react-corner-ribbon";
 import undefined from '../../../assets/undefined.png'
@@ -46,7 +47,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
 
   return (
     <div>
-    <Card sx={{ height: 300, width: 200 }} onClick={handleOpen}>
+    <Card sx={{ height: 315, width: 200 }} >
       <CardActionArea>
         {
           onSale ?
@@ -65,7 +66,10 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
             height="200"
             image={imageOfNFT}
             alt={undefined}
+            onClick={handleOpen}
           />
+      </CardActionArea>
+
         <CardContent>
           <Typography gutterBottom variant="body2" component="div">
             {token.name? token.name: "No name avaiable"}
@@ -79,15 +83,23 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
               <div className="price-container"> 
                 Price: 
                 <span className="price">
-                <img src={ether} alt="ether" width="8px" height="10px" />
+                <img className="price" src={ether} alt="ether" width="10px" height="10px" />
                 </span>
                 {web3.utils.fromWei((token.opensea.price).toString(), "ether") } 
                 </div>:
                 <div> Price: - </div>  
             }
+            {
+              token.opensea.permalink?
+              //  <div className="openseaSVG-container">
+                <a href={token.opensea.permalink}  target="_blank" > 
+                     <img className="openseaSVG" src={OpenSea}  alt="opensea"  width="100px" height="20px" /> 
+                </a> :
+              //  </div>:
+              null
+            }
             
         </CardContent>
-      </CardActionArea>
     </Card>
 
     
@@ -103,7 +115,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: 650,
+            width: 700,
             height: 500,
             bgcolor: 'background.paper',
             border: '2px solid #000',
@@ -125,7 +137,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
               <div className="price-container"> 
                 Price: 
                 <span className="price">
-                <img src={ether} alt="ether" width="12px" height="15px" />
+                <img src={ether} alt="ether" width="13px" height="13px" />
                 </span>
                 {web3.utils.fromWei((token.opensea.price).toString(), "ether") } 
                 </div>:
@@ -133,7 +145,10 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
             }
             {
               token.opensea.permalink?
-               <div><a href={token.opensea.permalink}  target="_blank" > see on Opensea </a> </div>:
+              <a href={token.opensea.permalink}  target="_blank" > 
+                <img className="openseaSVG2" src={OpenSea}  alt="opensea"  width="150px" height="30px" /> 
+              </a>:
+              //  <div><a href={token.opensea.permalink}  target="_blank" > see on Opensea </a> </div>:
               null
             }
             </div>
