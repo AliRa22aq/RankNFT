@@ -71,7 +71,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
       </CardActionArea>
 
         <CardContent>
-          <Typography gutterBottom variant="body2" component="div">
+          <Typography gutterBottom variant="caption" component="div">
             {token.name? token.name: "No name avaiable"}
           </Typography>
           <Typography variant="body2" color="text.secondary">

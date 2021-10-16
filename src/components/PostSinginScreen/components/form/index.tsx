@@ -82,7 +82,11 @@ const NFTForm = () => {
     console.log("step 1: Snipping started with URL ", tokenURI)
     try{
       let url1 = tokenURI;
-      let url = tokenURI.replace("321" , "extension");
+      let url;
+      
+      if(projectInfo?.firstTokenIndex){
+        url = tokenURI.replace( String(Number(projectInfo.firstTokenIndex)), "extension");
+      }
 
       if(url){
         let fetchAPI =  await axios.get( url1 ) as any          
@@ -503,7 +507,7 @@ const NFTForm = () => {
       if(URl === ""){
         try{
           console.log("asset ", "trying 1")
-          const tokenURI1 = await MyContract.methods.tokenURI(321).call();
+          const tokenURI1 = await MyContract.methods.tokenURI(minToken).call();
 
           setData(pre => {return {...pre, baseTokenURI: tokenURI1}}) 
 
