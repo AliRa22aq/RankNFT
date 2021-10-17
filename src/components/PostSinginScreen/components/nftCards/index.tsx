@@ -206,6 +206,7 @@ const NFTCards = () => {
       
       console.log("list_of_all_tokens", list_of_all_tokens)
       if(list_of_all_tokens){
+      
 
       const ramaining80 = list_of_all_tokens.slice(1000)
       let link = initialLink;
@@ -219,8 +220,10 @@ const NFTCards = () => {
         count++
       })
 
-      // console.log("remaining arrayOfLinks", arrayOfLinks)
-      
+      console.log("remaining arrayOfLinks", arrayOfLinks)
+
+      await delayFn(5000)
+
       // const opensea_apis: any = [];
       const opensea_res: any = [];
       arrayOfLinks.forEach(async (opensea_api:any)=> {
