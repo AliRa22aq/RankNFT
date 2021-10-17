@@ -9,10 +9,8 @@ import Button from "@mui/material/Button";
 const Web3 = require("web3");
 import axios from "axios";
 import CircularProgress from '@mui/material/CircularProgress';
-// import { OpenSeaPort, Network} from 'opensea-js'
 import * as yup from 'yup';
 import async  from "async";
-// import parallel from 'async/parallel';
 
 
 interface Data {
@@ -84,8 +82,8 @@ const NFTForm = () => {
       let url1 = tokenURI;
       let url;
       
-      if(projectInfo?.firstTokenIndex){
-        url = tokenURI.replace( String(Number(projectInfo.firstTokenIndex)), "extension");
+      if(projectInfo?.totalSupply){
+        url = tokenURI.replace( String(Number(projectInfo.totalSupply) - 1), "extension");
       }
 
       if(url){
@@ -253,6 +251,7 @@ const NFTForm = () => {
                         process.exit(1)
                       }
                       const newTokens: any = {
+                        rank: null,
                         tokenID: res.config.data,  
                         attributes: res.data.attributes,
                         opensea: {price: 0, permalink: ""},
@@ -507,7 +506,7 @@ const NFTForm = () => {
       if(URl === ""){
         try{
           console.log("asset ", "trying 1")
-          const tokenURI1 = await MyContract.methods.tokenURI(minToken).call();
+          const tokenURI1 = await MyContract.methods.tokenURI(totalSupply - 1).call();
 
           setData(pre => {return {...pre, baseTokenURI: tokenURI1}}) 
 

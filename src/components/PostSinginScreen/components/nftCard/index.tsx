@@ -47,7 +47,8 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
 
   return (
     <div>
-    <Card sx={{ height: 315, width: 200 }} >
+    <Card sx={{ height: 335, width: 200 }} >
+      <div>Rank #  {token.rank}</div>
       <CardActionArea>
         {
           onSale ?
