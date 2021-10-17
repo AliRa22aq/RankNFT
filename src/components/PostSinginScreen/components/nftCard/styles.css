@@ -36,7 +36,8 @@ a:link , a:visited, a:hover, a:active {
 .NFT-rarity-detail{
     float: right;
     /* border: 1px solid black; */
-    width: 300px;
+    width: 600px;
+    height: 500px;
     top: 0;
     padding-left: 20px;
 }

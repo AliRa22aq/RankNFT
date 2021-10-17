@@ -16,6 +16,7 @@ import OpenSea from '../../../assets/OpenSea.svg'
 // @ts-ignore
 import CornerRibbon from "react-corner-ribbon";
 import undefined from '../../../assets/undefined.png'
+import NFTtable from './NFTtable';
 
 
 
@@ -25,6 +26,8 @@ interface Props {
 }
 
 const NFTCard: FC<Props> = ({token, normalization}) => {
+
+  const {projectInfo} = useSelector((state: any) => state);
 
   // console.log("image", token.image)
   const check = token.image.includes("ipfs://");
@@ -43,7 +46,9 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
 
   // const onSale = token?.opensea_data?.sell_orders && token?.opensea_data?.sell_orders[0]? true:false; 
   const onSale = token.opensea.price && Number(token.opensea.price) > 0 ? true:false; 
-
+  let sortedAttributes = [...token.attributes]
+  // console.log(token.attributes.sort((a:any, b:any) => {return b.value_rarity_score - a.value_rarity_score}))
+  sortedAttributes = sortedAttributes.sort((a:any, b:any) => {return b.value_rarity_score - a.value_rarity_score})
 
   return (
     <div>
@@ -116,7 +121,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: 750,
+            width: 1000,
             height: 500,
             bgcolor: 'background.paper',
             border: '2px solid #000',
@@ -158,27 +163,30 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
         
         <div className="NFT-rarity-detail">
 
-          <div className="NFT-rarity-details-header"> Details </div>
+          <div className="NFT-rarity-details-header"> Rank # {token.rank} </div>
 
           <div className="NFT-rarity-details-main"> 
-          <div> Token ID: {token.tokenID} </div>
+          {/* <div> Token ID: {token.tokenID} </div> */}
           <div> Name: {token.name ? token.name : null} </div>
           <div> Rarity Score: { normalization ? Math.round(token.normalized_rarity_score) : Math.round(token.rarity_score)} </div>
           </div>
           
           <div className="NFT-rarity-details-attributes-heading"> Attributes and Scores</div>
           <div className="NFT-rarity-details-attributes"> 
-            {
-              token.attributes && token.attributes?.map((attribute: Attribute, key:number) => {
+            <NFTtable attributes={sortedAttributes} normalization={normalization}/>
+            {/* {
+               sortedAttributes?.map((attribute: Attribute, key:number) => {
                 return(
                   <div key={key}> 
-                   {` ${attribute.trait_type} : ${attribute.value} (${normalization ? 
-                    Math.round(attribute.value_normalized_rarity_score) : Math.round(attribute.value_rarity_score)})`}
+                   { `${attribute.trait_type} : ${attribute.value}` }
+                   { normalization ? 
+                    ` (${Math.round(attribute.value_normalized_rarity_score) * 100 / projectInfo.totalSupply } %)` : 
+                    ` (${Math.round(attribute.value_rarity_score) * 100 / projectInfo.totalSupply } %)`
+                   }
                   </div>
                 )
               })
-            
-            } 
+            } */}
           </div>
 
           <div className="NFT-rarity-details" > {token.description ? token.description : null} </div>
