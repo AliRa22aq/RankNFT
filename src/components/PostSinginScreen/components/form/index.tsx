@@ -719,7 +719,7 @@ const NFTForm = () => {
               }
               {
                 data?.baseTokenURI ? 
-                <div> BaseTokenURI : {data?.baseTokenURI} </div> : 
+                <div> BaseTokenURI : {data?.baseTokenURI.replace(data?.totalSupply ?  String(Number(data.totalSupply) - 1) : "9999", "")} </div> : 
                 null
               }
 

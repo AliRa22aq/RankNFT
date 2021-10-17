@@ -7,6 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import {  Attribute } from '../../../store';
+import { useSelector } from 'react-redux';
 
 
 interface TableProps {
@@ -17,15 +18,21 @@ interface TableProps {
 
 const NFTtable: FC<TableProps> = ({attributes, normalization}) => {
 
+    // countOfAllAttribute2
+    const {projectInfo, countOfAllAttribute2} = useSelector((state: any) => state);
+    console.log("countOfAllAttribute2 ", countOfAllAttribute2)
+    console.log("projectInfo ", projectInfo)
+
+
   return (
     <TableContainer sx={{ width: 580, maxHeight: 380 }} component={Paper}>
       <Table  aria-label="simple table">
         <TableHead>
           <TableRow>
             <TableCell>Trait</TableCell>
-            <TableCell align="center">Value</TableCell>
-            <TableCell align="center">Amount</TableCell>
-            <TableCell align="center">%</TableCell>
+            <TableCell align="center">Attribute</TableCell>
+            <TableCell align="center">Count</TableCell>
+            <TableCell align="center">Probability</TableCell>
             <TableCell align="center">Score</TableCell>
           </TableRow>
         </TableHead>
@@ -38,9 +45,9 @@ const NFTtable: FC<TableProps> = ({attributes, normalization}) => {
               <TableCell component="th" scope="row">
                 {attribute.trait_type}
               </TableCell>
-              <TableCell align="center"> - </TableCell>
-              <TableCell align="center"> - </TableCell>
-              <TableCell align="center"> - </TableCell>
+              <TableCell align="center"> {attribute.value} </TableCell>
+              <TableCell align="center"> {countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].count} </TableCell>
+              <TableCell align="center"> {(countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].count / projectInfo.range.range * 100).toFixed(2)} </TableCell>
               <TableCell align="center">{ normalization ? 
                         Math.round(attribute.value_normalized_rarity_score) : 
                         Math.round(attribute.value_rarity_score) }
