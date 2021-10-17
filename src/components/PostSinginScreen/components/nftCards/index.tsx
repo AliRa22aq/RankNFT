@@ -156,7 +156,7 @@ const NFTCards = () => {
       
     if(list_of_all_tokens){
     
-      const top20 = list_of_all_tokens.slice(0,1000)
+      const top20 = list_of_all_tokens.slice(0,2000)
       let link = initialLink;
       top20.forEach((token: any) => {
         // console.log(`${token.tokenID} ->  ${token.rarity_score}`)
@@ -208,7 +208,7 @@ const NFTCards = () => {
       if(list_of_all_tokens){
       
 
-      const ramaining80 = list_of_all_tokens.slice(1000)
+      const ramaining80 = list_of_all_tokens.slice(2000)
       let link = initialLink;
       ramaining80.forEach((token: any) => {
         console.log(`${token.tokenID} ->  ${token.rarity_score}`)
@@ -236,8 +236,9 @@ const NFTCards = () => {
       for(let i = 0; i < arrayOfLinks.length; i++){
         await delayFn(5000)
         console.log("opensea_link", arrayOfLinks[i])
-        const res:any = await axios.get(arrayOfLinks[i])
-        opensea_res.push(res.data.assets)
+        axios.get(arrayOfLinks[i]).then((res:any)=> {
+           opensea_res.push(res.data.assets)
+        })
       }
         
 
