@@ -173,7 +173,7 @@ const NFTCards = () => {
       const opensea_apis: any = [];
       const opensea_res: any = [];
       arrayOfLinks.forEach(async (opensea_api:any)=> {
-          const api = axios.get(opensea_api)
+          const api = await axios.get(opensea_api)
           opensea_apis.push(api)
         })
 
@@ -226,12 +226,12 @@ const NFTCards = () => {
 
       // const opensea_apis: any = [];
       const opensea_res: any = [];
-      arrayOfLinks.forEach(async (opensea_api:any)=> {
+      arrayOfLinks.map(async (opensea_api:any)=> {
           await delayFn(5000)
           console.log("opensea_link", opensea_api)
-          await axios.get(opensea_api).then((res: any) => {
-            opensea_res.push(res.data.assets)
-          })
+          const res:any = await axios.get(opensea_api)
+          opensea_res.push(res.data.assets)
+          
         })
 
       await delayFn(5000)
