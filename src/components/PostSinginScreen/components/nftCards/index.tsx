@@ -226,13 +226,21 @@ const NFTCards = () => {
 
       // const opensea_apis: any = [];
       const opensea_res: any = [];
-      arrayOfLinks.map(async (opensea_api:any)=> {
-          await delayFn(5000)
-          console.log("opensea_link", opensea_api)
-          const res:any = await axios.get(opensea_api)
-          opensea_res.push(res.data.assets)
+      // arrayOfLinks.map(async (opensea_api:any)=> {
+      //     await delayFn(5000)
+      //     console.log("opensea_link", opensea_api)
+      //     const res:any = await axios.get(opensea_api)
+      //     opensea_res.push(res.data.assets)
           
-        })
+      //   })
+      for(let i = 0; i < arrayOfLinks.length; i++){
+        await delayFn(5000)
+        console.log("opensea_link", arrayOfLinks[i])
+        const res:any = await axios.get(arrayOfLinks[i])
+        opensea_res.push(res.data.assets)
+      }
+        
+
 
       await delayFn(5000)
 
