@@ -6,11 +6,25 @@
 
 }
 
+.Loading-NFTs-progress-container {
+    margin-bottom: 10px;
+    /* width: 90%; */
+    display: flex;
+    align-items: center;
+    /* border: 1px solid rgb(233, 5, 5); */
+}
 .Loading-NFTs-progress {
     margin-bottom: 10px;
+    width: 95%;
+    /* display: flex; */
+    /* border: 1px solid black; */
+}
+.Loading-NFTs-progress-count {
+    margin-bottom: 10px;
+    padding-left: 5px;
+    /* border: 1px solid rgb(23, 0, 235); */
 }
 .Loading-NFTs-Text1{
-    /* border: 1px solid black; */
     font-weight: bold;
     font-size: 24px;
     margin-bottom: 20px;

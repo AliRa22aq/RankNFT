@@ -12,11 +12,12 @@ import { CountOfEachAttribute2Values } from '../../../store';
 
 
 const RarityReport = () => {
-    const { countOfAllAttribute, countOfAllAttribute2 } = useSelector((state: any) => state);
+    const { setLoadingProgress, countOfAllAttribute, countOfAllAttribute2, projectInfo, list_of_all_tokens2 } = useSelector((state: any) => state);
 
     console.log("countOfAllAttribute2 ", countOfAllAttribute2)
 
 
+    let loadingCount = Math.round(projectInfo.loadingProgree)
 
     return(
         <div className="Loading-NFTs-Data-container">
@@ -26,8 +27,15 @@ const RarityReport = () => {
 
                   <div className="Loading-NFTs-Data">
 
+                           {/* <LinearProgress />   */}
                       {/* <Box sx={{ width: '100%' }}> */}
-                        <div className="Loading-NFTs-progress">    <LinearProgress />  </div>
+                      <div className="Loading-NFTs-progress-container">
+                        <div className="Loading-NFTs-progress"> 
+                           <LinearProgress variant="determinate" value={loadingCount} />
+                        </div>
+                           <div className="Loading-NFTs-progress-count">{`${loadingCount}%`}</div>
+                      </div>
+
                     {/* </Box> */}
                       
                       <div className="Loading-NFTs-Text1"> 

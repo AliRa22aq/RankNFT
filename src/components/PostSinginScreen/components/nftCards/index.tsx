@@ -156,10 +156,12 @@ const NFTCards = () => {
       
     if(list_of_all_tokens){
     
-      const top20 = list_of_all_tokens.slice(0,1500)
+      console.log("Progersss Start - 1st 1000")
+
+      const top20 = list_of_all_tokens.slice(0,1000)
       let link = initialLink;
       top20.forEach((token: any) => {
-        // console.log(`${token.tokenID} ->  ${token.rarity_score}`)
+        console.log(`${token.tokenID} ->  ${token.rarity_score}`)
         link = link.concat(`&token_ids=${token.tokenID}`);
         if(count%30==0 || count === top20.length){
           arrayOfLinks.push(link.concat("&limit=30"))
@@ -168,11 +170,13 @@ const NFTCards = () => {
         count++
       })
 
-      // console.log("arrayOfLinks", arrayOfLinks)
+      console.log("arrayOfLinks", arrayOfLinks)
       
-      const opensea_apis: any = [];
-      const opensea_res: any = [];
+      let opensea_apis: any = [];
+      let opensea_res: any = [];
       arrayOfLinks.forEach(async (opensea_api:any)=> {
+          console.log("opensea_api", opensea_api)
+        
           const api = await axios.get(opensea_api)
           opensea_apis.push(api)
         })
@@ -187,10 +191,58 @@ const NFTCards = () => {
       console.log("opensea_res ",  opensea_res.flat())
       // dispatch(setOpenseaData2(opensea_res.flat()))   
       dispatch(setOpenseaData(opensea_res.flat()))   
+
+      console.log("Progersss End - 1st 1000")
+
+      /////////////////////////////////////////////////////////////////////////////////////////////
+
+      let arrayOfLinks_2: any = [];
+      let count_2 = 1
+      const initialLink_2 = `https://api.opensea.io/api/v1/assets?asset_contract_address=${projectInfo?.contractAddress}`;
+
+
+      console.log("Progersss start - 2nd 1000")
+
+      const top20_2 = list_of_all_tokens.slice(1000,2000)
+      let link_2 = initialLink_2;
+      top20_2.forEach((token: any) => {
+        console.log(`${token.tokenID} ->  ${token.rarity_score}`)
+        link_2 = link_2.concat(`&token_ids=${token.tokenID}`);
+        if(count%30==0 || count === top20.length){
+          arrayOfLinks_2.push(link_2.concat("&limit=30"))
+          link_2 = initialLink_2;
+        }
+        count_2++
+      })
+
+      console.log("arrayOfLinks", arrayOfLinks)
+      
+      let opensea_apis_2: any = [];
+      let opensea_res_2: any = [];
+      arrayOfLinks_2.forEach(async (opensea_api:any)=> {
+          console.log("opensea_api", opensea_api)
+
+          const api_2 = await axios.get(opensea_api)
+          opensea_apis_2.push(api_2)
+        })
+
+        const openseaData_2: any = await axios.all(opensea_apis_2);
+        // console.log("Combined responses of opensea ", openseaData)
+
+        openseaData_2.map((res: any) => {
+          opensea_res_2.push(res.data.assets)
+        })
+
+      console.log("opensea_res ",  opensea_res_2.flat())
+      // dispatch(setOpenseaData2(opensea_res.flat()))   
+      dispatch(setOpenseaData(opensea_res_2.flat()))   
+
       
       handleInputLength()
+      console.log("Progersss End - 2nd 1000")
+
       dispatch(setIsSnipping({action: "showNFTs"}))   
-      dispatch(setIsSnipping({action: "startRemaining"}))
+      // dispatch(setIsSnipping({action: "startRemaining"}))
 
     }
 

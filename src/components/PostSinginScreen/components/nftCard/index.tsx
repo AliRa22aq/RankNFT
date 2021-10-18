@@ -81,7 +81,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
             {token.name? token.name: "No name avaiable"}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Rarity Score: { normalization ? Math.round(token.normalized_rarity_score) : Math.round(token.rarity_score)}
+            Rarity Score: { normalization ? token.normalized_rarity_score.toFixed(2) : token.rarity_score.toFixed(2)}
           </Typography>          
           
             {
@@ -168,7 +168,10 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
           <div className="NFT-rarity-details-main"> 
           {/* <div> Token ID: {token.tokenID} </div> */}
           <div> Name: {token.name ? token.name : null} </div>
-          <div> Rarity Score: { normalization ? Math.round(token.normalized_rarity_score) : Math.round(token.rarity_score)} </div>
+          <div> Rarity Score: { 
+                normalization ? token.normalized_rarity_score.toFixed(2) : 
+                                token.rarity_score.toFixed(2) } 
+          </div>
           </div>
           
           <div className="NFT-rarity-details-attributes-heading"> Attributes and Scores</div>

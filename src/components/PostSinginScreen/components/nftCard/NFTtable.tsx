@@ -47,10 +47,10 @@ const NFTtable: FC<TableProps> = ({attributes, normalization}) => {
               </TableCell>
               <TableCell align="center"> {attribute.value} </TableCell>
               <TableCell align="center"> {countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].count} </TableCell>
-              <TableCell align="center"> {(countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].count / projectInfo.range.range * 100).toFixed(2)} </TableCell>
+              <TableCell align="center"> {`${(countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].count / projectInfo.range.range * 100).toFixed(2)}%`} </TableCell>
               <TableCell align="center">{ normalization ? 
-                        Math.round(attribute.value_normalized_rarity_score) : 
-                        Math.round(attribute.value_rarity_score) }
+                        attribute.value_normalized_rarity_score.toFixed(2) : 
+                        attribute.value_rarity_score.toFixed(2) }
               </TableCell>
             </TableRow>
           ))}

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import "./style.css";
 import { useDispatch, useSelector } from 'react-redux';
-import {setCountOfAllAttribute3, setOpenseaData2, addTokenInList3, addTokenInList2, setCountOfAllAttribute2, setInitialCountOfAllAttribute2, setOpenseaData, TraitCount, reSetSnipping, setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress, setAvailableAttributes, CountOfEachAttribute, addTokenInList, AttributesOfEachToekn } from '../../../store';
+import {setLoadingProgress, setCountOfAllAttribute3, setOpenseaData2, addTokenInList3, addTokenInList2, setCountOfAllAttribute2, setInitialCountOfAllAttribute2, setOpenseaData, TraitCount, reSetSnipping, setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress, setAvailableAttributes, CountOfEachAttribute, addTokenInList, AttributesOfEachToekn } from '../../../store';
 import Grid from "@mui/material/Grid";
 import { Form, Formik, Field } from "formik";
 import { TextField} from 'formik-material-ui';
@@ -236,6 +236,8 @@ const NFTForm = () => {
               console.log("Loop starting with ",  from, to, url)
               for(var i = from;  i <= to;  i=i+1) {
 
+                dispatch(setLoadingProgress(i))
+
 
                 // console.log("Loop delayNFT", delayNFT )
                 await delayFn(delayNFT);
@@ -246,11 +248,23 @@ const NFTForm = () => {
                 axios.get( activeURL,  {data: i})
                 .then((res: any) => {
                   console.log("waited res of Loop #", res.config.data, res)
-                  console.log("isSnipping.stopExecutation", isSnipping.stopExecutation)
-                      if(isSnipping.stopExecutation){
-                        process.exit(1)
-                      }
-                      const newTokens: any = {
+                  // console.log("isSnipping.stopExecutation", isSnipping.stopExecutation)
+
+                  let attributes = res.data.attributes
+                  let trait_count = res.data.attributes.length
+                  console.log("trait_count", trait_count)
+
+                  res.data.attributes.forEach((attribute: any)=> {
+                    if(attribute.value === ("none" || "None" || "NONE")){
+                      console.log("attribute.value matched", attribute.value)
+                    }
+                  })
+
+                  attributes.push({trait_type: "trait_count", value: trait_count})
+                  console.log("trait_count", trait_count)
+                  // attributes.push(res.config.data.length)
+
+                  const newTokens: any = {
                         rank: null,
                         tokenID: res.config.data,  
                         attributes: res.data.attributes,
@@ -516,7 +530,8 @@ const NFTForm = () => {
                   name:  name, 
                   baseTokenURI: tokenURI1,
                   range: null,
-                  firstTokenIndex: minToken
+                  firstTokenIndex: minToken,
+                  loadingProgree: 0
                 }))
 
           setneedURI(false)
@@ -534,7 +549,8 @@ const NFTForm = () => {
                   name:  name, 
                   baseTokenURI: null, 
                   range: null,
-                  firstTokenIndex: minToken
+                  firstTokenIndex: minToken,
+                  loadingProgree: 0
 
                 }))
               setneedURI(true)
@@ -559,7 +575,8 @@ const NFTForm = () => {
                     name:  name, 
                     baseTokenURI: URl,
                     range: null,
-                    firstTokenIndex: minToken
+                    firstTokenIndex: minToken,
+                    loadingProgree: 0
                   }))
 
             setneedURI(false)
@@ -580,7 +597,8 @@ const NFTForm = () => {
                 name:  name, 
                 baseTokenURI: null, 
                 range: null,
-                firstTokenIndex: minToken
+                firstTokenIndex: minToken,
+                loadingProgree: 0
 
               }))
             setneedURI(true)
