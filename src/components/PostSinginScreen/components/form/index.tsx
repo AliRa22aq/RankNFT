@@ -255,7 +255,7 @@ const NFTForm = () => {
                   console.log("trait_count", trait_count)
 
                   res.data.attributes.forEach((attribute: any)=> {
-                    if(attribute.value === ("none" || "None" || "NONE")){
+                    if(attribute.value.toLowerCase() === "none"){
                       console.log("attribute.value matched", attribute.value)
                       trait_count--
                     }
