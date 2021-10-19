@@ -23,16 +23,17 @@ const ProgressReport = () => {
     return(
         <div className="Loading-NFTs-Data-container">
 
-                  {/* <div className="Loading-NFTs-Data">
+                  <div className="Loading-NFTs-Data">
 
                       <div className="Loading-NFTs-progress-container">
                         <div className="Loading-NFTs-progress"> 
-                           <LinearProgress variant="determinate" value={loadingCount} />
-                        </div>
-                           <div className="Loading-NFTs-progress-count">{`${loadingCount}%`}</div>
-                      </div>
+                           <LinearProgress  />
+                         </div>
+                           {/* <div className="Loading-NFTs-progress-count">{`${loadingCount}%`}</div> */}
+                           <div className="Loading-NFTs-progress-count"> </div>
+                      </div> 
 
-                  </div>  */}
+                  </div> 
 
                   <div> Wait we are processing the data. </div> 
      </div>
