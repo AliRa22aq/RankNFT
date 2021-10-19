@@ -90,57 +90,57 @@ const NFTCards = () => {
 
   const findRarityScore = () => {
 
-    dispatch(setRarityScoreToAttributeValue(null))
+    // dispatch(setRarityScoreToAttributeValue(null))
 
-    const totalSupply:number = projectInfo && projectInfo.range.range
-    // console.log("totalSupply ", totalSupply)
+    // const totalSupply:number = projectInfo && projectInfo.range.range
+    // // console.log("totalSupply ", totalSupply)
 
-    // Normalized Scoring
-    if(countOfAllAttribute){
+    // // Normalized Scoring
+    // if(countOfAllAttribute){
   
-      // console.log("Normalization is on")
-      let traits_count = 0;
+    //   // console.log("Normalization is on")
+    //   let traits_count = 0;
       
-      countOfAllAttribute.map((eachAttribute: CountOfEachAttribute) => {
-        traits_count = traits_count + eachAttribute.total_variations
-      })
+    //   countOfAllAttribute.map((eachAttribute: CountOfEachAttribute) => {
+    //     traits_count = traits_count + eachAttribute.total_variations
+    //   })
       
-      const attribute_count_in_categories = countOfAllAttribute.length;
-      const average_trait_count = traits_count/countOfAllAttribute.length;
+    //   const attribute_count_in_categories = countOfAllAttribute.length;
+    //   const average_trait_count = traits_count/countOfAllAttribute.length;
       
-      // console.log("traits_count",traits_count )
-      // console.log("attribute_count_in_categories",attribute_count_in_categories )
+    //   // console.log("traits_count",traits_count )
+    //   // console.log("attribute_count_in_categories",attribute_count_in_categories )
 
-      countOfAllAttribute.map((eachAttribute: CountOfEachAttribute) => {
+    //   countOfAllAttribute.map((eachAttribute: CountOfEachAttribute) => {
 
-        eachAttribute.trait_count && eachAttribute.trait_count.map((eachValue: TraitCount) => {
+    //     eachAttribute.trait_count && eachAttribute.trait_count.map((eachValue: TraitCount) => {
 
-          const chance_of_occuring = eachValue.count/totalSupply;
-          const rarity_score = 1/chance_of_occuring;
+    //       const chance_of_occuring = eachValue.count/totalSupply;
+    //       const rarity_score = 1/chance_of_occuring;
 
-          const normalized_score = rarity_score * average_trait_count / attribute_count_in_categories;
-          const final_normalized_score = normalized_score / 2;
+    //       const normalized_score = rarity_score * average_trait_count / attribute_count_in_categories;
+    //       const final_normalized_score = normalized_score / 2;
 
-          // const rarity_score_of_each_value: RarityScoreOfValue = {
-          //   value: eachValue.value,  rarity_score: rarity_score , normalized_rarity_score:  final_normalized_score
-          // }
-          const rarity_score_of_each_value: RarityScoreOfValue = {
-            trait_type: eachAttribute.trait_type,
-            value: eachValue.value,  
-            rarity_score: rarity_score , 
-            normalized_rarity_score:  final_normalized_score
-      }
+    //       // const rarity_score_of_each_value: RarityScoreOfValue = {
+    //       //   value: eachValue.value,  rarity_score: rarity_score , normalized_rarity_score:  final_normalized_score
+    //       // }
+    //       const rarity_score_of_each_value: RarityScoreOfValue = {
+    //         trait_type: eachAttribute.trait_type,
+    //         value: eachValue.value,  
+    //         rarity_score: rarity_score , 
+    //         normalized_rarity_score:  final_normalized_score
+    //   }
 
-          // console.log("aliiiii", rarity_score_of_each_value)
-          dispatch(setRarityScoreToAttributeValue(rarity_score_of_each_value))
-          dispatch(setRarityScoreToEachNFTAttribuValue(rarity_score_of_each_value))
+    //       // console.log("aliiiii", rarity_score_of_each_value)
+    //       dispatch(setRarityScoreToAttributeValue(rarity_score_of_each_value))
+    //       dispatch(setRarityScoreToEachNFTAttribuValue(rarity_score_of_each_value))
 
-        })
-      })
-    }
-    // dispatch(sortByRarityScore())
-    handleInputLength()
-    // setShowNFTs(true)
+    //     })
+    //   })
+    // }
+    // // dispatch(sortByRarityScore())
+    // handleInputLength()
+    // // setShowNFTs(true)
 
   }
 
@@ -201,22 +201,50 @@ const NFTCards = () => {
   }
 
   const getTopRatedNFTs = async () => {
-     
+    const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
+
     console.log("fetchOpenseaData started")
       await fetchOpenseaData(1, 0, 1000);
+      await delayFn(3000)
+
       await fetchOpenseaData(2, 1000, 2000);
-      console.log("fetchOpenseaData Ended")
+      await delayFn(3000)
+
+      console.log("fetchOpenseaData Ended for 2000")
       handleInputLength()
       dispatch(setIsSnipping({action: "showNFTs"}))   
       
       await fetchOpenseaData(3, 2000, 3000);
+      console.log("fetchOpenseaData Ended for 3000")
+      await delayFn(3000)
+
       await fetchOpenseaData(4, 3000, 4000);
+      console.log("fetchOpenseaData Ended for 4000")
+      await delayFn(3000)
+
       await fetchOpenseaData(5, 4000, 5000);
+      console.log("fetchOpenseaData Ended for 5000")
+      await delayFn(3000)
+
       await fetchOpenseaData(6, 5000, 6000);
+      console.log("fetchOpenseaData Ended for 6000")
+      await delayFn(3000)
+
       await fetchOpenseaData(7, 6000, 7000);
+      console.log("fetchOpenseaData Ended for 7000")
+      await delayFn(3000)
+
       await fetchOpenseaData(8, 7000, 8000);
+      console.log("fetchOpenseaData Ended for 8000")
+      await delayFn(3000)
+
       await fetchOpenseaData(9, 8000, 9000);
-      // await fetchOpenseaData(10, 9000);
+      console.log("fetchOpenseaData Ended for 9000")
+      await delayFn(3000)
+
+      await fetchOpenseaData(10, 9000);
+      console.log("fetchOpenseaData Ended for more than 9000")
+
       
       // dispatch(setIsSnipping({action: "startRemaining"}))
 
@@ -224,56 +252,56 @@ const NFTCards = () => {
   }
 
   const getRemainingNFTs = async () => {
-    const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
+    // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
-    let arrayOfLinks: any = [];
-    let count = 1
-    const initialLink = `https://api.opensea.io/api/v1/assets?asset_contract_address=${projectInfo?.contractAddress}`;
+    // let arrayOfLinks: any = [];
+    // let count = 1
+    // const initialLink = `https://api.opensea.io/api/v1/assets?asset_contract_address=${projectInfo?.contractAddress}`;
       
-      console.log("list_of_all_tokens", list_of_all_tokens)
-      if(list_of_all_tokens){
+    //   console.log("list_of_all_tokens", list_of_all_tokens)
+    //   if(list_of_all_tokens){
       
 
-      const ramaining80 = list_of_all_tokens.slice(1500)
-      let link = initialLink;
-      ramaining80.forEach((token: any) => {
-        console.log(`${token.tokenID} ->  ${token.rarity_score}`)
-        link = link.concat(`&token_ids=${token.tokenID}`);
-        if(count%30==0 || count === ramaining80.length){
-          arrayOfLinks.push(link.concat("&limit=30"))
-          link = initialLink;
-        }
-        count++
-      })
+    //   const ramaining80 = list_of_all_tokens.slice(1500)
+    //   let link = initialLink;
+    //   ramaining80.forEach((token: any) => {
+    //     console.log(`${token.tokenID} ->  ${token.rarity_score}`)
+    //     link = link.concat(`&token_ids=${token.tokenID}`);
+    //     if(count%30==0 || count === ramaining80.length){
+    //       arrayOfLinks.push(link.concat("&limit=30"))
+    //       link = initialLink;
+    //     }
+    //     count++
+    //   })
 
-      console.log("remaining arrayOfLinks", arrayOfLinks)
+    //   console.log("remaining arrayOfLinks", arrayOfLinks)
 
-      await delayFn(5000)
+    //   await delayFn(5000)
 
-      // const opensea_apis: any = [];
-      const opensea_res: any = [];
-      // arrayOfLinks.map(async (opensea_api:any)=> {
-      //     await delayFn(5000)
-      //     console.log("opensea_link", opensea_api)
-      //     const res:any = await axios.get(opensea_api)
-      //     opensea_res.push(res.data.assets)
+    //   // const opensea_apis: any = [];
+    //   const opensea_res: any = [];
+    //   // arrayOfLinks.map(async (opensea_api:any)=> {
+    //   //     await delayFn(5000)
+    //   //     console.log("opensea_link", opensea_api)
+    //   //     const res:any = await axios.get(opensea_api)
+    //   //     opensea_res.push(res.data.assets)
           
-      //   })
-      for(let i = 0; i < arrayOfLinks.length; i++){
-        await delayFn(5000)
-        console.log("opensea_link", arrayOfLinks[i])
-        axios.get(arrayOfLinks[i]).then((res:any)=> {
-           opensea_res.push(res.data.assets)
-        })
-      }
+    //   //   })
+    //   for(let i = 0; i < arrayOfLinks.length; i++){
+    //     await delayFn(5000)
+    //     console.log("opensea_link", arrayOfLinks[i])
+    //     axios.get(arrayOfLinks[i]).then((res:any)=> {
+    //        opensea_res.push(res.data.assets)
+    //     })
+    //   }
         
 
 
-      await delayFn(5000)
+    //   await delayFn(5000)
 
-      console.log("final opensea_res ",  opensea_res.flat())
-      dispatch(setOpenseaData(opensea_res.flat()))   
-    }
+    //   console.log("final opensea_res ",  opensea_res.flat())
+    //   dispatch(setOpenseaData(opensea_res.flat()))   
+    // }
   }
     
   const findRarityScore2 = async () => {
@@ -344,7 +372,7 @@ const NFTCards = () => {
     handleInputLength()
   };
 
-  const numberOfItems = list_of_all_tokens?.length | 0 ;
+  const numberOfItems = list_of_all_tokens?.length | 0;
   const numberPerPage = 50
   const numberOfPages = Math.ceil(numberOfItems/numberPerPage)
 
