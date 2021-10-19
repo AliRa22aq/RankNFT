@@ -292,6 +292,7 @@ const NFTForm = () => {
               // dispatch(setCountOfAllAttribute3(allAttributes))              
 
               // await delayFn(5000);
+
               dispatch(setIsSnipping({action: "completed"}))
 
               // let request2: any = [];

@@ -2,7 +2,7 @@ import  React, {useEffect, useState} from "react";
 import "./style.css";
 // import { intervalToDuration, formatDistanceToNow } from 'date-fns'
 import { useSelector, useDispatch } from 'react-redux';
-import { setOpenseaData, assignRank, setIsSnipping, setOnlyOnSaleState, setOpenseaData2, getTop20NFTs, addTokenInList3, AttributesOfEachToekn2, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, CountOfEachAttribute2Values, CountOfEachAttribute2, sortByPrice, sortByTokenID, sortByRarityScore, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute, setCountOfAllAttribute2 } from '../../../store';
+import { setProcessingProgress, setLoadingProgress, setOpenseaData, assignRank, setIsSnipping, setOnlyOnSaleState, setOpenseaData2, getTop20NFTs, addTokenInList3, AttributesOfEachToekn2, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, CountOfEachAttribute2Values, CountOfEachAttribute2, sortByPrice, sortByTokenID, sortByRarityScore, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute, setCountOfAllAttribute2 } from '../../../store';
 const Web3 = require("web3");
 import Switch from '@mui/material/Switch';
 import Button from '@mui/material/Button';
@@ -144,107 +144,81 @@ const NFTCards = () => {
 
   }
 
-  const getTopRatedNFTs = async () => {
-
-    // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
+  const fetchOpenseaData = async (i: number, min: number, max?:number) => {
 
     let arrayOfLinks: any = [];
     let count = 1
     const initialLink = `https://api.opensea.io/api/v1/assets?asset_contract_address=${projectInfo?.contractAddress}`;
-      
-    // console.log("list_of_all_tokens", list_of_all_tokens)
-      
+
+    console.log(`Progersss Start - ${i} 1000`)
+
     if(list_of_all_tokens){
     
-      console.log("Progersss Start - 1st 1000")
+    const top = max? list_of_all_tokens.slice(min,max) : list_of_all_tokens.slice(min)
 
-      const top20 = list_of_all_tokens.slice(0,1000)
-      let link = initialLink;
-      top20.forEach((token: any) => {
-        console.log(`${token.tokenID} ->  ${token.rarity_score}`)
-        link = link.concat(`&token_ids=${token.tokenID}`);
-        if(count%30==0 || count === top20.length){
-          arrayOfLinks.push(link.concat("&limit=30"))
-          link = initialLink;
-        }
-        count++
+    console.log("top.length ", top.length)
+    
+    if(top.length > 0) {
+
+    let link = initialLink;
+
+    top.forEach((token: any) => {
+      console.log(`${i} ---> ${token.tokenID} ->  ${token.rarity_score}`)
+      link = link.concat(`&token_ids=${token.tokenID}`);
+      if(count%30==0 || count === top.length){
+        arrayOfLinks.push(link.concat("&limit=30"))
+        link = initialLink;
+      }
+      count++
+    })
+
+    console.log("arrayOfLinks", arrayOfLinks)
+    console.log(`arrayOfLinks - ${i} `, arrayOfLinks)
+    
+    let opensea_apis: any = [];
+    let opensea_res: any = [];
+    arrayOfLinks.forEach(async (opensea_api:any)=> {
+        console.log("opensea_api", opensea_api)
+        const api = axios.get(opensea_api)
+        opensea_apis.push(api)
       })
 
-      console.log("arrayOfLinks", arrayOfLinks)
-      
-      let opensea_apis: any = [];
-      let opensea_res: any = [];
-      arrayOfLinks.forEach(async (opensea_api:any)=> {
-          console.log("opensea_api", opensea_api)
-        
-          const api = await axios.get(opensea_api)
-          opensea_apis.push(api)
-        })
+      const openseaData: any = await axios.all(opensea_apis);
 
-        const openseaData: any = await axios.all(opensea_apis);
-        // console.log("Combined responses of opensea ", openseaData)
+      openseaData.map((res: any) => {
+        console.log("opensea_api_res", res.data.assets)
+        opensea_res.push(res.data.assets)
+      })
 
-        openseaData.map((res: any) => {
-          opensea_res.push(res.data.assets)
-        })
-
-      console.log("opensea_res ",  opensea_res.flat())
-      // dispatch(setOpenseaData2(opensea_res.flat()))   
+      console.log("opensea_res_flat ",  opensea_res.flat())
       dispatch(setOpenseaData(opensea_res.flat()))   
 
-      console.log("Progersss End - 1st 1000")
-
-      /////////////////////////////////////////////////////////////////////////////////////////////
-
-      let arrayOfLinks_2: any = [];
-      let count_2 = 1
-      const initialLink_2 = `https://api.opensea.io/api/v1/assets?asset_contract_address=${projectInfo?.contractAddress}`;
-
-
-      console.log("Progersss start - 2nd 1000")
-
-      const top20_2 = list_of_all_tokens.slice(1000,2000)
-      let link_2 = initialLink_2;
-      top20_2.forEach((token: any) => {
-        console.log(`${token.tokenID} ->  ${token.rarity_score}`)
-        link_2 = link_2.concat(`&token_ids=${token.tokenID}`);
-        if(count%30==0 || count === top20.length){
-          arrayOfLinks_2.push(link_2.concat("&limit=30"))
-          link_2 = initialLink_2;
-        }
-        count_2++
-      })
-
-      console.log("arrayOfLinks", arrayOfLinks)
-      
-      let opensea_apis_2: any = [];
-      let opensea_res_2: any = [];
-      arrayOfLinks_2.forEach(async (opensea_api:any)=> {
-          console.log("opensea_api", opensea_api)
-
-          const api_2 = await axios.get(opensea_api)
-          opensea_apis_2.push(api_2)
-        })
-
-        const openseaData_2: any = await axios.all(opensea_apis_2);
-        // console.log("Combined responses of opensea ", openseaData)
-
-        openseaData_2.map((res: any) => {
-          opensea_res_2.push(res.data.assets)
-        })
-
-      console.log("opensea_res ",  opensea_res_2.flat())
-      // dispatch(setOpenseaData2(opensea_res.flat()))   
-      dispatch(setOpenseaData(opensea_res_2.flat()))   
-
-      
-      handleInputLength()
-      console.log("Progersss End - 2nd 1000")
-
-      dispatch(setIsSnipping({action: "showNFTs"}))   
-      // dispatch(setIsSnipping({action: "startRemaining"}))
+      console.log(`Progersss end - ${i} 1000`)
 
     }
+
+    }
+  }
+
+  const getTopRatedNFTs = async () => {
+     
+    console.log("fetchOpenseaData started")
+      await fetchOpenseaData(1, 0, 1000);
+      await fetchOpenseaData(2, 1000, 2000);
+      console.log("fetchOpenseaData Ended")
+      handleInputLength()
+      dispatch(setIsSnipping({action: "showNFTs"}))   
+      
+      await fetchOpenseaData(3, 2000, 3000);
+      await fetchOpenseaData(4, 3000, 4000);
+      await fetchOpenseaData(5, 4000, 5000);
+      await fetchOpenseaData(6, 5000, 6000);
+      await fetchOpenseaData(7, 6000, 7000);
+      await fetchOpenseaData(8, 7000, 8000);
+      await fetchOpenseaData(9, 8000, 9000);
+      // await fetchOpenseaData(10, 9000);
+      
+      // dispatch(setIsSnipping({action: "startRemaining"}))
 
 
   }
@@ -330,7 +304,11 @@ const NFTCards = () => {
         // console.log("countOfAllAttribute2 attribute_count_in_categories",attribute_count_in_categories )
         // console.log("countOfAllAttribute2 average_trait_count",average_trait_count )
         
-          Object.values(countOfAllAttribute2).map((eachAttribute: any) => {
+          Object.values(countOfAllAttribute2).map((eachAttribute: any, key: number) => {
+              
+              // dispatch(setProcessingProgress(key))
+                //  dispatch(setLoadingProgress(key))
+
           
               Object.values(eachAttribute.trait_count).map((eachValue: any) => {
             
@@ -404,12 +382,12 @@ const NFTCards = () => {
     }
   }, [isSnipping.startTop20])
 
-  useEffect(()=> {
-    if(isSnipping.startRemaining){
-      // console.log("55555555555555555555555555")
-      getRemainingNFTs()
-    }
-  }, [isSnipping.startRemaining])
+  // useEffect(()=> {
+  //   if(isSnipping.startRemaining){
+  //     // console.log("55555555555555555555555555")
+  //     getRemainingNFTs()
+  //   }
+  // }, [isSnipping.startRemaining])
 
   useEffect(()=> {
     // if(list_of_all_tokens){
@@ -451,10 +429,14 @@ const NFTCards = () => {
                  </div> :
                   isSnipping.requested && !isSnipping.started  && !isSnipping.completed && !isSnipping.showNFTs? 
                   <div> Wait we are fetching data </div> :                 
+                  
                   isSnipping.requested && isSnipping.started  && !isSnipping.completed && !isSnipping.showNFTs? 
-                 <div> <RarityReport /> </div> :
-                  isSnipping.requested && isSnipping.started  && isSnipping.completed && !isSnipping.showNFTs?
-                  <div> Wait we are processing the data. </div> :
+                  <div> <RarityReport /> </div> :
+                  
+                  // isSnipping.requested && isSnipping.started  && isSnipping.completed && !isSnipping.showNFTs?
+                  // <div> Wait we are processing the data. </div> :
+                  
+                  
                   isSnipping.requested && isSnipping.started  && isSnipping.completed && isSnipping.showNFTs? 
                   //  <NFTs /> 
                   <div className="NFT-Secreen">

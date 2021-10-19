@@ -18,10 +18,29 @@ interface TableProps {
 
 const NFTtable: FC<TableProps> = ({attributes, normalization}) => {
 
+
     // countOfAllAttribute2
     const {projectInfo, countOfAllAttribute2} = useSelector((state: any) => state);
     console.log("countOfAllAttribute2 ", countOfAllAttribute2)
     console.log("projectInfo ", projectInfo)
+
+    // let newAttributes:any = [];
+    
+    const newAttributes = attributes.map((attribute) => {
+      const att =  {  
+          trait: attribute.trait_type,
+          value: attribute.value, 
+          count: countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].count,
+          probability: countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].count / projectInfo.range.range * 100 ,
+          score: attribute.value_rarity_score.toFixed(2),
+          normalized_score: attribute.value_normalized_rarity_score.toFixed(2)
+        }
+        // newAttributes.push(att)
+        return att;
+    })
+
+    newAttributes.sort((a: any,b: any) => { return b.probability - a.probability })
+    console.log(newAttributes)
 
 
   return (
@@ -36,7 +55,7 @@ const NFTtable: FC<TableProps> = ({attributes, normalization}) => {
             <TableCell align="center">Score</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
+        {/* <TableBody>
           {attributes.map((attribute) => (
             <TableRow
               key={attribute.trait_type}
@@ -51,6 +70,22 @@ const NFTtable: FC<TableProps> = ({attributes, normalization}) => {
               <TableCell align="center">{ normalization ? 
                         attribute.value_normalized_rarity_score.toFixed(2) : 
                         attribute.value_rarity_score.toFixed(2) }
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody> */}
+
+        <TableBody>
+          {newAttributes.map((attribute: any) => (
+            <TableRow
+              key={attribute.trait}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 , width: 50} }}
+            >
+              <TableCell component="th" scope="row"> {attribute.trait} </TableCell>
+              <TableCell align="center"> {attribute.value} </TableCell>
+              <TableCell align="center"> {attribute.count} </TableCell>
+              <TableCell align="center"> {`${(attribute.probability).toFixed(2)}%`} </TableCell>
+              <TableCell align="center">{ normalization ? attribute.score : attribute.normalized_score }
               </TableCell>
             </TableRow>
           ))}
