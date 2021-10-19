@@ -78,7 +78,7 @@ export interface ProjectInfo {
     baseTokenURI?: string | null,
     range: Range | null,
     loadingProgree: number,
-    processingProgress?: number
+    processingProgress: number
   }
 
 export interface Loading {
@@ -251,10 +251,10 @@ const dataSlice = createSlice({
     },
 
     setProcessingProgress(state, { payload }: PayloadAction<number>) {
-      if (state.projectInfo && state.projectInfo.range) {
-        // state.projectInfo.processingProgress = payload * 20 / state.projectInfo.range.range;
-        // state.projectInfo.loadingProgree =  payload * 20 / Object.values(state.countOfAllAttribute2).length + 80
-
+      // console.log("ProcessesingProgree payload ", payload)
+      if (state.projectInfo) {
+        state.projectInfo.processingProgress =  payload * 100 / Object.keys(state.countOfAllAttribute2).length
+        // console.log("ProcessesingProgree ", state.projectInfo.processingProgress)
       }
     },
 

@@ -533,7 +533,8 @@ const NFTForm = () => {
                   baseTokenURI: tokenURI1,
                   range: null,
                   firstTokenIndex: minToken,
-                  loadingProgree: 0
+                  loadingProgree: 0,
+                  processingProgress: 0
                 }))
 
           setneedURI(false)
@@ -552,7 +553,9 @@ const NFTForm = () => {
                   baseTokenURI: null, 
                   range: null,
                   firstTokenIndex: minToken,
-                  loadingProgree: 0
+                  loadingProgree: 0,
+                  processingProgress: 0
+
 
                 }))
               setneedURI(true)
@@ -578,7 +581,9 @@ const NFTForm = () => {
                     baseTokenURI: URl,
                     range: null,
                     firstTokenIndex: minToken,
-                    loadingProgree: 0
+                    loadingProgree: 0,
+                    processingProgress: 0
+
                   }))
 
             setneedURI(false)
@@ -600,7 +605,9 @@ const NFTForm = () => {
                 baseTokenURI: null, 
                 range: null,
                 firstTokenIndex: minToken,
-                loadingProgree: 0
+                loadingProgree: 0,
+                processingProgress: 0
+
 
               }))
             setneedURI(true)

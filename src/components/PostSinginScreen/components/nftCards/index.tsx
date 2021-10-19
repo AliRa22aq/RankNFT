@@ -11,7 +11,7 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import NFTCard from "../nftCard";
 import RarityReport from "../RarityReport/RarityReport";
-import FinalRarityReport from "../RarityReport/FinalRarityReport";
+import ProgressReport from "../RarityReport/ProgressReport";
 import axios from "axios";
 
 // import { OpenSeaPort, Network  } from 'opensea-js'
@@ -205,14 +205,15 @@ const NFTCards = () => {
 
     console.log("fetchOpenseaData started")
       await fetchOpenseaData(1, 0, 1000);
+      console.log("fetchOpenseaData Ended for 1000")
       await delayFn(3000)
 
       await fetchOpenseaData(2, 1000, 2000);
+      console.log("fetchOpenseaData Ended for 2000")
       await delayFn(3000)
 
-      console.log("fetchOpenseaData Ended for 2000")
-      handleInputLength()
       dispatch(setIsSnipping({action: "showNFTs"}))   
+      // handleInputLength()
       
       await fetchOpenseaData(3, 2000, 3000);
       console.log("fetchOpenseaData Ended for 3000")
@@ -334,9 +335,7 @@ const NFTCards = () => {
         
           Object.values(countOfAllAttribute2).map((eachAttribute: any, key: number) => {
               
-              // dispatch(setProcessingProgress(key))
-                //  dispatch(setLoadingProgress(key))
-
+              // dispatch(setProcessingProgress(key+1))
           
               Object.values(eachAttribute.trait_count).map((eachValue: any) => {
             
@@ -383,21 +382,18 @@ const NFTCards = () => {
 
 
   useEffect(()=> {
-    if(list_of_all_tokens2){
-      // console.log("11111111111111111111")
+    if(isSnipping.showNFTs){
       handleInputLength()
     }
-  }, [page, list_of_all_tokens])
+  }, [page, isSnipping.showNFTs])
 
   useEffect(()=> {
     if(list_of_all_tokens2){
-      // console.log("22222222222222")
       handlePage(0,1)
     } 
   }, [sortBy])
 
   useEffect(()=> {
-    // console.log("333333333333333", list_of_all_tokens2) 
     if(isSnipping.completed === true){
       findRarityScore2()
     }
@@ -405,7 +401,6 @@ const NFTCards = () => {
 
   useEffect(()=> {
     if(isSnipping.startTop20) {
-      // console.log("444444444444444444444444")
       getTopRatedNFTs()
     }
   }, [isSnipping.startTop20])
@@ -418,15 +413,12 @@ const NFTCards = () => {
   // }, [isSnipping.startRemaining])
 
   useEffect(()=> {
-    // if(list_of_all_tokens){
-      // console.log("6666666666666666666666666")
       set_list_of_NFTs_for_currentPage(null)
       handlePage(0,1)
-    // }
   },[isSnipping.started])
 
 
-  console.log("Initially ", isSnipping)
+  // console.log("Initially ", isSnipping)
 
   return (
     <div className="cards-container">
@@ -461,8 +453,9 @@ const NFTCards = () => {
                   isSnipping.requested && isSnipping.started  && !isSnipping.completed && !isSnipping.showNFTs? 
                   <div> <RarityReport /> </div> :
                   
-                  // isSnipping.requested && isSnipping.started  && isSnipping.completed && !isSnipping.showNFTs?
+                  isSnipping.requested && isSnipping.started  && isSnipping.completed && !isSnipping.showNFTs?
                   // <div> Wait we are processing the data. </div> :
+                  <div> <ProgressReport /> </div> :
                   
                   
                   isSnipping.requested && isSnipping.started  && isSnipping.completed && isSnipping.showNFTs? 
