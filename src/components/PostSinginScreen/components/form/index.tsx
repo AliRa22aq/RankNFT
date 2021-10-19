@@ -510,8 +510,13 @@ const NFTForm = () => {
 
       // check If indexing start from which number?
 
-      const minToken = await MyContract.methods.tokenByIndex(0).call();
-      console.log("First token in the list ", minToken)
+      let minToken = await MyContract.methods.tokenByIndex(0).call();
+      // console.log("First token in the list ", minToken)
+      // if(minToken > 1){
+      //   minToken = 0
+      // }
+      // console.log("First token in the list ", minToken)
+
 
 
       setData(pre => {return {...pre, totalSupply, name, minToken : minToken ? Number(minToken) : 1, 

@@ -77,6 +77,8 @@ const NFTCards = () => {
       handlePage(0,1)
       dispatch(setOnlyOnSaleState(!onlyOnSale))
       handleSort(3)  
+      // handleSort(1)    
+
     }
     else if(onlyOnSale === true){
       console.log("onlyOnsale", onlyOnSale)

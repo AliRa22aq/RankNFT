@@ -8,13 +8,34 @@
 
 }
 
-.welcome{
-    padding-top: 10rem;
+.welcome-container {
+    margin: 0.5rem;
+    width: 98%;    
+    align-items: center;
+    justify-content: center;
+    /* display: flex; */
+    /* border: 1px solid black; */
+
+
+
+}
+
+.welcome-text{
+    margin-top: -3rem;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: xx-large;
     font-weight: bold;
+    /* border: 1px solid black; */
+}
+
+.welcome-LOGO{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border: 1px solid black; */
+
 }
 
 .notWhiteListed{
