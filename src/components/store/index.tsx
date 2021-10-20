@@ -73,7 +73,7 @@ interface Range {
 export interface ProjectInfo {
     contractAddress?: string,
     totalSupply:  number,
-    firstTokenIndex: number | null,
+    firstTokenIndex: string | null,
     name:  string,
     baseTokenURI?: string | null,
     range: Range | null,

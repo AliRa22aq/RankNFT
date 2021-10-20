@@ -17,7 +17,7 @@ interface Data {
   contractInfo: {contractFunctions: any, contractAddrs: string},
   totalSupply: string | null, 
   name: string | null,
-  minToken: number
+  minToken: string
   baseTokenURI: string  | null,
   attributes: any  |  null,
   uri : string | null
@@ -25,7 +25,7 @@ interface Data {
 const initialData = {
   contractInfo: {contractFunctions: null, contractAddrs: ""},
   totalSupply:  null, 
-  minToken: 1,
+  minToken: "1",
   name:  null,
   baseTokenURI: null,
   attributes: null,
@@ -503,23 +503,52 @@ const NFTForm = () => {
       var MyContract = new web3.eth.Contract(JSON.parse(abi.result), contractAdrs)
       console.log("asset ", MyContract)
 
-      const name = await MyContract.methods.name().call();
-      const totalSupply = await MyContract.methods.totalSupply().call();
-      console.log("asset ", name)
-      console.log("asset ", totalSupply)
+      let name: string = "";
+      let totalSupply: string = "0";
+      let minToken: string = "0";
 
-      // check If indexing start from which number?
+      try{
+        name = await MyContract.methods.name().call();
+      } catch(e){
+        var nameOfProject = prompt("Please enter name of the project", "Name i.e. Crypto Kitties");
+        if (nameOfProject != null) {
+          console.log(nameOfProject)
+          name = nameOfProject;
+        }
+      }
 
-      let minToken = await MyContract.methods.tokenByIndex(0).call();
+      try{
+        totalSupply = await MyContract.methods.totalSupply().call();
+      } catch(e){
+        var totalSupplyOfProject = prompt("Please enter Total supply of tokens", "Total supply i.e. 10000 or 9999");
+        if (totalSupplyOfProject != null) {
+          console.log(totalSupplyOfProject)
+          totalSupply = totalSupplyOfProject;
+
+        }
+      }
+
+      try{
+        minToken = await MyContract.methods.tokenByIndex(0).call();
+      } catch(e){
+        var minTokenOfProject = prompt("Please enter first token ID of the porject", "0 or 1");
+        if (minTokenOfProject != null) {
+          console.log(minToken)
+          minToken = minToken;
+        }
+      }
+      
+      console.log("name ", name)
+      console.log("totalSupply ", totalSupply)
       console.log("First token in the list ", minToken)
       if(Number(minToken) > 1){
-        minToken = 0
+        minToken = "0"
       }
       console.log("First token in the list ", minToken)
 
 
 
-      setData(pre => {return {...pre, totalSupply, name, minToken : minToken ? Number(minToken) : 1, 
+      setData(pre => {return {...pre, totalSupply, name, minToken : minToken ? minToken : "1", 
         contractInfo: {contractFunctions: MyContract, contractAddrs: contractAdrs}
       }}) 
 
@@ -527,7 +556,7 @@ const NFTForm = () => {
       if(URl === ""){
         try{
           console.log("asset ", "trying 1")
-          const tokenURI1 = await MyContract.methods.tokenURI(totalSupply - 1).call();
+          const tokenURI1 = await MyContract.methods.tokenURI(String(Number(totalSupply) - 1)).call();
 
           setData(pre => {return {...pre, baseTokenURI: tokenURI1}}) 
 
@@ -541,7 +570,7 @@ const NFTForm = () => {
                   loadingProgree: 0,
                   processingProgress: 0
                 }))
-
+            
           setneedURI(false)
           setNeedrange(true)
           setLoading(false)
@@ -773,7 +802,7 @@ const NFTForm = () => {
 
 {
       needRange ?
-        <Formik initialValues={{ from: data?.minToken, to: 100 }}  
+        <Formik initialValues={{ from: Number(data.minToken), to: 100 }}  
                 validationSchema={schema2} 
                 onSubmit={async (values) => {
                 startSnipping(values.from, values.to)
