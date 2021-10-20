@@ -208,21 +208,21 @@ const NFTCards = () => {
     console.log("fetchOpenseaData started")
       await fetchOpenseaData(1, 0, 600);
       console.log("fetchOpenseaData Ended for 1000")
-      await delayFn(5000)
+      await delayFn(6500)
 
       await fetchOpenseaData(2, 600, 1200);
       console.log("fetchOpenseaData Ended for 2000")
-      await delayFn(5000)
+      await delayFn(6500)
 
       dispatch(setIsSnipping({action: "showNFTs"}))   
       
       await fetchOpenseaData(3, 1200, 1800);
       console.log("fetchOpenseaData Ended for 3000")
-      await delayFn(5000)
+      await delayFn(6500)
 
       await fetchOpenseaData(4, 1800, 2400);
       console.log("fetchOpenseaData Ended for 4000")
-      await delayFn(5000)
+      await delayFn(6500)
 
       await fetchOpenseaData(5, 2400, 3000);
       console.log("fetchOpenseaData Ended for 5000")
