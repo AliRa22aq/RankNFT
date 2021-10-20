@@ -19,8 +19,8 @@ interface Data {
   name: string | null,
   minToken: string
   baseTokenURI: string  | null,
-  attributes: any  |  null,
-  uri : string | null
+  // attributes: any  |  null,
+  // uri : string | null
 }
 const initialData = {
   contractInfo: {contractFunctions: null, contractAddrs: ""},
@@ -28,8 +28,8 @@ const initialData = {
   minToken: "1",
   name:  null,
   baseTokenURI: null,
-  attributes: null,
-  uri : null
+  // attributes: null,
+  // uri : null
 }
 
 
@@ -480,7 +480,7 @@ const NFTForm = () => {
 
   }
 
-  const fetchData = async  ( contractAdrs : string, URl:string, setFieldValue: any ) => {
+  const fetchData = async  ( contractAdrs : string, URl?:string, setFieldValue?: any ) => {
 
       setData(initialData)
       setNeedrange(false)
@@ -488,6 +488,19 @@ const NFTForm = () => {
 
       // TODO: Ask ben to provide Infure API Kye
       var web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/92a3eada72834b629e28ff80ba4af4d0'))  
+
+      // let uri: string;
+      // let abi: any;
+      // let abiJSON: any;
+      // try{
+      //   uri = `https://api.etherscan.io/api?module=contract&action=getabi&address=${contractAdrs}&apikey=WKEB4C6A8MPPIYF5699I3A1ZEII57MXG2A`
+      //   abi = await fetch(uri)
+      //   abiJSON = await abi.json()   
+      // } catch(e){
+      //   alert("Unabel to find this contract address");
+      //   setLoading(false);
+      //   throw("Unabel to find this contract address");
+      // }
 
       const uri = `https://api.etherscan.io/api?module=contract&action=getabi&address=${contractAdrs}&apikey=WKEB4C6A8MPPIYF5699I3A1ZEII57MXG2A`
       const abii = await fetch(uri)
@@ -503,9 +516,12 @@ const NFTForm = () => {
       var MyContract = new web3.eth.Contract(JSON.parse(abi.result), contractAdrs)
       console.log("asset ", MyContract)
 
+
+
       let name: string = "";
       let totalSupply: string = "0";
       let minToken: string = "0";
+      let tokenURI: string = "";
 
       try{
         name = await MyContract.methods.name().call();
@@ -530,132 +546,164 @@ const NFTForm = () => {
 
       try{
         minToken = await MyContract.methods.tokenByIndex(0).call();
+        if(Number(minToken) > 1){
+          minToken = "0"
+        }
       } catch(e){
         var minTokenOfProject = prompt("Please enter first token ID of the porject", "0 or 1");
         if (minTokenOfProject != null) {
           console.log(minToken)
           minToken = minToken;
+          if(Number(minToken) > 1){
+            minToken = "0"
+          }
+        }
+      }
+
+      try{
+        tokenURI = await MyContract.methods.tokenURI(String(Number(totalSupply) - 1)).call();
+      } catch(e){
+        var tokenURIInput = prompt("Please enter Token URI", "Including token id");
+        if (tokenURIInput != null) {
+          console.log(tokenURIInput)
+          tokenURI = tokenURIInput;
         }
       }
       
+      
       console.log("name ", name)
       console.log("totalSupply ", totalSupply)
-      console.log("First token in the list ", minToken)
-      if(Number(minToken) > 1){
-        minToken = "0"
-      }
-      console.log("First token in the list ", minToken)
-
-
-
-      setData(pre => {return {...pre, totalSupply, name, minToken : minToken ? minToken : "1", 
+      console.log("minToken ", minToken)
+      console.log("tokenURI ", tokenURI)
+      console.log("contractInfo: ", {contractFunctions: MyContract, contractAddrs: contractAdrs})
+      
+      setData({
+        totalSupply, 
+        name, 
+        baseTokenURI: tokenURI,
+        minToken : minToken ? minToken : "1", 
         contractInfo: {contractFunctions: MyContract, contractAddrs: contractAdrs}
-      }}) 
+      })
+
+      dispatch(setProjectInfo({
+        contractAddress: contractAdrs,
+        totalSupply:  Number(totalSupply), 
+        name:  name, 
+        baseTokenURI: tokenURI,
+        firstTokenIndex: minToken,
+        range: null,
+        loadingProgree: 0,
+        processingProgress: 0
+      }))
+
+      setNeedrange(true)
+      setLoading(false)
 
 
-      if(URl === ""){
-        try{
-          console.log("asset ", "trying 1")
-          const tokenURI1 = await MyContract.methods.tokenURI(String(Number(totalSupply) - 1)).call();
 
-          setData(pre => {return {...pre, baseTokenURI: tokenURI1}}) 
+      // if(URl === ""){
+      //   try{
+      //     console.log("asset ", "trying 1")
+      //     const tokenURI1 = await MyContract.methods.tokenURI(String(Number(totalSupply) - 1)).call();
 
-          dispatch(setProjectInfo({
-                  contractAddress: contractAdrs,
-                  totalSupply:  Number(totalSupply), 
-                  name:  name, 
-                  baseTokenURI: tokenURI1,
-                  range: null,
-                  firstTokenIndex: minToken,
-                  loadingProgree: 0,
-                  processingProgress: 0
-                }))
+      //     setData(pre => {return {...pre, baseTokenURI: tokenURI1}}) 
+
+      //     dispatch(setProjectInfo({
+      //             contractAddress: contractAdrs,
+      //             totalSupply:  Number(totalSupply), 
+      //             name:  name, 
+      //             baseTokenURI: tokenURI1,
+      //             range: null,
+      //             firstTokenIndex: minToken,
+      //             loadingProgree: 0,
+      //             processingProgress: 0
+      //           }))
             
-          setneedURI(false)
-          setNeedrange(true)
-          setLoading(false)
+      //     setneedURI(false)
+      //     setNeedrange(true)
+      //     setLoading(false)
 
           
-        }  catch(error){    
-              console.log("asset ", "Error fetching URI from useNFT hook too")
-              alert("Please provide NFT URI")
-              setData(pre => {return {...pre,  baseTokenURI: null}}) 
-              dispatch(setProjectInfo({
-                  contractAddress: contractAdrs, 
-                  totalSupply:  Number(totalSupply), 
-                  name:  name, 
-                  baseTokenURI: null, 
-                  range: null,
-                  firstTokenIndex: minToken,
-                  loadingProgree: 0,
-                  processingProgress: 0
+      //   }  catch(error){    
+      //         console.log("asset ", "Error fetching URI from useNFT hook too")
+      //         alert("Please provide NFT URI")
+      //         setData(pre => {return {...pre,  baseTokenURI: null}}) 
+      //         dispatch(setProjectInfo({
+      //             contractAddress: contractAdrs, 
+      //             totalSupply:  Number(totalSupply), 
+      //             name:  name, 
+      //             baseTokenURI: null, 
+      //             range: null,
+      //             firstTokenIndex: minToken,
+      //             loadingProgree: 0,
+      //             processingProgress: 0
 
 
-                }))
-              setneedURI(true)
-              setLoading(false)
-        }
-      }
+      //           }))
+      //         setneedURI(true)
+      //         setLoading(false)
+      //   }
+      // }
 
-      else {
-        try{
+      // else {
+      //   try{
 
-          console.log("URi to chck", URl)
-          let fetchAPI =  await axios.get(URl) as any          
-          console.log("new", fetchAPI.data.attributes)
-          console.log("step 2: Fetched attributes from URL ", fetchAPI.data.attributes)
+      //     console.log("URi to chck", URl)
+      //     let fetchAPI =  await axios.get(URl) as any          
+      //     console.log("new", fetchAPI.data.attributes)
+      //     console.log("step 2: Fetched attributes from URL ", fetchAPI.data.attributes)
   
-          if(fetchAPI  && fetchAPI.data.attributes){
-            setData(pre => {return {...pre, baseTokenURI: URl}}) 
+      //     if(fetchAPI  && fetchAPI.data.attributes){
+      //       setData(pre => {return {...pre, baseTokenURI: URl}}) 
   
-            dispatch(setProjectInfo({
-                    contractAddress: contractAdrs,
-                    totalSupply:  Number(totalSupply), 
-                    name:  name, 
-                    baseTokenURI: URl,
-                    range: null,
-                    firstTokenIndex: minToken,
-                    loadingProgree: 0,
-                    processingProgress: 0
+      //       dispatch(setProjectInfo({
+      //               contractAddress: contractAdrs,
+      //               totalSupply:  Number(totalSupply), 
+      //               name:  name, 
+      //               baseTokenURI: URl,
+      //               range: null,
+      //               firstTokenIndex: minToken,
+      //               loadingProgree: 0,
+      //               processingProgress: 0
 
-                  }))
+      //             }))
 
-            setneedURI(false)
-            setNeedrange(true)
-            setLoading(false)
-            setFieldValue("uri","")
-
-
-          }
-          else {
-            setLoading(false)
-
-            alert("Please provide a valid NFT URI and make sure you have installed and enabled Moesif CORS extention ")
-            setData(pre => {return {...pre,  baseTokenURI: null}}) 
-            dispatch(setProjectInfo({
-                contractAddress: contractAdrs, 
-                totalSupply:  Number(totalSupply), 
-                name:  name, 
-                baseTokenURI: null, 
-                range: null,
-                firstTokenIndex: minToken,
-                loadingProgree: 0,
-                processingProgress: 0
+      //       setneedURI(false)
+      //       setNeedrange(true)
+      //       setLoading(false)
+      //       setFieldValue("uri","")
 
 
-              }))
-            setneedURI(true)
+      //     }
+      //     else {
+      //       setLoading(false)
+
+      //       alert("Please provide a valid NFT URI and make sure you have installed and enabled Moesif CORS extention ")
+      //       setData(pre => {return {...pre,  baseTokenURI: null}}) 
+      //       dispatch(setProjectInfo({
+      //           contractAddress: contractAdrs, 
+      //           totalSupply:  Number(totalSupply), 
+      //           name:  name, 
+      //           baseTokenURI: null, 
+      //           range: null,
+      //           firstTokenIndex: minToken,
+      //           loadingProgree: 0,
+      //           processingProgress: 0
+
+
+      //         }))
+      //       setneedURI(true)
             
-            throw("Not a NFT URL")
-          }
+      //       throw("Not a NFT URL")
+      //     }
 
-        }  catch(error){
-              console.error(error)    
-              alert("Please provide a valid NFT URI")
-              setneedURI(true)
-              setLoading(false)
-        }
-      }
+      //   }  catch(error){
+      //         console.error(error)    
+      //         alert("Please provide a valid NFT URI")
+      //         setneedURI(true)
+      //         setLoading(false)
+      //   }
+      // }
 
 
     }
@@ -698,13 +746,14 @@ const NFTForm = () => {
 
     <div className="form-container" >
 
-    <Formik initialValues={{ address: '0xc1a1e381389cb927f1d57511e144b644ef0c6385', uri: '' }}
+    <Formik initialValues={{ address: '0xc1a1e381389cb927f1d57511e144b644ef0c6385'}}
             validationSchema={schema1} 
-            onSubmit={async (values, { setSubmitting, setFieldValue  }) => {
+            onSubmit={async (values, { setFieldValue  }) => {
             
                 dispatch(setUploadedContractAddress(values.address))
                 console.log("yesssss")  
-                fetchData(values.address, values.uri, setFieldValue)  
+                // fetchData(values.address, values.uri, setFieldValue)  
+                fetchData(values.address)  
 
             }}>
 
@@ -723,18 +772,18 @@ const NFTForm = () => {
           </Grid>
 
        {
-         needURI ? 
-          <Grid item xs={12}>
-              <Field
-                component={TextField}
-                type="text"
-                name="uri"
-                label={`NFT URI ${(needURI ? "(Needed)" : "(Optional)")}`}
-                fullWidth
-              />
-          </Grid> 
-          : 
-          null
+        //  needURI ? 
+        //   <Grid item xs={12}>
+        //       <Field
+        //         component={TextField}
+        //         type="text"
+        //         name="uri"
+        //         label={`NFT URI ${(needURI ? "(Needed)" : "(Optional)")}`}
+        //         fullWidth
+        //       />
+        //   </Grid> 
+        //   : 
+        //   null
        } 
 
         <div className="form-button-container">
@@ -744,10 +793,12 @@ const NFTForm = () => {
             type="submit"
             className="form-button"
           >
-            {
-              needURI ?
-                  <div >Enter URI </div> :    
                   <div >Load Contract</div>
+
+            {
+              // needURI ?
+              //     <div >Enter URI </div> :    
+              //     <div >Load Contract</div>
             }
           </Button>
          </div>
