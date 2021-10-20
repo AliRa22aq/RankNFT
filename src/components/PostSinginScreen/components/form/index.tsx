@@ -49,8 +49,8 @@ const NFTForm = () => {
   const [loading, setLoading] = useState(false);
   const [needURI, setneedURI] = useState(false);
   const [needRange, setNeedrange] = useState(false);
-  const [delayNFT, setDelayNFT] = useState(10);
-  const [delayOpensea, setDelayOpensea] = useState(300);
+  const [delayNFT, setDelayNFT] = useState(0);
+  const [delayOpensea, setDelayOpensea] = useState(0);
 
   const handleDelayNFT = (ms: any) => {
     setDelayNFT(ms)
@@ -77,7 +77,6 @@ const NFTForm = () => {
   const fetchAllTokenData = async (tokenURI: string, from: number, to: number) => {
 
 
-    console.log("step 1: Snipping started with URL ", tokenURI)
     try{
       let url1 = tokenURI;
       let url;
@@ -85,11 +84,13 @@ const NFTForm = () => {
       if(projectInfo?.totalSupply){
         url = tokenURI.replace( String(Number(projectInfo.totalSupply) - 1), "extension");
       }
-
+      
       if(url){
         let fetchAPI =  await axios.get( url1 ) as any          
-           
+        console.log("step 1: Snipping started with URL ", url)
+        
         if(fetchAPI){
+          console.log("step 1: Snipping started with URL ", fetchAPI)
           
           // dispatch(setInitialCountOfAllAttribute2(fetchAPI.data.attributes as Attribute[]))
           
@@ -240,9 +241,9 @@ const NFTForm = () => {
 
 
                 // console.log("Loop delayNFT", delayNFT )
+                let activeURL =  url.replace("extension" , String(i))
                 await delayFn(delayNFT);
 
-                let activeURL =  url.replace("extension" , String(i))
                 console.log("Loop #",  i, activeURL )
                      
                 axios.get( activeURL,  {data: i})
@@ -523,20 +524,29 @@ const NFTForm = () => {
       let minToken: string = "0";
       let tokenURI: string = "";
 
+
       try{
         name = await MyContract.methods.name().call();
       } catch(e){
-        var nameOfProject = prompt("Please enter name of the project", "Name i.e. Crypto Kitties");
+        do{
+          var nameOfProject = prompt("Please enter name of the project \nName i.e. Crypto Kitties");
+        } while(nameOfProject === "")   
+
         if (nameOfProject != null) {
           console.log(nameOfProject)
           name = nameOfProject;
         }
       }
 
+
       try{
         totalSupply = await MyContract.methods.totalSupply().call();
       } catch(e){
-        var totalSupplyOfProject = prompt("Please enter Total supply of tokens", "Total supply i.e. 10000 or 9999");
+
+        do{
+          var totalSupplyOfProject = prompt("Please enter Total supply of tokens \nTotal supply i.e. 10000 or 9999");
+        } while(totalSupplyOfProject === "")   
+
         if (totalSupplyOfProject != null) {
           console.log(totalSupplyOfProject)
           totalSupply = totalSupplyOfProject;
@@ -544,13 +554,18 @@ const NFTForm = () => {
         }
       }
 
+
       try{
         minToken = await MyContract.methods.tokenByIndex(0).call();
         if(Number(minToken) > 1){
           minToken = "0"
         }
       } catch(e){
-        var minTokenOfProject = prompt("Please enter first token ID of the porject", "0 or 1");
+
+        do{
+          var minTokenOfProject = prompt("Please enter first token ID of the porject \ne.i. 0 or 1");
+        } while(minTokenOfProject === "")   
+
         if (minTokenOfProject != null) {
           console.log(minToken)
           minToken = minToken;
@@ -560,10 +575,15 @@ const NFTForm = () => {
         }
       }
 
+
       try{
         tokenURI = await MyContract.methods.tokenURI(String(Number(totalSupply) - 1)).call();
       } catch(e){
-        var tokenURIInput = prompt("Please enter Token URI", "Including token id");
+
+        do{
+          var tokenURIInput = prompt("Please enter Token URI in below format  \nhttps://api.lostboy.io/boy/5135 \nIncluding token ID ");
+        } while(tokenURIInput === "")   
+
         if (tokenURIInput != null) {
           console.log(tokenURIInput)
           tokenURI = tokenURIInput;
@@ -926,11 +946,11 @@ const NFTForm = () => {
       </div>
 
         <div> 
-          <p>Set NFT Delay in ms</p>
+          {/* <p>Set NFT Delay in ms</p>
           <input value={delayNFT} onChange={(e) => handleDelayNFT(e.target.value)} />
-          {/* <br />
+          <br />
           <p>Set Opensea Delay in ms</p>
-          <input value={delayOpensea} onChange={(e) => handleDelayOpensea(e.target.value)} /> */}
+          <input value={delayOpensea} onChange={(e) => handleDelayOpensea(e.target.value)} />  */}
         </div>
 
     </div>
