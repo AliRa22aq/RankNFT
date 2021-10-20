@@ -206,44 +206,43 @@ const NFTCards = () => {
     const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
     console.log("fetchOpenseaData started")
-      await fetchOpenseaData(1, 0, 1000);
+      await fetchOpenseaData(1, 0, 600);
       console.log("fetchOpenseaData Ended for 1000")
-      await delayFn(3000)
+      await delayFn(5000)
 
-      await fetchOpenseaData(2, 1000, 2000);
+      await fetchOpenseaData(2, 600, 1200);
       console.log("fetchOpenseaData Ended for 2000")
-      await delayFn(3000)
+      await delayFn(5000)
 
       dispatch(setIsSnipping({action: "showNFTs"}))   
-      // handleInputLength()
       
-      await fetchOpenseaData(3, 2000, 3000);
+      await fetchOpenseaData(3, 1200, 1800);
       console.log("fetchOpenseaData Ended for 3000")
-      await delayFn(3000)
+      await delayFn(5000)
 
-      await fetchOpenseaData(4, 3000, 4000);
+      await fetchOpenseaData(4, 1800, 2400);
       console.log("fetchOpenseaData Ended for 4000")
-      await delayFn(3000)
+      await delayFn(5000)
 
-      await fetchOpenseaData(5, 4000, 5000);
+      await fetchOpenseaData(5, 2400, 3000);
       console.log("fetchOpenseaData Ended for 5000")
-      await delayFn(3000)
+      await delayFn(10000)
 
       await fetchOpenseaData(6, 5000, 6000);
       console.log("fetchOpenseaData Ended for 6000")
-      await delayFn(3000)
+      await delayFn(10000)
 
       await fetchOpenseaData(7, 6000, 7000);
       console.log("fetchOpenseaData Ended for 7000")
-      await delayFn(3000)
+      await delayFn(10000)
 
       await fetchOpenseaData(8, 7000, 8000);
       console.log("fetchOpenseaData Ended for 8000")
-      await delayFn(3000)
+      await delayFn(10000)
 
       await fetchOpenseaData(9, 8000, 9000);
       console.log("fetchOpenseaData Ended for 9000")
-      await delayFn(3000)
+      await delayFn(10000)
 
       await fetchOpenseaData(10, 9000);
       console.log("fetchOpenseaData Ended for more than 9000")

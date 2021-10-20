@@ -39,7 +39,7 @@ const NFTtable: FC<TableProps> = ({attributes, normalization}) => {
         return att;
     })
 
-    newAttributes.sort((a: any,b: any) => { return b.probability - a.probability })
+    newAttributes.sort((a: any,b: any) => { return a.probability - b.probability })
     console.log(newAttributes)
 
 
