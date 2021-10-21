@@ -155,101 +155,69 @@ const NFTCards = () => {
     console.log(`Progersss Start - ${i} 1000`)
 
     if(list_of_all_tokens){
+  
+      const top = max? list_of_all_tokens.slice(min,max) : list_of_all_tokens.slice(min)
     
-    const top = max? list_of_all_tokens.slice(min,max) : list_of_all_tokens.slice(min)
-
-    console.log("top.length ", top.length)
-    
-    if(top.length > 0) {
-
-    let link = initialLink;
-
-    top.forEach((token: any) => {
-      console.log(`${i} ---> ${token.tokenID} ->  ${token.rarity_score}`)
-      link = link.concat(`&token_ids=${token.tokenID}`);
-      if(count%30==0 || count === top.length){
-        arrayOfLinks.push(link.concat("&limit=30"))
-        link = initialLink;
+      console.log("top.length ", top.length)
+      
+      if(top.length > 0) {
+  
+      let link = initialLink;
+  
+      top.forEach((token: any) => {
+        console.log(`${i} ---> ${token.tokenID} ->  ${token.rarity_score}`)
+        link = link.concat(`&token_ids=${token.tokenID}`);
+        if(count%30==0 || count === top.length){
+          arrayOfLinks.push(link.concat("&limit=30"))
+          link = initialLink;
+        }
+        count++
+      })
+  
+      console.log("arrayOfLinks", arrayOfLinks)
+      // console.log(`arrayOfLinks - ${i} `, arrayOfLinks)
+  
+      const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
+  
+      let opensea_res: any = [];
+      for(var i = 0;  i < arrayOfLinks.length;  i=i+1) {
+        axios.get(arrayOfLinks[i]).then((API:any) => {
+          console.log("all OpenSea Responses ", i,  opensea_res)
+          opensea_res.push(API.data.assets)            
+        })
+        await delayFn(300)                  
       }
-      count++
-    })
 
-    console.log("arrayOfLinks", arrayOfLinks)
-    console.log(`arrayOfLinks - ${i} `, arrayOfLinks)
-    
-    let opensea_apis: any = [];
-    let opensea_res: any = [];
-    arrayOfLinks.forEach(async (opensea_api:any)=> {
-        console.log("opensea_api", opensea_api)
-        const api = axios.get(opensea_api)
-        opensea_apis.push(api)
-      })
+      await delayFn(5000)                  
+      // arrayOfLinks.forEach(async (opensea_api:any, key: number)=> {          
+      //     await delayFn(300)                  
+      //       axios.get(opensea_api).then((API:any) => {
+      //         console.log("all OpenSea Responses ", key,  opensea_res)
+      //         opensea_res.push(API.data.assets)            
+      //       })
+      //   })
 
-      const openseaData: any = await axios.all(opensea_apis);
-
-      openseaData.map((res: any) => {
-        console.log("opensea_api_res", res.data.assets)
-        opensea_res.push(res.data.assets)
-      })
-
-      console.log("opensea_res_flat ",  opensea_res.flat())
-      dispatch(setOpenseaData(opensea_res.flat()))   
-
-      console.log(`Progersss end - ${i} 1000`)
-
-    }
-
+        console.log("opensea_res_flat ",  opensea_res.flat())
+        dispatch(setOpenseaData(opensea_res.flat()))     
+      }
     }
   }
 
   const getTopRatedNFTs = async () => {
     const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
-    console.log("fetchOpenseaData started")
-      await fetchOpenseaData(1, 0, 600);
-      console.log("fetchOpenseaData Ended for 1000")
-      await delayFn(6500)
+    console.log("fetchOpenseaData start of 2000")
+    fetchOpenseaData(1, 0, 2000);
+    console.log("fetchOpenseaData End of 2000")
 
-      await fetchOpenseaData(2, 600, 1200);
-      console.log("fetchOpenseaData Ended for 2000")
-      await delayFn(6500)
+      // await delayFn(3000)
+      // dispatch(setIsSnipping({action: "showNFTs"}))   
+      await delayFn(3000)
 
-      dispatch(setIsSnipping({action: "showNFTs"}))   
-      
-      await fetchOpenseaData(3, 1200, 1800);
-      console.log("fetchOpenseaData Ended for 3000")
-      await delayFn(6500)
 
-      await fetchOpenseaData(4, 1800, 2400);
-      console.log("fetchOpenseaData Ended for 4000")
-      await delayFn(6500)
-
-      await fetchOpenseaData(5, 2400, 3000);
-      console.log("fetchOpenseaData Ended for 5000")
-      await delayFn(10000)
-
-      await fetchOpenseaData(6, 5000, 6000);
-      console.log("fetchOpenseaData Ended for 6000")
-      await delayFn(10000)
-
-      await fetchOpenseaData(7, 6000, 7000);
-      console.log("fetchOpenseaData Ended for 7000")
-      await delayFn(10000)
-
-      await fetchOpenseaData(8, 7000, 8000);
-      console.log("fetchOpenseaData Ended for 8000")
-      await delayFn(10000)
-
-      await fetchOpenseaData(9, 8000, 9000);
-      console.log("fetchOpenseaData Ended for 9000")
-      await delayFn(10000)
-
-      await fetchOpenseaData(10, 9000);
-      console.log("fetchOpenseaData Ended for more than 9000")
-
-      
-      // dispatch(setIsSnipping({action: "startRemaining"}))
-
+    console.log("fetchOpenseaData start of 8000")
+    fetchOpenseaData(1, 2000);
+    console.log("fetchOpenseaData End of 8000")
 
   }
 

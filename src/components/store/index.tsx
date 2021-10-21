@@ -86,7 +86,7 @@ export interface Loading {
   started: boolean,
   completed: boolean,
   showNFTs: boolean,
-  stopExecutation: boolean,
+  openSeaDataArrived: boolean,
   startTop20: boolean,
   startRemaining: boolean,
 }
@@ -161,8 +161,8 @@ const initialState: DataType = {
     rarityScoreOfAllValues2: {},
 
     projectInfo: null,
-    loading_contractData: {requested: false, started: false, completed: false, showNFTs: false, stopExecutation: false, startTop20: false, startRemaining: false},
-    isSnipping: {requested: false, started: false, completed: false, showNFTs: false, stopExecutation: false, startTop20: false, startRemaining: false},
+    loading_contractData: {requested: false, started: false, completed: false, showNFTs: false, openSeaDataArrived: false, startTop20: false, startRemaining: false},
+    isSnipping: {requested: false, started: false, completed: false, showNFTs: false, openSeaDataArrived: false, startTop20: false, startRemaining: false},
 
 
 }
@@ -642,11 +642,13 @@ const dataSlice = createSlice({
             }
           })
         })
-        // console.log("setOpenseaData ended", JSON.stringify(state?.list_of_all_tokens))
+
+        // state.list_of_all_tokens = Object.values(state.list_of_all_tokens2).sort( (a, b) => {
+        //   return b.rarity_score - a.rarity_score;
+        // });
+        state.isSnipping.showNFTs = true
+
       }
-
-
-
     },
 
     setOpenseaData2(state, {payload}:PayloadAction< any>){
@@ -689,40 +691,40 @@ const dataSlice = createSlice({
       ){
 
       if(payload.action === null){
-        state.isSnipping =  {requested: false, started: false, completed: false, showNFTs: false, stopExecutation: false, startTop20: false, startRemaining: false}
+        state.isSnipping =  {requested: false, started: false, completed: false, showNFTs: false, openSeaDataArrived: false, startTop20: false, startRemaining: false}
       }
       else {
         if(payload.action === "requested"){
-          state.isSnipping =  {requested: true, started: false, completed: false, showNFTs: false, stopExecutation: false, startTop20: false, startRemaining: false}
+          state.isSnipping =  {requested: true, started: false, completed: false, showNFTs: false, openSeaDataArrived: false, startTop20: false, startRemaining: false}
         }
 
         if(payload.action === "started"){
-          state.isSnipping =  {requested: true, started: true, completed: false, showNFTs: false, stopExecutation: false, startTop20: false, startRemaining: false}
+          state.isSnipping =  {requested: true, started: true, completed: false, showNFTs: false, openSeaDataArrived: false, startTop20: false, startRemaining: false}
         }
   
         if(payload.action === "completed"){
-          state.isSnipping =  {requested: true, started: true, completed: true, showNFTs: false, stopExecutation: false, startTop20: false, startRemaining: false}
+          state.isSnipping =  {requested: true, started: true, completed: true, showNFTs: false, openSeaDataArrived: false, startTop20: false, startRemaining: false}
         }
 
         if(payload.action === "showNFTs"){
-          state.isSnipping =  {requested: true, started: true, completed: true, showNFTs: true, stopExecutation: false, startTop20: false, startRemaining: false}
+          state.isSnipping =  {requested: true, started: true, completed: true, showNFTs: true, openSeaDataArrived: false, startTop20: false, startRemaining: false}
         }
 
         
         if(payload.action === "startTop20"){
-          state.isSnipping =  {requested: true, started: true, completed: true, showNFTs: false, stopExecutation: false, startTop20: true, startRemaining: false}
+          state.isSnipping =  {requested: true, started: true, completed: true, showNFTs: false, openSeaDataArrived: false, startTop20: true, startRemaining: false}
         }
 
         if(payload.action === "startRemaining"){
-          state.isSnipping =  {requested: true, started: true, completed: true, showNFTs: true, stopExecutation: false, startTop20: false, startRemaining: true}
+          state.isSnipping =  {requested: true, started: true, completed: true, showNFTs: true, openSeaDataArrived: false, startTop20: false, startRemaining: true}
         }
 
         if(payload.action === "allowSnipping"){
-          state.isSnipping =  {requested: true, started: false, completed: true, showNFTs: true, stopExecutation: false, startTop20: false, startRemaining: false}
+          state.isSnipping =  {requested: true, started: false, completed: true, showNFTs: true, openSeaDataArrived: false, startTop20: false, startRemaining: false}
         }
         if(payload.action === "stop"){
-          state.isSnipping =  {requested: false, started: false, completed: false, showNFTs: false, stopExecutation: true, startTop20: false, startRemaining: false}
-          // state.isSnipping =  {requested: false, started: false, completed: false, showNFTs: false, stopExecutation: false}
+          state.isSnipping =  {requested: false, started: false, completed: false, showNFTs: false, openSeaDataArrived: true, startTop20: false, startRemaining: false}
+          // state.isSnipping =  {requested: false, started: false, completed: false, showNFTs: false, openSeaDataArrived: false}
         }
       }
     },
@@ -738,7 +740,7 @@ const dataSlice = createSlice({
       state.countOfAllAttribute= null,
       state.countOfAllAttribute2 = {},
       state.rarityScoreOfAllValues= null,
-      state.isSnipping =  {requested: false, started: false, completed: false, showNFTs: false, stopExecutation: false, startTop20: false, startRemaining: false}
+      state.isSnipping =  {requested: false, started: false, completed: false, showNFTs: false, openSeaDataArrived: false, startTop20: false, startRemaining: false}
   
     
     },
