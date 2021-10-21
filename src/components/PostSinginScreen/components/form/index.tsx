@@ -149,7 +149,7 @@ const NFTForm = () => {
                 })
 
               }
-              await delayFn(5000);
+              await delayFn(10000);
               console.log("allTokens", allTokens)
               dispatch(addTokenInList3(allTokens))
               dispatch(setCountOfAllAttribute3(allAttributes))          
