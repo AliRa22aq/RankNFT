@@ -99,7 +99,7 @@ const NFTForm = () => {
               // Solution 3
               let allTokens: any = [];
               let allAttributes: any = [];
-              let allRequests:any = [];
+              // let allRequests:any = [];
   
               ////////////////////////////////////////////////
               console.log("Loop starting with ",  from, to, url)
@@ -107,7 +107,7 @@ const NFTForm = () => {
                 dispatch(setLoadingProgress(i))
 
                 let activeURL =  url.replace("extension" , String(i))
-                await delayFn(delayNFT);
+                // await delayFn(delayNFT);
 
                 console.log("Loop #",  i, activeURL )
                      
@@ -128,11 +128,14 @@ const NFTForm = () => {
 
                   attributes.push({trait_type: "trait_count", value: trait_count})
                   console.log("trait_count", trait_count)
+                  // allAttributes.push(attributes)
+                 dispatch(setCountOfAllAttribute2(attributes))          
+
 
                   const newTokens: any = {
                         rank: null,
                         tokenID: res.config.data,  
-                        attributes: res.data.attributes,
+                        attributes: attributes,
                         opensea: {price: 0, permalink: ""},
                         rarity_score: 0,
                         normalized_rarity_score: 0,
@@ -142,7 +145,6 @@ const NFTForm = () => {
                       }
 
                   allTokens.push(newTokens)
-                  dispatch(setCountOfAllAttribute2(res.data.attributes))          
 
                 })
 

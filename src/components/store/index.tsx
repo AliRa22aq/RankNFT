@@ -642,13 +642,12 @@ const dataSlice = createSlice({
             }
           })
         })
+      }
 
         // state.list_of_all_tokens = Object.values(state.list_of_all_tokens2).sort( (a, b) => {
         //   return b.rarity_score - a.rarity_score;
         // });
-        state.isSnipping.showNFTs = true
-
-      }
+      state.isSnipping.showNFTs = true
     },
 
     setOpenseaData2(state, {payload}:PayloadAction< any>){
