@@ -104,7 +104,7 @@ const NFTForm = () => {
               ////////////////////////////////////////////////
               console.log("Loop starting with ",  from, to, url)
               for(var i = from;  i <= to;  i=i+1) {
-                dispatch(setLoadingProgress(i))
+                // dispatch(setLoadingProgress(i))
 
                 let activeURL =  url.replace("extension" , String(i))
                 // await delayFn(delayNFT);
@@ -128,8 +128,8 @@ const NFTForm = () => {
 
                   attributes.push({trait_type: "trait_count", value: trait_count})
                   console.log("trait_count", trait_count)
-                  // allAttributes.push(attributes)
-                 dispatch(setCountOfAllAttribute2(attributes))          
+                  allAttributes.push(attributes)
+                //  dispatch(setCountOfAllAttribute2(attributes))          
 
 
                   const newTokens: any = {
@@ -152,6 +152,8 @@ const NFTForm = () => {
               await delayFn(5000);
               console.log("allTokens", allTokens)
               dispatch(addTokenInList3(allTokens))
+              dispatch(setCountOfAllAttribute3(allAttributes))          
+
               ////////////////////////////////////////////////
 
               dispatch(setIsSnipping({action: "completed"}))

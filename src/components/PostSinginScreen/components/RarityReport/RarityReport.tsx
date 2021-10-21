@@ -31,9 +31,10 @@ const RarityReport = () => {
                       {/* <Box sx={{ width: '100%' }}> */}
                       <div className="Loading-NFTs-progress-container">
                         <div className="Loading-NFTs-progress"> 
-                           <LinearProgress variant="determinate" value={loadingCount} />
+                           {/* <LinearProgress variant="determinate" value={loadingCount} /> */}
+                           <LinearProgress  />
                         </div>
-                           <div className="Loading-NFTs-progress-count">{`${loadingCount}%`}</div>
+                           {/* <div className="Loading-NFTs-progress-count">{`${loadingCount}%`}</div> */}
                       </div>
 
                     {/* </Box> */}

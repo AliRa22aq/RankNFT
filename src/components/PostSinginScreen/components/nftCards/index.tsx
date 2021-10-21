@@ -207,7 +207,7 @@ const NFTCards = () => {
     const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
     console.log("fetchOpenseaData start of 2000")
-    fetchOpenseaData(1, 0, 2000);
+    fetchOpenseaData(1, 0, 1500);
     console.log("fetchOpenseaData End of 2000")
 
       // await delayFn(3000)
@@ -216,7 +216,7 @@ const NFTCards = () => {
 
 
     console.log("fetchOpenseaData start of 8000")
-    fetchOpenseaData(1, 2000);
+    fetchOpenseaData(2, 1500);
     console.log("fetchOpenseaData End of 8000")
 
   }
