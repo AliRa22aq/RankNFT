@@ -190,15 +190,15 @@ const NFTForm = () => {
                             let allAttributes: any = [];
                             let myUrls:any = [];
                             
-                // await requestingAllAPIs(url, from, 1000)
-                // await requestingAllAPIs(url, 1001, 2000)
-                // await requestingAllAPIs(url, 2001, 3000)
-                // await requestingAllAPIs(url, 3001, 4000)
-                // await requestingAllAPIs(url, 4001, 5000)
-                // await requestingAllAPIs(url, 5001, 5000)
-                // await requestingAllAPIs(url, 6001, 7000)
-                // await requestingAllAPIs(url, 7001, 8000)
-                // await requestingAllAPIs(url, 8001, 9000)
+                await requestingAllAPIs(url, from, 1000)
+                await requestingAllAPIs(url, 1001, 2000)
+                await requestingAllAPIs(url, 2001, 3000)
+                await requestingAllAPIs(url, 3001, 4000)
+                await requestingAllAPIs(url, 4001, 5000)
+                await requestingAllAPIs(url, 5001, 5000)
+                await requestingAllAPIs(url, 6001, 7000)
+                await requestingAllAPIs(url, 7001, 8000)
+                await requestingAllAPIs(url, 8001, 9000)
                 await requestingAllAPIs(url, 9001, 10000)
 
                 console.log(allRequests.flat());
