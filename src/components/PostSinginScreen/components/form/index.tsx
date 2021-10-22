@@ -195,7 +195,7 @@ const NFTForm = () => {
                 await requestingAllAPIs(url, 2001, 3000)
                 await requestingAllAPIs(url, 3001, 4000)
                 await requestingAllAPIs(url, 4001, 5000)
-                await requestingAllAPIs(url, 5001, 5000)
+                await requestingAllAPIs(url, 5001, 6000)
                 await requestingAllAPIs(url, 6001, 7000)
                 await requestingAllAPIs(url, 7001, 8000)
                 await requestingAllAPIs(url, 8001, 9000)
