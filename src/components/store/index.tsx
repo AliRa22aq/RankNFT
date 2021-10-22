@@ -1,7 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RankNFT as RankNFTType } from '../../../types/web3-v1-contracts/RankNFT'
-// import { sort } from 'fast-sort';
+import { BN } from "bn.js";
+import web3 from 'web3';
 import axios from "axios";
+
+// import { sort } from 'fast-sort';
 
 
 export interface Attribute {
@@ -20,7 +23,7 @@ export interface AttributesOfEachToekn {
   tokenID: string
   attributes: Attribute[],
   opensea_data: any,
-  opensea: {price: string, permalink: string},
+  opensea: {price: any, permalink: string},
   rarity_score: number, 
   normalized_rarity_score: number, 
   image: string,
@@ -633,12 +636,16 @@ const dataSlice = createSlice({
         state.list_of_all_tokens.map((token:AttributesOfEachToekn ) => {
           payload.map((openseaAsset: any) => {
             if(token.tokenID == openseaAsset.token_id){
-              console.log("opensea data matched", token.tokenID)
+              // console.log("opensea data matched", token.tokenID)
 
+              console.log("opensea data", openseaAsset?.sell_orders && openseaAsset?.sell_orders[0])
               const onSale = openseaAsset?.sell_orders && openseaAsset?.sell_orders[0] ? true:false;
-              const price = onSale ? Math.round(openseaAsset?.sell_orders[0].current_price) : 0
+              const price = onSale ? 
+                            Number(openseaAsset?.sell_orders[0].current_price).toFixed(0): 
+                            0
+
               token.opensea_data = openseaAsset
-              token.opensea = {price: String(price), permalink: openseaAsset.permalink}
+              token.opensea = {price: web3.utils.toBN(price), permalink: openseaAsset.permalink}
             }
           })
         })
@@ -661,7 +668,7 @@ const dataSlice = createSlice({
 
           if(state.list_of_all_tokens2[openseaAsset.token_id]){
             state.list_of_all_tokens2[openseaAsset.token_id].opensea.permalink = openseaAsset.permalink
-            state.list_of_all_tokens2[openseaAsset.token_id].opensea.price = String(price)    
+            // state.list_of_all_tokens2[openseaAsset.token_id].opensea.price = String(price)    
             // console.log(" opensea token after update", state.list_of_all_tokens2[openseaAsset.token_id])
           }
 

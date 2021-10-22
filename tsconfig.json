@@ -24,6 +24,8 @@
     { "transform": "typescript-is/lib/transform-inline/transformer" }
     ],
   "include": [
-    "src"
+    "src",
+    "./lib/**/*.ts", 
+    "./node_modules/bn.js-typings/index.d.ts"  
   ]
 }
