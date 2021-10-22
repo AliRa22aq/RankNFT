@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RankNFT as RankNFTType } from '../../../types/web3-v1-contracts/RankNFT'
-import { BN } from "bn.js";
+// import { BN } from "bn.js";
 import web3 from 'web3';
 import axios from "axios";
 

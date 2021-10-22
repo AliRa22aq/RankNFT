@@ -11,6 +11,8 @@ import axios from "axios";
 import CircularProgress from '@mui/material/CircularProgress';
 import * as yup from 'yup';
 import async  from "async";
+var request = require('request') // https://www.npmjs.com/package/request
+
 
 
 interface Data {
@@ -96,67 +98,171 @@ const NFTForm = () => {
           // const range = to-from + 1
           const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
             
-              // Solution 3
-              let allTokens: any = [];
-              let allAttributes: any = [];
-              // let allRequests:any = [];
+              
+              // //Solution 1
+              // let allTokens: any = [];
+              // let allAttributes: any = [];
+              // // let allRequests:any = [];
   
-              ////////////////////////////////////////////////
-              console.log("Loop starting with ",  from, to, url)
-              for(var i = from;  i <= to;  i=i+1) {
-                // dispatch(setLoadingProgress(i))
+              // ////////////////////////////////////////////////
+              // console.log("Loop starting with ",  from, to, url)
+              // for(var i = from;  i <= to;  i=i+1) {
+              //   // dispatch(setLoadingProgress(i))
 
-                let activeURL =  url.replace("extension" , String(i))
-                // await delayFn(delayNFT);
+              //   let activeURL =  url.replace("extension" , String(i))
+              //   // await delayFn(delayNFT);
 
-                console.log("Loop #",  i, activeURL )
+              //   console.log("Loop #",  i, activeURL )
                      
-                axios.get( activeURL,  {data: i})
-                .then((res: any) => {
-                  console.log("waited res of Loop #", res.config.data, res)
+              //   axios.get( activeURL,  {data: i})
+              //   .then((res: any) => {
+              //     console.log("waited res of Loop #", res.config.data, res)
 
-                  let attributes = res.data.attributes
-                  let trait_count = res.data.attributes.length
-                  console.log("trait_count", trait_count)
+              //     let attributes = res.data.attributes
+              //     let trait_count = res.data.attributes.length
+              //     console.log("trait_count", trait_count)
 
-                  res.data.attributes.forEach((attribute: any)=> {
-                    if(attribute.value.toLowerCase() === "none"){
-                      console.log("attribute.value matched", attribute.value)
-                      trait_count--
-                    }
-                  })
+              //     res.data.attributes.forEach((attribute: any)=> {
+              //       if(attribute.value.toLowerCase() === "none"){
+              //         console.log("attribute.value matched", attribute.value)
+              //         trait_count--
+              //       }
+              //     })
 
-                  attributes.push({trait_type: "trait_count", value: trait_count})
-                  console.log("trait_count", trait_count)
-                  allAttributes.push(attributes)
-                //  dispatch(setCountOfAllAttribute2(attributes))          
+              //     attributes.push({trait_type: "trait_count", value: trait_count})
+              //     console.log("trait_count", trait_count)
+              //     allAttributes.push(attributes)
+              //   //  dispatch(setCountOfAllAttribute2(attributes))          
 
 
-                  const newTokens: any = {
-                        rank: null,
-                        tokenID: res.config.data,  
-                        attributes: attributes,
-                        opensea: {price: 0, permalink: ""},
-                        rarity_score: 0,
-                        normalized_rarity_score: 0,
-                        image: res.data.image,
-                        title: res.data.title? res.data.title: "",
-                        name: res.data.name? res.data.name: "" 
-                      }
+              //     const newTokens: any = {
+              //           rank: null,
+              //           tokenID: res.config.data,  
+              //           attributes: attributes,
+              //           opensea: {price: 0, permalink: ""},
+              //           rarity_score: 0,
+              //           normalized_rarity_score: 0,
+              //           image: res.data.image,
+              //           title: res.data.title? res.data.title: "",
+              //           name: res.data.name? res.data.name: "" 
+              //         }
 
-                  allTokens.push(newTokens)
+              //     allTokens.push(newTokens)
 
-                })
+              //   })
 
+              // }
+              // await delayFn(10000);
+              // console.log("allTokens", allTokens)
+              // dispatch(addTokenInList3(allTokens))
+              // dispatch(setCountOfAllAttribute3(allAttributes))          
+
+              // ////////////////////////////////////////////////
+
+              // dispatch(setIsSnipping({action: "completed"}))
+
+
+
+              let allRequests:any = [];
+
+              const requestingAllAPIs = async (url: string, _from: number, _to: number) => {
+                
+                let requests:any = [];
+
+                console.log("Loop starting with ",  _from, _to, url)
+                for(var i = _from;  i <= _to;  i=i+1) {
+                
+                  let activeURL =  url.replace("extension" , String(i))
+                  console.log("Loop #",  i, activeURL )
+                  const request = axios.get( activeURL,  {data: i})
+                  requests.push(request)              
+                }
+
+                const responses:any = await Promise.allSettled(requests);
+                console.log("Combined responses of opensea ", responses)
+                allRequests.push(responses)
               }
-              await delayFn(10000);
-              console.log("allTokens", allTokens)
-              dispatch(addTokenInList3(allTokens))
-              dispatch(setCountOfAllAttribute3(allAttributes))          
 
-              ////////////////////////////////////////////////
 
-              dispatch(setIsSnipping({action: "completed"}))
+
+                            //Solution 1
+                            let allTokens: any = [];
+                            let allAttributes: any = [];
+                            let myUrls:any = [];
+                            
+                // await requestingAllAPIs(url, from, 1000)
+                // await requestingAllAPIs(url, 1001, 2000)
+                // await requestingAllAPIs(url, 2001, 3000)
+                // await requestingAllAPIs(url, 3001, 4000)
+                // await requestingAllAPIs(url, 4001, 5000)
+                // await requestingAllAPIs(url, 5001, 5000)
+                // await requestingAllAPIs(url, 6001, 7000)
+                // await requestingAllAPIs(url, 7001, 8000)
+                // await requestingAllAPIs(url, 8001, 9000)
+                await requestingAllAPIs(url, 9001, 10000)
+
+                console.log(allRequests.flat());
+
+                            ////////////////////////////////////////////////
+                            // console.log("Loop starting with ",  from, to, url)
+                            // for(var i = from;  i <= to;  i=i+1) {
+                            //   // dispatch(setLoadingProgress(i))
+              
+                            //   let activeURL =  url.replace("extension" , String(i))
+                            //   console.log("Loop #",  i, activeURL )
+                            //   const request = axios.get( activeURL,  {data: i})
+                            //   allRequests.push(request)              
+                            // }
+
+                            // const responses2:any = await Promise.allSettled(allRequests);
+                            // console.log("Combined responses of opensea ", responses2)
+
+
+                            // await delayFn(10000);
+
+                            // .then((res: any) => {
+                            //   console.log("waited res of Loop #", res.config.data, res)
+            
+                            //   let attributes = res.data.attributes
+                            //   let trait_count = res.data.attributes.length
+                            //   console.log("trait_count", trait_count)
+            
+                            //   res.data.attributes.forEach((attribute: any)=> {
+                            //     if(attribute.value.toLowerCase() === "none"){
+                            //       console.log("attribute.value matched", attribute.value)
+                            //       trait_count--
+                            //     }
+                            //   })
+            
+                            //   attributes.push({trait_type: "trait_count", value: trait_count})
+                            //   console.log("trait_count", trait_count)
+                            //   allAttributes.push(attributes)
+                            // //  dispatch(setCountOfAllAttribute2(attributes))          
+            
+            
+                            //   const newTokens: any = {
+                            //         rank: null,
+                            //         tokenID: res.config.data,  
+                            //         attributes: attributes,
+                            //         opensea: {price: 0, permalink: ""},
+                            //         rarity_score: 0,
+                            //         normalized_rarity_score: 0,
+                            //         image: res.data.image,
+                            //         title: res.data.title? res.data.title: "",
+                            //         name: res.data.name? res.data.name: "" 
+                            //       }
+            
+                            //   allTokens.push(newTokens)
+            
+                            // })
+                            // console.log("allTokens", allTokens)
+                            // dispatch(addTokenInList3(allTokens))
+                            // dispatch(setCountOfAllAttribute3(allAttributes))          
+              
+                            // ////////////////////////////////////////////////
+              
+                            // dispatch(setIsSnipping({action: "completed"}))
+              
 
         }
       }
