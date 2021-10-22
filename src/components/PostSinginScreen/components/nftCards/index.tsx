@@ -209,7 +209,7 @@ const NFTCards = () => {
               console.log("all OpenSea Responses ", i+1 , opensea_responses)
               opensea_responses.push(opensea_each_res.data.assets)            
             })
-            await delayFn(300)     
+            await delayFn(350)     
           }
           await delayFn(10000)     
         console.log("opensea_res_flat ",  opensea_responses.flat())
@@ -239,7 +239,7 @@ const NFTCards = () => {
 
       // await delayFn(3000)
       // dispatch(setIsSnipping({action: "showNFTs"}))   
-    await delayFn(3000)
+    await delayFn(5000)
 
 
     console.log("fetchOpenseaData start of 8500")
