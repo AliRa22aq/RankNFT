@@ -95,7 +95,7 @@ const NFTForm = () => {
           console.log("step 1: Snipping started with URL ", fetchAPI)
                     
           // const range = to-from + 1
-          const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
+          // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
             
               
               // //Solution 1
@@ -255,7 +255,7 @@ const NFTForm = () => {
                     allTokens.push(newTokens)
 
                 })
-                
+
                     console.log("allTokens", allTokens)
                     dispatch(addTokenInList3(allTokens))
                     dispatch(setCountOfAllAttribute3(allAttributes))          

@@ -180,22 +180,21 @@ const NFTCards = () => {
       const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
   
       let opensea_res: any = [];
-      for(var i = 0;  i < arrayOfLinks.length;  i=i+1) {
-        axios.get(arrayOfLinks[i]).then((API:any) => {
-          console.log("all OpenSea Responses ", i,  opensea_res)
-          opensea_res.push(API.data.assets)            
-        })
-        await delayFn(300)                  
-      }
-
-      await delayFn(5000)                  
-      // arrayOfLinks.forEach(async (opensea_api:any, key: number)=> {          
-      //     await delayFn(300)                  
-      //       axios.get(opensea_api).then((API:any) => {
-      //         console.log("all OpenSea Responses ", key,  opensea_res)
-      //         opensea_res.push(API.data.assets)            
-      //       })
+      // for(var i = 0;  i < arrayOfLinks.length;  i=i+1) {
+      //   axios.get(arrayOfLinks[i]).then((API:any) => {
+      //     console.log("all OpenSea Responses ", i,  opensea_res)
+      //     opensea_res.push(API.data.assets)            
       //   })
+      //   await delayFn(300)                  
+      // }
+
+      // await delayFn(5000)                  
+      arrayOfLinks.forEach(async (opensea_api:any, key: number)=> {          
+          const opensea_each_res: any = await axios.get(opensea_api);
+              console.log("all OpenSea Responses ", key+1 , opensea_res)
+              opensea_res.push(opensea_each_res.data.assets)            
+              await delayFn(300)                  
+            })
 
         console.log("opensea_res_flat ",  opensea_res.flat())
         dispatch(setOpenseaData(opensea_res.flat()))     
