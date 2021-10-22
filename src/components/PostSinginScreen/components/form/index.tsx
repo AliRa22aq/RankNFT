@@ -221,7 +221,7 @@ const NFTForm = () => {
 
                 let allRawTokens: any = allRequests.flat();
                 allRawTokens.forEach((token :any) => {
-                  if(status === 'fulfilled'){
+                  if(token.status === 'fulfilled'){
 
                     console.log(token.value.data)
 
