@@ -203,7 +203,8 @@ const NFTCards = () => {
 
       } else {
         let opensea_responses: any = [];
-        
+        await delayFn(5000)
+
         for(var i = 0;  i < arrayOfLinks.length;  i=i+1) {
             axios.get(arrayOfLinks[i]).then((opensea_each_res: any) => {
               console.log("all OpenSea Responses ", i+1 , opensea_responses)
@@ -239,7 +240,6 @@ const NFTCards = () => {
 
       // await delayFn(3000)
       // dispatch(setIsSnipping({action: "showNFTs"}))   
-    await delayFn(5000)
 
 
     console.log("fetchOpenseaData start of 8500")
