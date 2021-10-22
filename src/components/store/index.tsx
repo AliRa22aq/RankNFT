@@ -23,7 +23,7 @@ export interface AttributesOfEachToekn {
   tokenID: string
   attributes: Attribute[],
   opensea_data: any,
-  opensea: {price: any, permalink: string},
+  opensea: {price: number, permalink: string},
   rarity_score: number, 
   normalized_rarity_score: number, 
   image: string,
@@ -641,11 +641,11 @@ const dataSlice = createSlice({
               console.log("opensea data", openseaAsset?.sell_orders && openseaAsset?.sell_orders[0])
               const onSale = openseaAsset?.sell_orders && openseaAsset?.sell_orders[0] ? true:false;
               const price = onSale ? 
-                            Number(openseaAsset?.sell_orders[0].current_price).toFixed(0): 
-                            0
+                             Math.round(Number(openseaAsset?.sell_orders[0].current_price)): 
+                             0
 
               token.opensea_data = openseaAsset
-              token.opensea = {price: web3.utils.toBN(price), permalink: openseaAsset.permalink}
+              token.opensea = {price: price, permalink: openseaAsset.permalink}
             }
           })
         })

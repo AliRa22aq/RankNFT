@@ -146,13 +146,13 @@ const NFTCards = () => {
 
   }
 
-  const fetchOpenseaData = async (i: number, min: number, max?:number) => {
+  const fetchOpenseaData = async (iteration: number, min: number, max?:number) => {
 
     let arrayOfLinks: any = [];
     let count = 1
     const initialLink = `https://api.opensea.io/api/v1/assets?asset_contract_address=${projectInfo?.contractAddress}`;
 
-    console.log(`Progersss Start - ${i} 1000`)
+    console.log(`Progersss Start - iteration: ${iteration} `)
 
     if(list_of_all_tokens){
   
@@ -164,8 +164,8 @@ const NFTCards = () => {
   
       let link = initialLink;
   
-      top.forEach((token: any) => {
-        console.log(`${i} ---> ${token.tokenID} ->  ${token.rarity_score}`)
+      top.forEach((token: any, key: number) => {
+        console.log(`${key+1} ---> ${token.tokenID} ->  ${token.rarity_score}`)
         link = link.concat(`&token_ids=${token.tokenID}`);
         if(count%30==0 || count === top.length){
           arrayOfLinks.push(link.concat("&limit=30"))
@@ -178,26 +178,54 @@ const NFTCards = () => {
       // console.log(`arrayOfLinks - ${i} `, arrayOfLinks)
   
       const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
-  
-      let opensea_res: any = [];
-      // for(var i = 0;  i < arrayOfLinks.length;  i=i+1) {
-      //   axios.get(arrayOfLinks[i]).then((API:any) => {
-      //     console.log("all OpenSea Responses ", i,  opensea_res)
-      //     opensea_res.push(API.data.assets)            
-      //   })
-      //   await delayFn(300)                  
-      // }
 
-      // await delayFn(5000)                  
-      arrayOfLinks.forEach(async (opensea_api:any, key: number)=> {          
-          const opensea_each_res: any = await axios.get(opensea_api);
-              console.log("all OpenSea Responses ", key+1 , opensea_res)
-              opensea_res.push(opensea_each_res.data.assets)            
-              await delayFn(300)                  
+      
+      if(iteration === 1){
+        let opensea_requests: any = [];
+        let opensea_responses: any = [];
+
+        for(var i = 0;  i < arrayOfLinks.length;  i=i+1) {
+          const request = axios.get(arrayOfLinks[i])
+          opensea_requests.push(request)
+        }
+
+        const responses:any = await Promise.allSettled(opensea_requests);
+        // console.log("Combined responses of opensea ", responses)
+
+        responses.forEach((opensea_each_res: any) => {
+          opensea_responses.push(opensea_each_res.value.data.assets)            
+        })
+        
+        console.log("all OpenSea Responses ", opensea_responses.flat())
+        dispatch(setOpenseaData(opensea_responses.flat()))   
+
+
+
+      } else {
+        let opensea_responses: any = [];
+        
+        for(var i = 0;  i < arrayOfLinks.length;  i=i+1) {
+            axios.get(arrayOfLinks[i]).then((opensea_each_res: any) => {
+              console.log("all OpenSea Responses ", i+1 , opensea_responses)
+              opensea_responses.push(opensea_each_res.data.assets)            
             })
+            await delayFn(300)     
+          }
+          await delayFn(10000)     
+        console.log("opensea_res_flat ",  opensea_responses.flat())
+        dispatch(setOpenseaData(opensea_responses.flat()))   
+  
+      }
+          // await delayFn(5000)                  
+          // await arrayOfLinks.forEach(async (opensea_api:any, key: number)=> {          
+          //     const opensea_each_res: any = await axios.get(opensea_api);
+          //         console.log("all OpenSea Responses ", key+1 , opensea_res)
+          //         opensea_res.push(opensea_each_res.data.assets)            
+          //         await delayFn(300)                  
+          //       })
 
-        console.log("opensea_res_flat ",  opensea_res.flat())
-        dispatch(setOpenseaData(opensea_res.flat()))     
+  
+  
       }
     }
   }
@@ -205,18 +233,18 @@ const NFTCards = () => {
   const getTopRatedNFTs = async () => {
     const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
-    console.log("fetchOpenseaData start of 2000")
-    fetchOpenseaData(1, 0, 1500);
-    console.log("fetchOpenseaData End of 2000")
+    console.log("fetchOpenseaData start of 1500")
+    await fetchOpenseaData(1, 0, 1500);
+    console.log("fetchOpenseaData End of 1500")
 
       // await delayFn(3000)
       // dispatch(setIsSnipping({action: "showNFTs"}))   
-      await delayFn(3000)
+    await delayFn(3000)
 
 
-    console.log("fetchOpenseaData start of 8000")
-    fetchOpenseaData(2, 1500);
-    console.log("fetchOpenseaData End of 8000")
+    console.log("fetchOpenseaData start of 8500")
+    await fetchOpenseaData(2, 1500);
+    console.log("fetchOpenseaData End of 8500")
 
   }
 
@@ -320,7 +348,7 @@ const NFTCards = () => {
                 normalized_rarity_score:  final_normalized_score
           }
 
-          // console.log("countOfAllAttribute2 ", rarity_score_of_each_value)
+          console.log("countOfAllAttribute2 ", key, rarity_score_of_each_value)
           dispatch(setRarityScoreToAttributeValue2(rarity_score_of_each_value))
           dispatch(setRarityScoreToEachNFTAttribuValue2(rarity_score_of_each_value))
          })

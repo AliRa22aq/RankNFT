@@ -221,24 +221,24 @@ const NFTForm = () => {
 
                 let allRawTokens: any = allRequests.flat();
                 allRawTokens.forEach((token :any) => {
-                  console.log(token.value.data)
+                  if(status === 'fulfilled'){
 
-                  let attributes = token.value.data.attributes
-                  let trait_count = token.value.data.attributes.length
-                  console.log("trait_count", trait_count)
-            
-                  token.value.data.attributes.forEach((attribute: any)=> {
-                    if(attribute.value.toLowerCase() === "none"){
-                      console.log("attribute.value matched", attribute.value)
-                      trait_count--
-                    }
-                  })
-            
+                    console.log(token.value.data)
+
+                    let attributes = token.value.data.attributes
+                    let trait_count = token.value.data.attributes.length
+                    console.log("trait_count", trait_count)
+              
+                    token.value.data.attributes.forEach((attribute: any)=> {
+                      if(attribute.value.toLowerCase() === "none"){
+                        console.log("attribute.value matched", attribute.value)
+                        trait_count--
+                      }
+                    })
+              
                     attributes.push({trait_type: "trait_count", value: trait_count})
                     console.log("trait_count", trait_count)
-                    allAttributes.push(attributes)
-                //  dispatch(setCountOfAllAttribute2(attributes))          
-            
+                    allAttributes.push(attributes)            
             
                     const newTokens: any = {
                           rank: null,
@@ -253,6 +253,8 @@ const NFTForm = () => {
                         }
             
                     allTokens.push(newTokens)
+
+                  }
 
                 })
 
@@ -344,7 +346,8 @@ const NFTForm = () => {
       setLoading(true)
 
       // TODO: Ask ben to provide Infure API Kye
-      var web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/92a3eada72834b629e28ff80ba4af4d0'))  
+       var web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/767a0bfaa2ba4ef6b9fc954a84712a26')) 
+       
 
       // let uri: string;
       // let abi: any;
