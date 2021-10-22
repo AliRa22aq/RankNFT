@@ -94,7 +94,6 @@ const NFTForm = () => {
         if(fetchAPI){
           console.log("step 1: Snipping started with URL ", fetchAPI)
                     
-          dispatch(setIsSnipping({action: "started"}))         
           // const range = to-from + 1
           const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
             
@@ -163,45 +162,108 @@ const NFTForm = () => {
 
 
 
-              let allRequests:any = [];
+                let allRequests:any = [];
 
-              const requestingAllAPIs = async (url: string, _from: number, _to: number) => {
-                
-                let requests:any = [];
+                const requestingAllAPIs = async (iteration: number, url: string, 
+                                                _from: number, _to: number, from: number, to: number) => {
 
-                console.log("Loop starting with ",  _from, _to, url)
-                for(var i = _from;  i <= _to;  i=i+1) {
-                
-                  let activeURL =  url.replace("extension" , String(i))
-                  console.log("Loop #",  i, activeURL )
-                  const request = axios.get( activeURL,  {data: i})
-                  requests.push(request)              
+                                                  //case    0 - 1000        0 - 900
+                  const need = to >= _from;
+                  if(need){
+                  
+                    console.log("==========================================================")
+                    console.log("iteration ",  iteration)
+                    console.log("==========================================================")
+
+                    const start = iteration === 1 ? from : _from;
+                    const end = to < _to ? to : _to;
+                    let requests:any = [];
+
+                    for(var i = start;  i <= end;  i=i+1) {         
+                      let activeURL =  url.replace("extension" , String(i))
+                      console.log("Loop #",  i, activeURL )
+                      const request = axios.get( activeURL,  {data: i})
+                      requests.push(request)              
+                    }
+
+                    const responses:any = await Promise.allSettled(requests);
+                    console.log("Combined responses of opensea ", responses)
+                    allRequests.push(responses)
+
+                  }
+
                 }
 
-                const responses:any = await Promise.allSettled(requests);
-                console.log("Combined responses of opensea ", responses)
-                allRequests.push(responses)
-              }
-
-
-
-                            //Solution 1
-                            let allTokens: any = [];
-                            let allAttributes: any = [];
-                            let myUrls:any = [];
+                //Solution 1
+                // let allTokens: any = [];
+                // let allAttributes: any = [];
+                // let myUrls:any = [];
                             
-                await requestingAllAPIs(url, from, 1000)
-                await requestingAllAPIs(url, 1001, 2000)
-                await requestingAllAPIs(url, 2001, 3000)
-                await requestingAllAPIs(url, 3001, 4000)
-                await requestingAllAPIs(url, 4001, 5000)
-                await requestingAllAPIs(url, 5001, 6000)
-                await requestingAllAPIs(url, 6001, 7000)
-                await requestingAllAPIs(url, 7001, 8000)
-                await requestingAllAPIs(url, 8001, 9000)
-                await requestingAllAPIs(url, 9001, 10000)
+                await requestingAllAPIs(1, url, 0, 1000, from, to)
+                await requestingAllAPIs(2, url, 1001, 2000, from, to)
+                await requestingAllAPIs(3, url, 2001, 3000, from, to)
+                await requestingAllAPIs(4, url, 3001, 4000, from, to)
+                await requestingAllAPIs(5, url, 4001, 5000, from, to)
+                await requestingAllAPIs(6, url, 5001, 6000, from, to)
+                await requestingAllAPIs(7, url, 6001, 7000, from, to)
+                await requestingAllAPIs(8, url, 7001, 8000, from, to)
+                await requestingAllAPIs(9, url, 8001, 9000, from, to)
+                await requestingAllAPIs(10, url, 9001, 10000, from, to)
 
                 console.log(allRequests.flat());
+
+                dispatch(setIsSnipping({action: "started"}))         
+
+
+                let allTokens: any = [];
+                let allAttributes: any = [];
+
+
+                let allRawTokens: any = allRequests.flat();
+                allRawTokens.forEach((token :any) => {
+                  console.log(token.value.data)
+
+                  let attributes = token.value.data.attributes
+                  let trait_count = token.value.data.attributes.length
+                  console.log("trait_count", trait_count)
+            
+                  token.value.data.attributes.forEach((attribute: any)=> {
+                    if(attribute.value.toLowerCase() === "none"){
+                      console.log("attribute.value matched", attribute.value)
+                      trait_count--
+                    }
+                  })
+            
+                    attributes.push({trait_type: "trait_count", value: trait_count})
+                    console.log("trait_count", trait_count)
+                    allAttributes.push(attributes)
+                //  dispatch(setCountOfAllAttribute2(attributes))          
+            
+            
+                    const newTokens: any = {
+                          rank: null,
+                          tokenID: token.value.config.data,  
+                          attributes: attributes,
+                          opensea: {price: 0, permalink: ""},
+                          rarity_score: 0,
+                          normalized_rarity_score: 0,
+                          image: token.value.data.image,
+                          title: token.value.data.title? token.value.data.title: "",
+                          name: token.value.data.name? token.value.data.name: "" 
+                        }
+            
+                    allTokens.push(newTokens)
+
+                })
+                
+                    console.log("allTokens", allTokens)
+                    dispatch(addTokenInList3(allTokens))
+                    dispatch(setCountOfAllAttribute3(allAttributes))          
+      
+                    ////////////////////////////////////////////////
+      
+                    dispatch(setIsSnipping({action: "completed"}))
+
 
                             ////////////////////////////////////////////////
                             // console.log("Loop starting with ",  from, to, url)
