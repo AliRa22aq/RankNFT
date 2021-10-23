@@ -646,7 +646,7 @@ const dataSlice = createSlice({
               }
 
               const price = onSale ? 
-              Number(web3.utils.fromWei(String(Number(openseaAsset?.sell_orders[0].current_price).toFixed(0)), "ether")): 
+              Number(web3.utils.fromWei(openseaAsset?.sell_orders[0].base_price, "ether")): 
               0
               
               if(price>0){
