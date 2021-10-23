@@ -638,11 +638,20 @@ const dataSlice = createSlice({
             if(token.tokenID == openseaAsset.token_id){
               // console.log("opensea data matched", token.tokenID)
 
-              console.log("opensea data", openseaAsset?.sell_orders && openseaAsset?.sell_orders[0])
               const onSale = openseaAsset?.sell_orders && openseaAsset?.sell_orders[0] ? true:false;
+
+              if(onSale){
+                console.log("===> raw current_price", openseaAsset?.sell_orders[0].current_price)
+                console.log("===> raw base_price", openseaAsset?.sell_orders[0].base_price)
+              }
+
               const price = onSale ? 
-                             Math.round(Number(openseaAsset?.sell_orders[0].current_price)): 
-                             0
+              Number(web3.utils.fromWei(String(Number(openseaAsset?.sell_orders[0].current_price).toFixed(0)), "ether")): 
+              0
+              
+              if(price>0){
+                console.log("===> converted price", price)
+              }
 
               token.opensea_data = openseaAsset
               token.opensea = {price: price, permalink: openseaAsset.permalink}

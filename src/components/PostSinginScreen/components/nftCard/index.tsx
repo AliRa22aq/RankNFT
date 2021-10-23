@@ -27,6 +27,7 @@ interface Props {
 
 const NFTCard: FC<Props> = ({token, normalization}) => {
 
+  const web3 = new Web3(window.ethereum);  
   const {projectInfo} = useSelector((state: any) => state);
 
   // console.log("image", token.image)
@@ -36,7 +37,6 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
                      token.image?.replace("ipfs://", "https://ipfs.io/ipfs/") :
                      token.image
   
-  const web3 = new Web3(window.ethereum);  
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -46,8 +46,9 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
 
   // const onSale = token?.opensea_data?.sell_orders && token?.opensea_data?.sell_orders[0]? true:false; 
   const onSale = token.opensea.price && Number(token.opensea.price) > 0 ? true:false; 
+  console.log("===> price in card " , token.opensea.price)
+
   let sortedAttributes = [...token.attributes]
-  // console.log(token.attributes.sort((a:any, b:any) => {return b.value_rarity_score - a.value_rarity_score}))
   sortedAttributes = sortedAttributes.sort((a:any, b:any) => {return b.value_rarity_score - a.value_rarity_score})
 
   return (
@@ -92,7 +93,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
                 <img className="price" src={ether} alt="ether" width="10px" height="10px" />
                 </span>
                 {/* {web3.utils.fromWei((token.opensea.price).toString(), "ether") }  */}
-                {web3.utils.fromWei(String(token.opensea.price), "ether") }
+                {token.opensea.price} 
 
                 </div>:
                 <div> Price: - </div>  
@@ -148,7 +149,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
                 <img src={ether} alt="ether" width="13px" height="13px" />
                 </span>
                 {/* {web3.utils.fromWei((token.opensea.price).toString(), "ether") }  */}
-                {web3.utils.fromWei(String(token.opensea.price), "ether") } 
+                {token.opensea.price} 
                 </div>:
               null 
             }
