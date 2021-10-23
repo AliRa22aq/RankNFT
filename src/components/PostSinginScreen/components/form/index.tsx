@@ -94,80 +94,69 @@ const NFTForm = () => {
         if(fetchAPI){
           console.log("step 1: Snipping started with URL ", fetchAPI)
                     
-          // const range = to-from + 1
+
           // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
+
+        //   let opensea_all_responses: any = [];
+
+
+        // const fetchOpenSea = async (iteration: number, _from: number, _to: number ) => {
+          
+        //   // if(iteration === 1){
+        //     let opensea_requests: any = [];
+        //     let opensea_responses: any = [];
+
+        //     for(var i = _from;  i <= _to;  i=i+30) {
+        //       const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
+        //       console.log("open_sea Api", iteration, opensea_api)
+        //       let API =  axios.get( opensea_api,  {data: i} ) as any  
+        //       opensea_requests.push(API)            
+        //     }
+
+        //     const responses:any = await Promise.allSettled(opensea_requests);
+    
+        //     responses.forEach((opensea_each_res: any) => {
+        //       opensea_responses.push(opensea_each_res.value.data.assets)            
+        //     })
+
+        //     console.log("all OpenSea Responses ", iteration, opensea_responses.flat())
+        //     opensea_all_responses.push(opensea_responses.flat())
+        //   // }
+        // //   else {
+
+        // //     // await delayFn(10000)
+        // //     let opensea_responses: any = []      
+        // //     for(var i = 1501;  i <= 10000;  i=i+30) {
+        // //     const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
+        // //     console.log("open_sea Api", opensea_api)
+        // //     axios.get(opensea_api).then((opensea_each_res: any) => {
+        // //     console.log("OpenSea Response ", i+1 , opensea_each_res)
+        // //     opensea_responses.push(opensea_each_res)
+        // //   })
+        // //   await delayFn(350)     
+        // //   }
+        // //   await delayFn(10000)     
+        // // console.log("opensea_res_flat ",  opensea_responses.flat())
             
-              
-              // //Solution 1
-              // let allTokens: any = [];
-              // let allAttributes: any = [];
-              // // let allRequests:any = [];
-  
-              // ////////////////////////////////////////////////
-              // console.log("Loop starting with ",  from, to, url)
-              // for(var i = from;  i <= to;  i=i+1) {
-              //   // dispatch(setLoadingProgress(i))
-
-              //   let activeURL =  url.replace("extension" , String(i))
-              //   // await delayFn(delayNFT);
-
-              //   console.log("Loop #",  i, activeURL )
-                     
-              //   axios.get( activeURL,  {data: i})
-              //   .then((res: any) => {
-              //     console.log("waited res of Loop #", res.config.data, res)
-
-              //     let attributes = res.data.attributes
-              //     let trait_count = res.data.attributes.length
-              //     console.log("trait_count", trait_count)
-
-              //     res.data.attributes.forEach((attribute: any)=> {
-              //       if(attribute.value.toLowerCase() === "none"){
-              //         console.log("attribute.value matched", attribute.value)
-              //         trait_count--
-              //       }
-              //     })
-
-              //     attributes.push({trait_type: "trait_count", value: trait_count})
-              //     console.log("trait_count", trait_count)
-              //     allAttributes.push(attributes)
-              //   //  dispatch(setCountOfAllAttribute2(attributes))          
+        // //   }
+        
+        // }  
+      
+        //     await fetchOpenSea(1, 0, 3300)
+        //     await delayFn(20000)
+        //     await fetchOpenSea(2, 3301, 6600)
+        //     await delayFn(20000)
+        //     await fetchOpenSea(3, 6601, 10000)
+        //     console.log("all OpenSea Responses ", opensea_all_responses.flat())
 
 
-              //     const newTokens: any = {
-              //           rank: null,
-              //           tokenID: res.config.data,  
-              //           attributes: attributes,
-              //           opensea: {price: 0, permalink: ""},
-              //           rarity_score: 0,
-              //           normalized_rarity_score: 0,
-              //           image: res.data.image,
-              //           title: res.data.title? res.data.title: "",
-              //           name: res.data.name? res.data.name: "" 
-              //         }
-
-              //     allTokens.push(newTokens)
-
-              //   })
-
-              // }
-              // await delayFn(10000);
-              // console.log("allTokens", allTokens)
-              // dispatch(addTokenInList3(allTokens))
-              // dispatch(setCountOfAllAttribute3(allAttributes))          
-
-              // ////////////////////////////////////////////////
-
-              // dispatch(setIsSnipping({action: "completed"}))
-
-
-
+        //     return;
+          
                 let allRequests:any = [];
 
                 const requestingAllAPIs = async (iteration: number, url: string, 
                                                 _from: number, _to: number, from: number, to: number) => {
 
-                                                  //case    0 - 1000        0 - 900
                   const need = to >= _from;
                   if(need){
                   
@@ -193,11 +182,6 @@ const NFTForm = () => {
                   }
 
                 }
-
-                //Solution 1
-                // let allTokens: any = [];
-                // let allAttributes: any = [];
-                // let myUrls:any = [];
                             
                 await requestingAllAPIs(1, url, 0, 1000, from, to)
                 await requestingAllAPIs(2, url, 1001, 2000, from, to)
@@ -266,66 +250,6 @@ const NFTForm = () => {
       
                     dispatch(setIsSnipping({action: "completed"}))
 
-
-                            ////////////////////////////////////////////////
-                            // console.log("Loop starting with ",  from, to, url)
-                            // for(var i = from;  i <= to;  i=i+1) {
-                            //   // dispatch(setLoadingProgress(i))
-              
-                            //   let activeURL =  url.replace("extension" , String(i))
-                            //   console.log("Loop #",  i, activeURL )
-                            //   const request = axios.get( activeURL,  {data: i})
-                            //   allRequests.push(request)              
-                            // }
-
-                            // const responses2:any = await Promise.allSettled(allRequests);
-                            // console.log("Combined responses of opensea ", responses2)
-
-
-                            // await delayFn(10000);
-
-                            // .then((res: any) => {
-                            //   console.log("waited res of Loop #", res.config.data, res)
-            
-                            //   let attributes = res.data.attributes
-                            //   let trait_count = res.data.attributes.length
-                            //   console.log("trait_count", trait_count)
-            
-                            //   res.data.attributes.forEach((attribute: any)=> {
-                            //     if(attribute.value.toLowerCase() === "none"){
-                            //       console.log("attribute.value matched", attribute.value)
-                            //       trait_count--
-                            //     }
-                            //   })
-            
-                            //   attributes.push({trait_type: "trait_count", value: trait_count})
-                            //   console.log("trait_count", trait_count)
-                            //   allAttributes.push(attributes)
-                            // //  dispatch(setCountOfAllAttribute2(attributes))          
-            
-            
-                            //   const newTokens: any = {
-                            //         rank: null,
-                            //         tokenID: res.config.data,  
-                            //         attributes: attributes,
-                            //         opensea: {price: 0, permalink: ""},
-                            //         rarity_score: 0,
-                            //         normalized_rarity_score: 0,
-                            //         image: res.data.image,
-                            //         title: res.data.title? res.data.title: "",
-                            //         name: res.data.name? res.data.name: "" 
-                            //       }
-            
-                            //   allTokens.push(newTokens)
-            
-                            // })
-                            // console.log("allTokens", allTokens)
-                            // dispatch(addTokenInList3(allTokens))
-                            // dispatch(setCountOfAllAttribute3(allAttributes))          
-              
-                            // ////////////////////////////////////////////////
-              
-                            // dispatch(setIsSnipping({action: "completed"}))
               
 
         }
