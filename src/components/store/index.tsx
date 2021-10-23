@@ -2,7 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RankNFT as RankNFTType } from '../../../types/web3-v1-contracts/RankNFT'
 // import { BN } from "bn.js";
 import web3 from 'web3';
-import axios from "axios";
+// import axios from "axios";
+import _ from "lodash";
 
 // import { sort } from 'fast-sort';
 
@@ -23,7 +24,7 @@ export interface AttributesOfEachToekn {
   tokenID: string
   attributes: Attribute[],
   opensea_data: any,
-  opensea: {price: number, permalink: string},
+  opensea: {saleType: string, price: number, permalink: string},
   rarity_score: number, 
   normalized_rarity_score: number, 
   image: string,
@@ -301,16 +302,27 @@ const dataSlice = createSlice({
 
 
 
-    sortByRarityScore(state,  { payload }: PayloadAction<"accs"|"decs">) {
+    sortByRarityScore(state,  { payload }: PayloadAction<"accs"|"decs"|"Ratity+Price">) {
       // console.log("Sorting start by Rarity", state.list_of_all_tokens)
 
       if(state.list_of_all_tokens){
+
+        // if(payload === "Ratity+Price"){
+        //   state.list_of_all_tokens = state.list_of_all_tokens.sort( (a, b) => {
+        //       // return b.rarity_score - a.rarity_score;  
+        //       return  a.opensea.price - b.opensea.price || b.rarity_score - a.rarity_score;
+        //     });
+        //   // state.list_of_all_tokens = state.list_of_all_tokens.sort( (a, b) => {
+        //   //     return a.opensea.price - b.opensea.price;
+        //   //   });
+
+        // }
         if(payload === "decs"){
           state.list_of_all_tokens = state.list_of_all_tokens.sort( (a, b) => {
               return b.rarity_score - a.rarity_score;
             });
         }
-        if(payload === "accs"){
+        else if(payload === "accs"){
           state.list_of_all_tokens = state.list_of_all_tokens.sort( (a, b) => {
               return a.rarity_score - b.rarity_score;
             });
@@ -353,6 +365,22 @@ const dataSlice = createSlice({
       console.log("Sorting End by price", state.list_of_all_tokens)
     },
 
+    sortByRankAndPrice(state) {
+
+      // console.log("Sorting start by price", state.list_of_all_tokens)
+      // if(state.list_of_all_tokens){
+      //   state.list_of_all_tokensBackup = state.list_of_all_tokens
+      //   state.list_of_all_tokens = state.list_of_all_tokens.filter((token) => {
+      //     return Number(token.opensea.price) !== 0
+      //   })        
+      //   state.list_of_all_tokens = state.list_of_all_tokens.sort( (a, b) => {
+      //         return  a.rarity_score - b.rarity_score || b.opensea.price - a.opensea.price;
+      // });
+        
+      // }
+      // console.log("Sorting End by price", state.list_of_all_tokens)
+    },
+
     setOnlyOnSaleState(state, { payload }: PayloadAction<boolean>){
       console.log("setOnlyOnSaleState")
       if(state.list_of_all_tokens){
@@ -361,9 +389,6 @@ const dataSlice = createSlice({
           state.list_of_all_tokens = state.list_of_all_tokens.filter((token) => {
             return Number(token.opensea.price) !== 0
           })
-          // state.list_of_all_tokens.sort( (a, b) => {
-          //   return Number(b.opensea.price) - Number(a.opensea.price);
-          // });
         }
         else if(payload === false){
           state.list_of_all_tokens = state.list_of_all_tokensBackup && state.list_of_all_tokensBackup
@@ -639,22 +664,31 @@ const dataSlice = createSlice({
               // console.log("opensea data matched", token.tokenID)
 
               const onSale = openseaAsset?.sell_orders && openseaAsset?.sell_orders[0] ? true:false;
-
+              let saleType = "none";
+              
               if(onSale){
-                console.log("===> raw current_price", openseaAsset?.sell_orders[0].current_price)
-                console.log("===> raw base_price", openseaAsset?.sell_orders[0].base_price)
+                console.log("===> payment_token_contract", openseaAsset?.sell_orders[0].payment_token_contract.symbol)
+                
+                if(openseaAsset?.sell_orders[0].payment_token_contract.symbol === "ETH"){
+                  saleType = "onSale"
+                }
+                else if(openseaAsset?.sell_orders[0].payment_token_contract.symbol === "WETH"){
+                  saleType = "onAuction"
+                }
+
               }
+              // console.log("===> payment_token_contract", openseaAsset )
 
               const price = onSale ? 
               Number(web3.utils.fromWei(openseaAsset?.sell_orders[0].base_price, "ether")): 
               0
               
-              if(price>0){
-                console.log("===> converted price", price)
-              }
+              // if(price>0){
+              //   console.log("===> converted price", price)
+              // }
 
               token.opensea_data = openseaAsset
-              token.opensea = {price: price, permalink: openseaAsset.permalink}
+              token.opensea = {price: price, permalink: openseaAsset.permalink, saleType}
             }
           })
         })
@@ -777,6 +811,6 @@ const dataSlice = createSlice({
 // Extract the action creators object and the reducer
 const { actions, reducer } = dataSlice
 // Extract and export each action creator by name
-export const  {setProcessingProgress, setLoadingProgress, assignRank, setOnlyOnSaleState, getTop20NFTs, setCountOfAllAttribute3, convertInList, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, addTokenInList3, setOpenseaData2, addTokenInList2, setCountOfAllAttribute2, setInitialCountOfAllAttribute2, sortByPrice, setOpenseaData, reSetSnipping, setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
+export const  {sortByRankAndPrice, setProcessingProgress, setLoadingProgress, assignRank, setOnlyOnSaleState, getTop20NFTs, setCountOfAllAttribute3, convertInList, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, addTokenInList3, setOpenseaData2, addTokenInList2, setCountOfAllAttribute2, setInitialCountOfAllAttribute2, sortByPrice, setOpenseaData, reSetSnipping, setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
 // Export the reducer, either as a default or named export
 export default reducer

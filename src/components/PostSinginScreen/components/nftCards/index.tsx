@@ -2,7 +2,7 @@ import  React, {useEffect, useState} from "react";
 import "./style.css";
 // import { intervalToDuration, formatDistanceToNow } from 'date-fns'
 import { useSelector, useDispatch } from 'react-redux';
-import { setProcessingProgress, setLoadingProgress, setOpenseaData, assignRank, setIsSnipping, setOnlyOnSaleState, setOpenseaData2, getTop20NFTs, addTokenInList3, AttributesOfEachToekn2, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, CountOfEachAttribute2Values, CountOfEachAttribute2, sortByPrice, sortByTokenID, sortByRarityScore, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute, setCountOfAllAttribute2 } from '../../../store';
+import { sortByRankAndPrice, setProcessingProgress, setLoadingProgress, setOpenseaData, assignRank, setIsSnipping, setOnlyOnSaleState, setOpenseaData2, getTop20NFTs, addTokenInList3, AttributesOfEachToekn2, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, CountOfEachAttribute2Values, CountOfEachAttribute2, sortByPrice, sortByTokenID, sortByRarityScore, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute, setCountOfAllAttribute2 } from '../../../store';
 const Web3 = require("web3");
 import Switch from '@mui/material/Switch';
 import Button from '@mui/material/Button';
@@ -44,22 +44,26 @@ const NFTCards = () => {
   const handleSort = (e: number) => {
     // console.log(e)
     setSortBy(e);
+    // if(e === 0){
+    //   setOnlyOnSale(true)
+    //   dispatch(sortByRankAndPrice())
+    // }
     if(e === 1){
       dispatch(sortByRarityScore("decs"))
     }
-    if(e === 2){
+    else if(e === 2){
       dispatch(sortByRarityScore("accs"))
     }
-    if(e === 3){
+    else if(e === 3){
       dispatch(sortByPrice("decs"))
     }
-    if(e === 4){
+    else if(e === 4){
       dispatch(sortByPrice("accs"))
     }
-    if(e === 5){
+    else if(e === 5){
       dispatch(sortByTokenID("decs"))
     }
-    if(e === 6){
+    else if(e === 6){
       dispatch(sortByTokenID("accs"))
     }
     
@@ -207,6 +211,7 @@ const NFTCards = () => {
     const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
     await fetchOpenseaData(1, 0, 3300);
+    // handleSort(0)
     await delayFn(20000)
     await fetchOpenseaData(2, 3301, 6600);
     await delayFn(20000)
@@ -325,8 +330,6 @@ const NFTCards = () => {
     dispatch(setIsSnipping({action: "startTop20"}))
 
     
-    // setProgramFlow(pre => {return {...pre, starttop20: true}}); 
-    
   }
 
   const handlePage = (event: any, value: number) => {
@@ -367,13 +370,6 @@ const NFTCards = () => {
       getTopRatedNFTs()
     }
   }, [isSnipping.startTop20])
-
-  // useEffect(()=> {
-  //   if(isSnipping.startRemaining){
-  //     // console.log("55555555555555555555555555")
-  //     getRemainingNFTs()
-  //   }
-  // }, [isSnipping.startRemaining])
 
   useEffect(()=> {
       set_list_of_NFTs_for_currentPage(null)
@@ -446,12 +442,17 @@ const NFTCards = () => {
                                   label="Sort By"
                                   onChange={(e) => handleSort(Number(e.target.value))}
                                 >
+                                  {/* <MenuItem value={0}> {`Hight Rank + Lowest Price`} </MenuItem> */}
                                   <MenuItem value={1}> {`Rarity Score (high -> low)`} </MenuItem>
                                   <MenuItem value={2}> {`Rarity Score (low -> high)`} </MenuItem>
                                   <MenuItem value={3}> {`Price (high -> low)`} </MenuItem>
                                   <MenuItem value={4}> {`Price (low -> high)`} </MenuItem>
                                   <MenuItem value={5}> {`Token ID (high -> low)`} </MenuItem>
                                   <MenuItem value={6}> {`Token ID (low -> high)`} </MenuItem>
+
+                                  
+
+
                                 </Select>
                               </FormControl>
                             </Box>

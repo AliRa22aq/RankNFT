@@ -45,8 +45,11 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   const handleClose = () => setOpen(false);
 
   // const onSale = token?.opensea_data?.sell_orders && token?.opensea_data?.sell_orders[0]? true:false; 
-  const onSale = token.opensea.price && Number(token.opensea.price) > 0 ? true:false; 
+  // const onSale = token.opensea.price && Number(token.opensea.price) > 0 ? true:false; 
+  const onSale = token.opensea.saleType === "onSale" ? true:false; 
   console.log("===> price in card " , token.opensea.price)
+
+  // const saleType = token.opensea.saleType === "onsale" ? "onsale" : "on"
 
   let sortedAttributes = [...token.attributes]
   sortedAttributes = sortedAttributes.sort((a:any, b:any) => {return b.value_rarity_score - a.value_rarity_score})
@@ -57,17 +60,27 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
       <div>Rank #  {token.rank}</div>
       <CardActionArea>
         {
-          onSale ?
-          // <div className="ribbon">
+          token.opensea.saleType === "onSale" ?
             <CornerRibbon 
                 backgroundColor="#2c7" 
                 fontColor="#f0f0f0" 
                 style={{zIndex:1}} 
                 > 
                   on sale
-                </CornerRibbon> :
-          null
+            </CornerRibbon> :
+
+          token.opensea.saleType === "onAuction" ?
+            <CornerRibbon 
+                backgroundColor="#4287f5" 
+                fontColor="#f0f0f0" 
+                style={{zIndex:1}} 
+                > 
+                  on Auction
+            </CornerRibbon> :
+            
+            null
         }
+
           <CardMedia
             component="img"
             height="200"

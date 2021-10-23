@@ -35,6 +35,7 @@
     "formik": "^2.2.9",
     "formik-material-ui": "^4.0.0-alpha.1",
     "jsonp": "^0.2.1",
+    "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "moment-countdown": "^0.0.3",
     "opensea-js": "^1.2.0",
