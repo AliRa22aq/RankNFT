@@ -26,7 +26,7 @@ interface Data {
 }
 const initialData = {
   contractInfo: {contractFunctions: null, contractAddrs: ""},
-  totalSupply:  null, 
+  totalSupply: null, 
   minToken: "1",
   name:  null,
   baseTokenURI: null,
@@ -56,12 +56,12 @@ const NFTForm = () => {
 
   const handleDelayNFT = (ms: any) => {
     setDelayNFT(ms)
-    console.log("ms: ", ms)
+    // console.log("ms: ", ms)
   }
 
   const handleDelayOpensea = (ms: any) => {
     setDelayOpensea(ms)
-    console.log("ms: ", ms)
+    // console.log("ms: ", ms)
 
   }
 
@@ -77,10 +77,11 @@ const NFTForm = () => {
 
   
   const fetchAllTokenData = async (tokenURI: string, from: number, to: number) => {
+    // console.log("tokenURI", tokenURI)    
 
     try{
       let fetchAPI =  await axios.get( tokenURI ) as any      
-      console.log("fetchAPI res", fetchAPI)    
+      // console.log("fetchAPI res", fetchAPI)    
     } catch(e){
       alert("Unable to fetch information. Make sure you have installed and enabled Moesif CORS extention")
       throw("Aborting")
@@ -92,12 +93,14 @@ const NFTForm = () => {
       const requestingAllAPIs = async (iteration: number, url: string, 
                                       _from: number, _to: number, from: number, to: number) => {
 
+        dispatch(setIsSnipping({action: "started"}))         
+
         const need = to >= _from;
         if(need){
         
-          console.log("==========================================================")
-          console.log("iteration ",  iteration)
-          console.log("==========================================================")
+          // console.log("==========================================================")
+          // console.log("iteration ",  iteration)
+          // console.log("==========================================================")
 
           const start = iteration === 1 ? from : _from;
           const end = to < _to ? to : _to;
@@ -105,13 +108,13 @@ const NFTForm = () => {
 
           for(var i = start;  i <= end;  i=i+1) {         
             let activeURL =  url.replace("extension" , String(i))
-            console.log("Loop #",  i, activeURL )
+            // console.log("Loop #",  i, activeURL )
             const request = axios.get( activeURL,  {data: i})
             requests.push(request)              
           }
 
           const responses:any = await Promise.allSettled(requests);
-          console.log("Combined responses of opensea ", responses)
+          // console.log("Combined responses of opensea ", responses)
           allRequests.push(responses)
 
         }
@@ -120,11 +123,13 @@ const NFTForm = () => {
                   
       let url = tokenURI;    
       
+
+      
       if(projectInfo?.totalSupply){
           url = tokenURI.replace( String(Number(projectInfo.totalSupply) - 1), "extension");
       }
 
-      console.log("step 1: Snipping started with URL ", url)
+      // console.log("step 1: Snipping started with URL ", url)
 
       await requestingAllAPIs(1, url, 0, 1000, from, to)
       await requestingAllAPIs(2, url, 1001, 2000, from, to)
@@ -137,9 +142,7 @@ const NFTForm = () => {
       await requestingAllAPIs(9, url, 8001, 9000, from, to)
       await requestingAllAPIs(10, url, 9001, 10000, from, to)
 
-      console.log(allRequests.flat());
-
-      dispatch(setIsSnipping({action: "started"}))         
+      // console.log(allRequests.flat());
 
 
       let allTokens: any = [];
@@ -186,7 +189,7 @@ const NFTForm = () => {
 
       })
 
-      console.log("allTokens", allTokens)
+      // console.log("allTokens", allTokens)
       dispatch(addTokenInList3(allTokens))
       dispatch(setCountOfAllAttribute3(allAttributes))          
 
@@ -232,7 +235,7 @@ const NFTForm = () => {
       };
 
       var MyContract = new web3.eth.Contract(JSON.parse(abi.result), contractAdrs)
-      console.log("asset ", MyContract)
+      // console.log("asset ", MyContract)
 
 
 
@@ -245,14 +248,16 @@ const NFTForm = () => {
       try{
         name = await MyContract.methods.name().call();
       } catch(e){
-        do{
-          var nameOfProject = prompt("Please enter name of the project \nName i.e. Crypto Kitties");
-        } while(nameOfProject === "")   
+           console.error("Unable to get the name of the project")
 
-        if (nameOfProject != null) {
-          console.log(nameOfProject)
-          name = nameOfProject;
-        }
+        // do{
+        //   var nameOfProject = prompt("Please enter name of the project \nName i.e. Crypto Kitties");
+        // } while(nameOfProject === "")   
+
+        // if (nameOfProject != null) {
+        //   // console.log(nameOfProject)
+        //   name = nameOfProject;
+        // }
       }
 
 
@@ -261,7 +266,7 @@ const NFTForm = () => {
       } catch(e){
 
         console.error("Unable to get total supply")
-        totalSupply = "123"
+        // totalSupply = "123"
         // do{
         //   var totalSupplyOfProject = prompt("Please enter Total supply of tokens \nTotal supply i.e. 10000 or 9999");
         // } while(totalSupplyOfProject === "")   
@@ -281,7 +286,7 @@ const NFTForm = () => {
         }
       } catch(e){
 
-        console.error("Unable to get index of first token")
+        // console.error("Unable to get index of first token")
 
         // do{
         //   var minTokenOfProject = prompt("Please enter first token ID of the porject \ne.i. 0 or 1");
@@ -299,6 +304,8 @@ const NFTForm = () => {
 
       try{
         tokenURI = await MyContract.methods.tokenURI(String(Number(totalSupply) - 1)).call();
+        // console.log("Token URI for ", String(Number(totalSupply) - 1), tokenURI)
+
       } catch(e){
 
         do{
@@ -306,17 +313,17 @@ const NFTForm = () => {
         } while(tokenURIInput === "")   
 
         if (tokenURIInput != null) {
-          console.log(tokenURIInput)
+          // console.log(tokenURIInput)
           tokenURI = tokenURIInput;
         }
       }
       
       
-      console.log("name ", name)
-      console.log("totalSupply ", totalSupply)
-      console.log("minToken ", minToken)
-      console.log("tokenURI ", tokenURI)
-      console.log("contractInfo: ", {contractFunctions: MyContract, contractAddrs: contractAdrs})
+      // console.log("name ", name)
+      // console.log("totalSupply ", totalSupply)
+      // console.log("minToken ", minToken)
+      // console.log("tokenURI ", tokenURI)
+      // console.log("contractInfo: ", {contractFunctions: MyContract, contractAddrs: contractAdrs})
       
       setData({
         totalSupply, 
@@ -459,20 +466,18 @@ const NFTForm = () => {
 
     dispatch(setProjectRange({from: from, to: to, range: to - from + 1}))
 
-    let check;
-
-    check = data?.baseTokenURI?.includes("ipfs://");
-    if(check && data?.baseTokenURI) {
+    if(data?.baseTokenURI && data?.baseTokenURI?.includes("ipfs://")) {
       let url = data?.baseTokenURI?.replace("ipfs://", "https://ipfs.io/ipfs/");
       fetchAllTokenData(url, from, to)
     }
-
-    check = data?.baseTokenURI?.includes("https://"); 
-    if(check && data?.baseTokenURI){
-      let url = data?.baseTokenURI
+    else if(data?.baseTokenURI && data?.baseTokenURI?.includes("https://gateway.pinata.cloud/ipfs/")){
+      let url = data?.baseTokenURI?.replace("https://gateway.pinata.cloud/ipfs/", "https://ipfs.io/ipfs/");
       fetchAllTokenData(url, from, to)
     }
-      
+    else if(data?.baseTokenURI && data?.baseTokenURI?.includes("https://")){
+      let url = data?.baseTokenURI
+      fetchAllTokenData(url, from, to)
+    }      
 
   }
 
@@ -492,7 +497,7 @@ const NFTForm = () => {
             onSubmit={async (values, { setFieldValue  }) => {
             
                 dispatch(setUploadedContractAddress(values.address))
-                console.log("yesssss")  
+                // console.log("yesssss")  
                 // fetchData(values.address, values.uri, setFieldValue)  
                 fetchData(values.address)  
 
@@ -572,7 +577,7 @@ const NFTForm = () => {
               }
               {
                 data?.baseTokenURI ? 
-                <div> BaseTokenURI : {data?.baseTokenURI.replace(data?.totalSupply ?  String(Number(data.totalSupply) - 1) : "123", "[ID]")} </div> : 
+                <div> BaseTokenURI : {data?.baseTokenURI.replace(data.totalSupply ? String(Number(data.totalSupply) - 1) : "9999", "[ID]")} </div> : 
                 null
               }
 
@@ -594,7 +599,7 @@ const NFTForm = () => {
 
 {
       needRange ?
-        <Formik initialValues={{ from: Number(data.minToken), to: 100 }}  
+        <Formik initialValues={{ from: Number(data.minToken), to: Number(data.totalSupply) + Number(data.minToken) - 1  }}  
                 validationSchema={schema2} 
                 onSubmit={async (values) => {
                 startSnipping(values.from, values.to)

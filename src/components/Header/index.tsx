@@ -49,7 +49,7 @@ const Header = () => {
       window.web3 = new Web3(window.ethereum);
       await window.ethereum.enable();
       dispatch(userWalletconnected(true));
-      console.log(window.web3.currentProvider.isMetaMask);
+      // console.log(window.web3.currentProvider.isMetaMask);
 
       // Get current logged in user address
       const accounts = await window.web3.eth.getAccounts();
@@ -88,7 +88,7 @@ const Header = () => {
       const subscriptionStatus = await ContractData.methods
         .is_subscriber(userCurrentAddress)
         .call();
-      console.log(subscriptionStatus);
+      // console.log(subscriptionStatus);
 
       if (subscriptionStatus) {
         dispatch(setSubscriber(true));

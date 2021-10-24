@@ -4,6 +4,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { CountOfEachAttribute } from '../../../store';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
+import CircularProgress from '@mui/material/CircularProgress';
+
+
 
 import { CountOfEachAttribute2Values } from '../../../store';
 
@@ -14,7 +17,7 @@ import { CountOfEachAttribute2Values } from '../../../store';
 const RarityReport = () => {
     const { setLoadingProgress, countOfAllAttribute, countOfAllAttribute2, projectInfo, list_of_all_tokens2 } = useSelector((state: any) => state);
 
-    console.log("countOfAllAttribute2 ", countOfAllAttribute2)
+    // console.log("countOfAllAttribute2 ", countOfAllAttribute2)
 
 
     let loadingCount = Math.round(projectInfo.loadingProgree)
@@ -32,7 +35,7 @@ const RarityReport = () => {
                       <div className="Loading-NFTs-progress-container">
                         <div className="Loading-NFTs-progress"> 
                            {/* <LinearProgress variant="determinate" value={loadingCount} /> */}
-                           <LinearProgress  />
+                           {/* <LinearProgress  /> */}
                         </div>
                            {/* <div className="Loading-NFTs-progress-count">{`${loadingCount}%`}</div> */}
                       </div>
@@ -40,10 +43,10 @@ const RarityReport = () => {
                     {/* </Box> */}
                       
                       <div className="Loading-NFTs-Text1"> 
-                          Snipping is in progress. Please wait till we load all data 
+                          Snipping is in progress. Please wait till we load all the data 
                       </div> 
-                      <div className="Loading-NFTs-Text2"> 
-                          Total Variations found in Attributes so far
+                      <div className="Loading-NFTs-circle"> 
+                                <CircularProgress size={80} thickness={2}/>
                       </div> 
                   {
                       Object.values(countOfAllAttribute2 as CountOfEachAttribute2Values).map((attribute: CountOfEachAttribute, key: number) => {

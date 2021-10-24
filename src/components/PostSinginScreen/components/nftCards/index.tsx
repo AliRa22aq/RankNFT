@@ -11,7 +11,9 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import NFTCard from "../nftCard";
 import RarityReport from "../RarityReport/RarityReport";
-import ProgressReport from "../RarityReport/ProgressReport";
+ import ProgressReport from "../RarityReport/ProgressReport";
+import WaitPage from "../RarityReport/WaitPage";
+
 import axios from "axios";
 
 // import { OpenSeaPort, Network  } from 'opensea-js'
@@ -38,8 +40,8 @@ const NFTCards = () => {
   const { list_of_all_tokens_not_normalized,list_of_all_tokens_normalized, list_of_all_tokens_remaining, list_of_all_tokens_top_20, countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
   
   
-  console.log("ranked list_of_all_tokens_not_normalized", list_of_all_tokens_not_normalized)
-  console.log("ranked list_of_all_tokens_normalized", list_of_all_tokens_normalized)
+  // console.log("ranked list_of_all_tokens_not_normalized", list_of_all_tokens_not_normalized)
+  // console.log("ranked list_of_all_tokens_normalized", list_of_all_tokens_normalized)
 
 
   const handleSort = (e: number) => {
@@ -89,10 +91,10 @@ const NFTCards = () => {
   }
 
   const handleOnSale = () => {
-    console.log("Inital onlyOnsale", onlyOnSale)
+    // console.log("Inital onlyOnsale", onlyOnSale)
 
     if(onlyOnSale === false){
-      console.log("onlyOnsale", onlyOnSale)
+      // console.log("onlyOnsale", onlyOnSale)
       dispatch(setOnlyOnSaleState(!onlyOnSale))
       handleSort(4)  
       setOnlyOnSale(!onlyOnSale)
@@ -101,7 +103,7 @@ const NFTCards = () => {
 
     }
     else if(onlyOnSale === true){
-      console.log("onlyOnsale", onlyOnSale)
+      // console.log("onlyOnsale", onlyOnSale)
       setOnlyOnSale(!onlyOnSale)
       dispatch(setOnlyOnSaleState(!onlyOnSale))
       // handlePage(0,1)
@@ -172,20 +174,20 @@ const NFTCards = () => {
     let count = 1
     const initialLink = `https://api.opensea.io/api/v1/assets?asset_contract_address=${projectInfo?.contractAddress}`;
 
-    console.log(`Progersss Start - iteration: ${iteration} `)
+    // console.log(`Progersss Start - iteration: ${iteration} `)
 
     if(list_of_all_tokens){
   
       const activeTokens = max? list_of_all_tokens.slice(min,max) : list_of_all_tokens.slice(min)
     
-      console.log("top.length ", activeTokens.length)
+      // console.log("top.length ", activeTokens.length)
       
       if(activeTokens.length > 0) {
   
       let link = initialLink;
   
       activeTokens.forEach((token: any, key: number) => {
-        console.log(`${key+1} ---> ${token.tokenID} ->  ${token.rarity_score}`)
+        // console.log(`${key+1} ---> ${token.tokenID} ->  ${token.rarity_score}`)
         link = link.concat(`&token_ids=${token.tokenID}`);
         if(count%30==0 || count === activeTokens.length){
           arrayOfLinks.push(link.concat("&limit=30"))
@@ -194,7 +196,7 @@ const NFTCards = () => {
         count++
       })
   
-      console.log("arrayOfLinks", arrayOfLinks)
+      // console.log("arrayOfLinks", arrayOfLinks)
       // console.log(`arrayOfLinks - ${i} `, arrayOfLinks)
   
       // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
@@ -216,7 +218,7 @@ const NFTCards = () => {
           }
         })
         
-        console.log("all OpenSea Responses ", opensea_responses.flat())
+        // console.log("all OpenSea Responses ", opensea_responses.flat())
         dispatch(setOpenseaData(opensea_responses.flat()))
   
       }
@@ -336,7 +338,7 @@ const NFTCards = () => {
                 normalized_rarity_score:  final_normalized_score
           }
 
-          console.log("countOfAllAttribute2 ", key, rarity_score_of_each_value)
+          // console.log("countOfAllAttribute2 ", key, rarity_score_of_each_value)
           dispatch(setRarityScoreToAttributeValue2(rarity_score_of_each_value))
           dispatch(setRarityScoreToEachNFTAttribuValue2(rarity_score_of_each_value))
          })
@@ -439,8 +441,10 @@ const NFTCards = () => {
                   </div>
 
                  </div> :
+
                   isSnipping.requested && !isSnipping.started  && !isSnipping.completed && !isSnipping.showNFTs? 
-                  <div> Wait we are fetching data </div> :                 
+                  // <div> Wait we are fetching data </div> : 
+                  <WaitPage /> :                
                   
                   isSnipping.requested && isSnipping.started  && !isSnipping.completed && !isSnipping.showNFTs? 
                   <div> <RarityReport /> </div> :

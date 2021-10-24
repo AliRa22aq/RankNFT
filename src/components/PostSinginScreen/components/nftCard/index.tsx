@@ -31,7 +31,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   const web3 = new Web3(window.ethereum);  
   const {projectInfo} = useSelector((state: any) => state);
 
-  console.log("image", token.image)
+  // console.log("image", token.image)
 
   const check = token.image.includes("ipfs://");
   let imageOfNFT = check ? 
@@ -53,7 +53,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   // const onSale = token?.opensea_data?.sell_orders && token?.opensea_data?.sell_orders[0]? true:false; 
   // const onSale = token.opensea.price && Number(token.opensea.price) > 0 ? true:false; 
   const onSale = token.opensea.saleType === "onSale" ? true:false; 
-  console.log("===> price in card " , token.opensea.price)
+  // console.log("===> price in card " , token.opensea.price)
 
   // const saleType = token.opensea.saleType === "onsale" ? "onsale" : "on"
 

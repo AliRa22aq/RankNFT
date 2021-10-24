@@ -185,38 +185,47 @@ const dataSlice = createSlice({
     clearState(state) {
       return initialState;
     },
+
     setOwner(state, { payload }: PayloadAction<boolean>) {
       // Use a "state machine" approach for loading state instead of booleans
       state.isOwner = payload;
     },
+
     setDeveloper(state, { payload }: PayloadAction<boolean>) {
       // Use a "state machine" approach for loading state instead of booleans
       state.isDeveloper = payload;
     },
+
     setContractAddress(state, { payload }: PayloadAction<string>) {
       // Use a "state machine" approach for loading state instead of booleans
       state.contractAddress = payload;
     },
+
     setActiveUser(state, { payload }: PayloadAction<string>) {
       // Use a "state machine" approach for loading state instead of booleans
       state.userAddress = payload;
     },
+
     userWalletconnected(state, { payload }: PayloadAction<boolean>) {
       // Use a "state machine" approach for loading state instead of booleans
       state.isWaletConnect = payload;
     },
+
     setWhiteListed(state, { payload }: PayloadAction<boolean>) {
       // Use a "state machine" approach for loading state instead of booleans
       state.isWhiteListed = payload;
     },
+
     setSubscriber(state, { payload }: PayloadAction<boolean>) {
       // Use a "state machine" approach for loading state instead of booleans
       state.isSubscriber = payload;
     },
+
     setSignedIn(state, { payload }: PayloadAction<boolean>) {
       // Use a "state machine" approach for loading state instead of booleans
       state.isSignedIn = payload;
     },
+
     setLogout(state) {
       // Use a "state machine" approach for loading state instead of booleans
       state.isSignedIn = false;
@@ -226,24 +235,30 @@ const dataSlice = createSlice({
       state.isOwner = false;
       state.isDeveloper = false;
     },
+
     setContractData(state, { payload }: PayloadAction<RankNFTType>) {
       // Use a "state machine" approach for loading state instead of booleans
       state.ContractData = payload;
     },
+
     setLoading(state, { payload }: PayloadAction<boolean>) {
       // Use a "state machine" approach for loading state instead of booleans
       state.loading = payload;
     },
+
     setTransectionProgress(state, { payload }: PayloadAction<boolean>) {
       // Use a "state machine" approach for loading state instead of booleans
       state.loading = payload;
     },
+
     setWhitelistPeriod(state, { payload }: PayloadAction<number>) {
       state.whitelistPeriod = payload;
     },
+
     setSubscriptionPeriod(state, { payload }: PayloadAction<number>) {
       state.subscriptionPeriod = payload;
     },
+
     setUploadedContractAddress(state, { payload }: PayloadAction<string>) {
       state.uploadedContractAddress = payload;
     },
@@ -281,27 +296,24 @@ const dataSlice = createSlice({
       state.loadingNFTS = payload;
     },
 
-
-
     assignRank(state){
       if(state.list_of_all_tokens){
         
-              console.log("normalized ranking started")
-        
-                state.list_of_all_tokens = state.list_of_all_tokens?.sort( (a, b) => {
-                  return b.normalized_rarity_score - a.normalized_rarity_score;
-                });
-        
-                state.list_of_all_tokens.forEach((token, index)=> {
-                  token.normalized_rank = index + 1
-                })
-        
-                state.list_of_all_tokens_normalized = state.list_of_all_tokens
+        // console.log("normalized ranking started")
+  
+          state.list_of_all_tokens = state.list_of_all_tokens?.sort( (a, b) => {
+            return b.normalized_rarity_score - a.normalized_rarity_score;
+          });
+  
+          state.list_of_all_tokens.forEach((token, index)=> {
+            token.normalized_rank = index + 1
+          })
+  
+          state.list_of_all_tokens_normalized = state.list_of_all_tokens
 
 
-      console.log("normal ranking started")
+      // console.log("normal ranking started")
 
-        // console.log("assining rank start ", JSON.stringify(state.list_of_all_tokens))
         state.list_of_all_tokens = state.list_of_all_tokens?.sort( (a, b) => {
           return b.rarity_score - a.rarity_score;
         });
@@ -318,7 +330,7 @@ const dataSlice = createSlice({
     },
 
     assignNormalizedRank(state){
-      console.log("normalized ranking started")
+      // console.log("normalized ranking started")
 
       if(state.list_of_all_tokens){
         // console.log("assining rank start ", JSON.stringify(state.list_of_all_tokens))
@@ -332,6 +344,7 @@ const dataSlice = createSlice({
     },
 
     switchNormalization(state){
+
       if(state.list_of_all_tokens && state.normalization === true){
         state.list_of_all_tokens = state.list_of_all_tokens?.sort( (a, b) => {
             return a.rank - b.rank ;
@@ -353,7 +366,7 @@ const dataSlice = createSlice({
       // console.log("Sorting start by Rarity", state.list_of_all_tokens)
 
       if(state.list_of_all_tokens){
-         console.log("state.normalization ", state.normalization)
+        //  console.log("state.normalization ", state.normalization)
         if(payload === "decs"){
           state.list_of_all_tokens = state.list_of_all_tokens.sort( (a, b) => {
               if(state.normalization === true){
@@ -367,7 +380,7 @@ const dataSlice = createSlice({
         else if(payload === "accs"){
           state.list_of_all_tokens = state.list_of_all_tokens.sort( (a, b) => {
             if(state.normalization === true){
-              return a.rarity_score - b.rarity_score;
+              return a.normalized_rank - b.normalized_rank;
             }
             else{
               return a.rank - b.rank;
@@ -379,7 +392,7 @@ const dataSlice = createSlice({
     },
 
     sortByTokenID(state,  { payload }: PayloadAction<"accs"|"decs">) {
-      console.log("Sorting start by ID", state.list_of_all_tokens)
+      // console.log("Sorting start by ID", state.list_of_all_tokens)
       if(state.list_of_all_tokens){
         if(payload === "accs"){
         state.list_of_all_tokens.sort( (a, b) => {
@@ -392,11 +405,11 @@ const dataSlice = createSlice({
             });
           }
       }
-      console.log("Sorting End by ID" , state.list_of_all_tokens)
+      // console.log("Sorting End by ID" , state.list_of_all_tokens)
     },
 
     sortByPrice(state,  { payload }: PayloadAction<"accs"|"decs">) {
-      console.log("Sorting start by price", state.list_of_all_tokens)
+      // console.log("Sorting start by price", state.list_of_all_tokens)
       if(state.list_of_all_tokens){
           if(payload === "decs"){
               state.list_of_all_tokens.sort( (a, b) => {
@@ -409,7 +422,7 @@ const dataSlice = createSlice({
                 });
               }
       }
-      console.log("Sorting End by price", state.list_of_all_tokens)
+      // console.log("Sorting End by price", state.list_of_all_tokens)
     },
 
     sortByRankAndPrice(state) {
@@ -429,7 +442,7 @@ const dataSlice = createSlice({
     },
 
     setOnlyOnSaleState(state, { payload }: PayloadAction<boolean>){
-      console.log("setOnlyOnSaleState")
+      // console.log("setOnlyOnSaleState")
       if(state.list_of_all_tokens){
         if(payload === true){
           state.list_of_all_tokensBackup = state.list_of_all_tokens
@@ -437,8 +450,8 @@ const dataSlice = createSlice({
             return token.opensea.saleType === "onSale"
           })
         }
-        else if(payload === false){
-          state.list_of_all_tokens = state.list_of_all_tokensBackup && state.list_of_all_tokensBackup
+        else if(state.list_of_all_tokensBackup && payload === false){
+          state.list_of_all_tokens = state.list_of_all_tokensBackup
           // .sort((a, b) => {
           //   return b.rarity_score - a.rarity_score;
           // });
@@ -483,7 +496,7 @@ const dataSlice = createSlice({
 
     
     addTokenInList2( state, { payload }: PayloadAction<AttributesOfEachToekn> ) {
-      console.log("payload in addTokenInList2 ", payload)
+      // console.log("payload in addTokenInList2 ", payload)
 
           state.list_of_all_tokens2[payload.tokenID] = payload
 
@@ -492,7 +505,7 @@ const dataSlice = createSlice({
     },
 
     addTokenInList3( state, { payload }: PayloadAction<AttributesOfEachToekn[]> ) {
-      console.log("payload in addTokenInList3 ", payload)
+      // console.log("payload in addTokenInList3 ", payload)
 
       payload.map((token: AttributesOfEachToekn) => {
         state.list_of_all_tokens2[token.tokenID] = token        
@@ -524,7 +537,7 @@ const dataSlice = createSlice({
 
     setRarityScoreToEachNFTAttribuValue( state, { payload }: PayloadAction<RarityScoreOfValue> ) {
       
-      console.log("lis of all tokens ", state.list_of_all_tokens)
+      // console.log("lis of all tokens ", state.list_of_all_tokens)
 
       state.list_of_all_tokens?.map(
         (token: AttributesOfEachToekn) => {
@@ -668,7 +681,7 @@ const dataSlice = createSlice({
 
     setCountOfAllAttribute2(state, { payload }: PayloadAction<Attribute[] >) {
 
-      console.log("payload in setCOunt", payload)
+      // console.log("payload in setCOunt", payload)
       payload.forEach((attribute) => {
         if (!state.countOfAllAttribute2[attribute.trait_type])
             state.countOfAllAttribute2[attribute.trait_type] = {trait_type: attribute.trait_type, trait_count: {}, total_variations: 0};
@@ -697,12 +710,12 @@ const dataSlice = createSlice({
         })    
       })
 
-      console.log("countOfAllAttribute2", state.countOfAllAttribute2)
+      // console.log("countOfAllAttribute2", state.countOfAllAttribute2)
 
     },
 
     setOpenseaData(state, {payload}:PayloadAction< any>){
-      console.log("setOpenseaData started", payload)
+      // console.log("setOpenseaData started", payload)
 
       if(state.list_of_all_tokens){
         state.list_of_all_tokens.map((token:AttributesOfEachToekn ) => {
@@ -714,7 +727,7 @@ const dataSlice = createSlice({
               let saleType = "none";
               
               if(onSale){
-                console.log("===> payment_token_contract", openseaAsset?.sell_orders[0].payment_token_contract.symbol)
+                // console.log("===> payment_token_contract", openseaAsset?.sell_orders[0].payment_token_contract.symbol)
                 
                 if(openseaAsset?.sell_orders[0].payment_token_contract.symbol === "ETH"){
                   saleType = "onSale"
@@ -749,7 +762,7 @@ const dataSlice = createSlice({
 
     setOpenseaData2(state, {payload}:PayloadAction< any>){
 
-      console.log("opensea payload", payload)
+      // console.log("opensea payload", payload)
 
         payload.map((openseaAsset: any) => {
           // console.log("opensea Asset", openseaAsset)

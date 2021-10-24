@@ -21,8 +21,8 @@ const NFTtable: FC<TableProps> = ({attributes, normalization}) => {
 
     // countOfAllAttribute2
     const {projectInfo, countOfAllAttribute2} = useSelector((state: any) => state);
-    console.log("countOfAllAttribute2 ", countOfAllAttribute2)
-    console.log("projectInfo ", projectInfo)
+    // console.log("countOfAllAttribute2 ", countOfAllAttribute2)
+    // console.log("projectInfo ", projectInfo)
 
     // let newAttributes:any = [];
     
