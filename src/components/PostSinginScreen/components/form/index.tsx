@@ -78,189 +78,122 @@ const NFTForm = () => {
   
   const fetchAllTokenData = async (tokenURI: string, from: number, to: number) => {
 
-
     try{
-      let url1 = tokenURI;
-      let url;
-      
-      if(projectInfo?.totalSupply){
-        url = tokenURI.replace( String(Number(projectInfo.totalSupply) - 1), "extension");
-      }
-      
-      if(url){
-        let fetchAPI =  await axios.get( url1 ) as any          
-        console.log("step 1: Snipping started with URL ", url)
-        
-        if(fetchAPI){
-          console.log("step 1: Snipping started with URL ", fetchAPI)
-                    
-
-          // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
-
-        //   let opensea_all_responses: any = [];
-
-
-        // const fetchOpenSea = async (iteration: number, _from: number, _to: number ) => {
-          
-        //   // if(iteration === 1){
-        //     let opensea_requests: any = [];
-        //     let opensea_responses: any = [];
-
-        //     for(var i = _from;  i <= _to;  i=i+30) {
-        //       const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
-        //       console.log("open_sea Api", iteration, opensea_api)
-        //       let API =  axios.get( opensea_api,  {data: i} ) as any  
-        //       opensea_requests.push(API)            
-        //     }
-
-        //     const responses:any = await Promise.allSettled(opensea_requests);
+      let fetchAPI =  await axios.get( tokenURI ) as any      
+      console.log("fetchAPI res", fetchAPI)    
+    } catch(e){
+      alert("Unable to fetch information. Make sure you have installed and enabled Moesif CORS extention")
+      throw("Aborting")
+    }
     
-        //     responses.forEach((opensea_each_res: any) => {
-        //       opensea_responses.push(opensea_each_res.value.data.assets)            
-        //     })
+                
+      let allRequests:any = [];
 
-        //     console.log("all OpenSea Responses ", iteration, opensea_responses.flat())
-        //     opensea_all_responses.push(opensea_responses.flat())
-        //   // }
-        // //   else {
+      const requestingAllAPIs = async (iteration: number, url: string, 
+                                      _from: number, _to: number, from: number, to: number) => {
 
-        // //     // await delayFn(10000)
-        // //     let opensea_responses: any = []      
-        // //     for(var i = 1501;  i <= 10000;  i=i+30) {
-        // //     const opensea_api = `https://api.opensea.io/api/v1/assets?asset_contract_address=${data.contractInfo.contractAddrs}&token_ids=${i}&token_ids=${i+1}&token_ids=${i+2}&token_ids=${i+3}&token_ids=${i+4}&token_ids=${i+5}&token_ids=${i+6}&token_ids=${i+7}&token_ids=${i+8}&token_ids=${i+9}&token_ids=${i+10}&token_ids=${i+11}&token_ids=${i+12}&token_ids=${i+13}&token_ids=${i+14}&token_ids=${i+15}&token_ids=${i+16}&token_ids=${i+17}&token_ids=${i+18}&token_ids=${i+19}&token_ids=${i+20}&token_ids=${i+21}&token_ids=${i+22}&token_ids=${i+23}&token_ids=${i+24}&token_ids=${i+25}&token_ids=${i+26}&token_ids=${i+27}&token_ids=${i+28}&token_ids=${i+29}&limit=30`
-        // //     console.log("open_sea Api", opensea_api)
-        // //     axios.get(opensea_api).then((opensea_each_res: any) => {
-        // //     console.log("OpenSea Response ", i+1 , opensea_each_res)
-        // //     opensea_responses.push(opensea_each_res)
-        // //   })
-        // //   await delayFn(350)     
-        // //   }
-        // //   await delayFn(10000)     
-        // // console.log("opensea_res_flat ",  opensea_responses.flat())
-            
-        // //   }
+        const need = to >= _from;
+        if(need){
         
-        // }  
-      
-        //     await fetchOpenSea(1, 0, 3300)
-        //     await delayFn(20000)
-        //     await fetchOpenSea(2, 3301, 6600)
-        //     await delayFn(20000)
-        //     await fetchOpenSea(3, 6601, 10000)
-        //     console.log("all OpenSea Responses ", opensea_all_responses.flat())
+          console.log("==========================================================")
+          console.log("iteration ",  iteration)
+          console.log("==========================================================")
 
+          const start = iteration === 1 ? from : _from;
+          const end = to < _to ? to : _to;
+          let requests:any = [];
 
-        //     return;
-          
-                let allRequests:any = [];
+          for(var i = start;  i <= end;  i=i+1) {         
+            let activeURL =  url.replace("extension" , String(i))
+            console.log("Loop #",  i, activeURL )
+            const request = axios.get( activeURL,  {data: i})
+            requests.push(request)              
+          }
 
-                const requestingAllAPIs = async (iteration: number, url: string, 
-                                                _from: number, _to: number, from: number, to: number) => {
-
-                  const need = to >= _from;
-                  if(need){
-                  
-                    console.log("==========================================================")
-                    console.log("iteration ",  iteration)
-                    console.log("==========================================================")
-
-                    const start = iteration === 1 ? from : _from;
-                    const end = to < _to ? to : _to;
-                    let requests:any = [];
-
-                    for(var i = start;  i <= end;  i=i+1) {         
-                      let activeURL =  url.replace("extension" , String(i))
-                      console.log("Loop #",  i, activeURL )
-                      const request = axios.get( activeURL,  {data: i})
-                      requests.push(request)              
-                    }
-
-                    const responses:any = await Promise.allSettled(requests);
-                    console.log("Combined responses of opensea ", responses)
-                    allRequests.push(responses)
-
-                  }
-
-                }
-                            
-                await requestingAllAPIs(1, url, 0, 1000, from, to)
-                await requestingAllAPIs(2, url, 1001, 2000, from, to)
-                await requestingAllAPIs(3, url, 2001, 3000, from, to)
-                await requestingAllAPIs(4, url, 3001, 4000, from, to)
-                await requestingAllAPIs(5, url, 4001, 5000, from, to)
-                await requestingAllAPIs(6, url, 5001, 6000, from, to)
-                await requestingAllAPIs(7, url, 6001, 7000, from, to)
-                await requestingAllAPIs(8, url, 7001, 8000, from, to)
-                await requestingAllAPIs(9, url, 8001, 9000, from, to)
-                await requestingAllAPIs(10, url, 9001, 10000, from, to)
-
-                console.log(allRequests.flat());
-
-                dispatch(setIsSnipping({action: "started"}))         
-
-
-                let allTokens: any = [];
-                let allAttributes: any = [];
-
-
-                let allRawTokens: any = allRequests.flat();
-                allRawTokens.forEach((token :any) => {
-                  if(token.status === 'fulfilled'){
-
-                    console.log(token.value.data)
-
-                    let attributes = token.value.data.attributes
-                    let trait_count = token.value.data.attributes.length
-                    console.log("trait_count", trait_count)
-              
-                    token.value.data.attributes.forEach((attribute: any)=> {
-                      if(attribute.value.toLowerCase() === "none"){
-                        console.log("attribute.value matched", attribute.value)
-                        trait_count--
-                      }
-                    })
-              
-                    attributes.push({trait_type: "trait_count", value: trait_count})
-                    console.log("trait_count", trait_count)
-                    allAttributes.push(attributes)            
-            
-                    const newTokens: any = {
-                          rank: 0,
-                          normalized_rank: 0,
-                          tokenID: token.value.config.data,  
-                          attributes: attributes,
-                          opensea: {price: 0, permalink: ""},
-                          rarity_score: 0,
-                          normalized_rarity_score: 0,
-                          image: token.value.data.image,
-                          title: token.value.data.title? token.value.data.title: "",
-                          name: token.value.data.name? token.value.data.name: "" 
-                        }
-            
-                    allTokens.push(newTokens)
-
-                  }
-
-                })
-
-                    console.log("allTokens", allTokens)
-                    dispatch(addTokenInList3(allTokens))
-                    dispatch(setCountOfAllAttribute3(allAttributes))          
-      
-                    ////////////////////////////////////////////////
-      
-                    dispatch(setIsSnipping({action: "completed"}))
-
-              
+          const responses:any = await Promise.allSettled(requests);
+          console.log("Combined responses of opensea ", responses)
+          allRequests.push(responses)
 
         }
+
       }
-    }
-    catch(e) { 
-      alert("Unable to fetch information. Make sure you have installed and enabled Moesif CORS extention")
-      // dispatch(setLoadingNFTs(false)
-      // dispatch(setIsSnipping({action: "completed"}))
-    }
+                  
+      let url = tokenURI;    
+      
+      if(projectInfo?.totalSupply){
+          url = tokenURI.replace( String(Number(projectInfo.totalSupply) - 1), "extension");
+      }
+
+      console.log("step 1: Snipping started with URL ", url)
+
+      await requestingAllAPIs(1, url, 0, 1000, from, to)
+      await requestingAllAPIs(2, url, 1001, 2000, from, to)
+      await requestingAllAPIs(3, url, 2001, 3000, from, to)
+      await requestingAllAPIs(4, url, 3001, 4000, from, to)
+      await requestingAllAPIs(5, url, 4001, 5000, from, to)
+      await requestingAllAPIs(6, url, 5001, 6000, from, to)
+      await requestingAllAPIs(7, url, 6001, 7000, from, to)
+      await requestingAllAPIs(8, url, 7001, 8000, from, to)
+      await requestingAllAPIs(9, url, 8001, 9000, from, to)
+      await requestingAllAPIs(10, url, 9001, 10000, from, to)
+
+      console.log(allRequests.flat());
+
+      dispatch(setIsSnipping({action: "started"}))         
+
+
+      let allTokens: any = [];
+      let allAttributes: any = [];
+
+
+      let allRawTokens: any = allRequests.flat();
+      allRawTokens.forEach((token :any) => {
+        if(token.status === 'fulfilled'){
+
+          console.log(token.value.data)
+
+          let attributes = token.value.data.attributes
+          let trait_count = token.value.data.attributes.length
+          console.log("trait_count", trait_count)
+    
+          token.value.data.attributes.forEach((attribute: any)=> {
+            if(attribute.value && String(attribute.value).toLowerCase() === "none"){
+              console.log("attribute.value matched", attribute.value)
+              trait_count--
+            }
+          })
+    
+          attributes.push({trait_type: "trait_count", value: trait_count})
+          console.log("trait_count", trait_count)
+          allAttributes.push(attributes)            
+  
+          const newTokens: any = {
+                rank: 0,
+                normalized_rank: 0,
+                tokenID: token.value.config.data,  
+                attributes: attributes,
+                opensea: {price: 0, permalink: ""},
+                rarity_score: 0,
+                normalized_rarity_score: 0,
+                image: token.value.data.image,
+                title: token.value.data.title? token.value.data.title: "",
+                name: token.value.data.name? token.value.data.name: "" 
+              }
+  
+          allTokens.push(newTokens)
+
+        }
+
+      })
+
+      console.log("allTokens", allTokens)
+      dispatch(addTokenInList3(allTokens))
+      dispatch(setCountOfAllAttribute3(allAttributes))          
+
+      ////////////////////////////////////////////////
+
+      dispatch(setIsSnipping({action: "completed"}))
+
 
   }
 
@@ -304,7 +237,7 @@ const NFTForm = () => {
 
 
       let name: string = "";
-      let totalSupply: string = "0";
+      let totalSupply: string = "10000";
       let minToken: string = "0";
       let tokenURI: string = "";
 
@@ -327,15 +260,17 @@ const NFTForm = () => {
         totalSupply = await MyContract.methods.totalSupply().call();
       } catch(e){
 
-        do{
-          var totalSupplyOfProject = prompt("Please enter Total supply of tokens \nTotal supply i.e. 10000 or 9999");
-        } while(totalSupplyOfProject === "")   
+        console.error("Unable to get total supply")
+        totalSupply = "123"
+        // do{
+        //   var totalSupplyOfProject = prompt("Please enter Total supply of tokens \nTotal supply i.e. 10000 or 9999");
+        // } while(totalSupplyOfProject === "")   
 
-        if (totalSupplyOfProject != null) {
-          console.log(totalSupplyOfProject)
-          totalSupply = totalSupplyOfProject;
+        // if (totalSupplyOfProject != null) {
+        //   console.log(totalSupplyOfProject)
+        //   totalSupply = totalSupplyOfProject;
 
-        }
+        // }
       }
 
 
@@ -346,17 +281,19 @@ const NFTForm = () => {
         }
       } catch(e){
 
-        do{
-          var minTokenOfProject = prompt("Please enter first token ID of the porject \ne.i. 0 or 1");
-        } while(minTokenOfProject === "")   
+        console.error("Unable to get index of first token")
 
-        if (minTokenOfProject != null) {
-          console.log(minToken)
-          minToken = minToken;
-          if(Number(minToken) > 1){
-            minToken = "0"
-          }
-        }
+        // do{
+        //   var minTokenOfProject = prompt("Please enter first token ID of the porject \ne.i. 0 or 1");
+        // } while(minTokenOfProject === "")   
+
+        // if (minTokenOfProject != null) {
+        //   console.log(minToken)
+        //   minToken = minToken;
+        //   if(Number(minToken) > 1){
+        //     minToken = "0"
+        //   }
+        // }
       }
 
 
@@ -635,7 +572,7 @@ const NFTForm = () => {
               }
               {
                 data?.baseTokenURI ? 
-                <div> BaseTokenURI : {data?.baseTokenURI.replace(data?.totalSupply ?  String(Number(data.totalSupply) - 1) : "9999", "")} </div> : 
+                <div> BaseTokenURI : {data?.baseTokenURI.replace(data?.totalSupply ?  String(Number(data.totalSupply) - 1) : "123", "[ID]")} </div> : 
                 null
               }
 

@@ -50,10 +50,11 @@ const NFTCards = () => {
     //   dispatch(sortByRankAndPrice())
     // }
     if(e === 1){
-      dispatch(sortByRarityScore("decs"))
+      dispatch(sortByRarityScore("accs"))
     }
     else if(e === 2){
-      dispatch(sortByRarityScore("accs"))
+      dispatch(sortByRarityScore("decs"))
+
     }
     else if(e === 3){
       dispatch(sortByPrice("decs"))
@@ -74,29 +75,36 @@ const NFTCards = () => {
     if(normalization === true){
       setNormalization(!normalization)
       dispatch(switchNormalization())
+      setSortBy(1);
+      handlePage(0,1)
+
     }
     else if(normalization === false){
       setNormalization(!normalization)
       dispatch(switchNormalization())
+      setSortBy(1);
+      handlePage(0,1)
+
     }
   }
 
   const handleOnSale = () => {
+    console.log("Inital onlyOnsale", onlyOnSale)
 
     if(onlyOnSale === false){
       console.log("onlyOnsale", onlyOnSale)
-      setOnlyOnSale(true)
-      handlePage(0,1)
       dispatch(setOnlyOnSaleState(!onlyOnSale))
-      handleSort(3)  
+      handleSort(4)  
+      setOnlyOnSale(!onlyOnSale)
+      // handlePage(0,1)
       // handleSort(1)    
 
     }
     else if(onlyOnSale === true){
       console.log("onlyOnsale", onlyOnSale)
-      setOnlyOnSale(false)
-      handlePage(0,1)
+      setOnlyOnSale(!onlyOnSale)
       dispatch(setOnlyOnSaleState(!onlyOnSale))
+      // handlePage(0,1)
       handleSort(1)    
     }
   }
@@ -365,9 +373,11 @@ const NFTCards = () => {
 
   useEffect(()=> {
     if(list_of_all_tokens2){
-      handlePage(0,1)
+      handlePage(0,1);
+      handleInputLength()
+
     } 
-  }, [sortBy])
+  }, [sortBy, onlyOnSale])
 
   useEffect(()=> {
     if(isSnipping.completed === true){
@@ -388,7 +398,17 @@ const NFTCards = () => {
 
   useEffect(()=> {
     handlePage(0,page)
+
 },[normalization])
+
+// useEffect(()=> {
+//   handleSort(1)
+//   handleInputLength()
+// },[onlyOnSale, normalization])
+
+
+
+
   
   // console.log("Initially ", isSnipping)
 

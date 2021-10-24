@@ -17,6 +17,7 @@ import OpenSea from '../../../assets/OpenSea.svg'
 import CornerRibbon from "react-corner-ribbon";
 import undefined from '../../../assets/undefined.png'
 import NFTtable from './NFTtable';
+import { SSL_OP_PKCS1_CHECK_2 } from 'constants';
 
 
 
@@ -30,13 +31,18 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   const web3 = new Web3(window.ethereum);  
   const {projectInfo} = useSelector((state: any) => state);
 
-  // console.log("image", token.image)
-  const check = token.image.includes("ipfs://");
+  console.log("image", token.image)
 
-  const imageOfNFT = check ? 
+  const check = token.image.includes("ipfs://");
+  let imageOfNFT = check ? 
                      token.image?.replace("ipfs://", "https://ipfs.io/ipfs/") :
                      token.image
-  
+
+  const check2 = token.image.includes("https://gateway.pinata.cloud/ipfs/");
+  imageOfNFT = check2 ? 
+              token.image?.replace("https://gateway.pinata.cloud/ipfs/", "https://ipfs.io/ipfs/") :
+              token.image
+
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -58,8 +64,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
     <div>
     <Card sx={{ height: 335, width: 200 }} >
       
-        <div>normalized Rank #  {token.normalized_rank}</div>
-        <div>Rank #  {token.rank}</div>
+        <div>Rank #  {normalization ? token.normalized_rank : token.rank}</div>
       
       <CardActionArea>
         {
@@ -95,7 +100,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
 
         <CardContent>
           <Typography gutterBottom variant="caption" component="div">
-            {token.name? token.name: "No name avaiable"}
+            {token.name? token.name.slice(0,25): "Name unavailable"}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             Rarity Score: { normalization ? token.normalized_rarity_score.toFixed(2) : token.rarity_score.toFixed(2)}
