@@ -85,7 +85,7 @@ const NFTtable: FC<TableProps> = ({attributes, normalization}) => {
               <TableCell align="center"> {attribute.value} </TableCell>
               <TableCell align="center"> {attribute.count} </TableCell>
               <TableCell align="center"> {`${(attribute.probability).toFixed(2)}%`} </TableCell>
-              <TableCell align="center">{ normalization ? attribute.score : attribute.normalized_score }
+              <TableCell align="center">{ normalization ? attribute.normalized_score : attribute.score }
               </TableCell>
             </TableRow>
           ))}

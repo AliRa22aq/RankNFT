@@ -57,7 +57,10 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   return (
     <div>
     <Card sx={{ height: 335, width: 200 }} >
-      <div>Rank #  {token.rank}</div>
+      
+        <div>normalized Rank #  {token.normalized_rank}</div>
+        <div>Rank #  {token.rank}</div>
+      
       <CardActionArea>
         {
           token.opensea.saleType === "onSale" ?

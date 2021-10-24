@@ -2,7 +2,7 @@ import  React, {useEffect, useState} from "react";
 import "./style.css";
 // import { intervalToDuration, formatDistanceToNow } from 'date-fns'
 import { useSelector, useDispatch } from 'react-redux';
-import { sortByRankAndPrice, setProcessingProgress, setLoadingProgress, setOpenseaData, assignRank, setIsSnipping, setOnlyOnSaleState, setOpenseaData2, getTop20NFTs, addTokenInList3, AttributesOfEachToekn2, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, CountOfEachAttribute2Values, CountOfEachAttribute2, sortByPrice, sortByTokenID, sortByRarityScore, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute, setCountOfAllAttribute2 } from '../../../store';
+import { switchNormalization, assignNormalizedRank, sortByRankAndPrice, setProcessingProgress, setLoadingProgress, setOpenseaData, assignRank, setIsSnipping, setOnlyOnSaleState, setOpenseaData2, getTop20NFTs, addTokenInList3, AttributesOfEachToekn2, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, CountOfEachAttribute2Values, CountOfEachAttribute2, sortByPrice, sortByTokenID, sortByRarityScore, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute, setCountOfAllAttribute2 } from '../../../store';
 const Web3 = require("web3");
 import Switch from '@mui/material/Switch';
 import Button from '@mui/material/Button';
@@ -35,10 +35,11 @@ const NFTCards = () => {
   const [sortBy, setSortBy] = useState<number>(1);
 
   
-  const { list_of_all_tokens_remaining, list_of_all_tokens_top_20, countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
+  const { list_of_all_tokens_not_normalized,list_of_all_tokens_normalized, list_of_all_tokens_remaining, list_of_all_tokens_top_20, countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
   
   
-  console.log("list_of_all_tokens", list_of_all_tokens)
+  console.log("ranked list_of_all_tokens_not_normalized", list_of_all_tokens_not_normalized)
+  console.log("ranked list_of_all_tokens_normalized", list_of_all_tokens_normalized)
 
 
   const handleSort = (e: number) => {
@@ -70,7 +71,14 @@ const NFTCards = () => {
   };
       
   const handleNormalization = () => {
-    setNormalization(!normalization)
+    if(normalization === true){
+      setNormalization(!normalization)
+      dispatch(switchNormalization())
+    }
+    else if(normalization === false){
+      setNormalization(!normalization)
+      dispatch(switchNormalization())
+    }
   }
 
   const handleOnSale = () => {
@@ -310,7 +318,7 @@ const NFTCards = () => {
                   const chance_of_occuring = eachValue.count/totalSupply;
                   const rarity_score = 1/chance_of_occuring;
 
-          const normalized_score = rarity_score * average_trait_count / attribute_count_in_categories;
+          const normalized_score = rarity_score * average_trait_count / eachValue.count;
           const final_normalized_score = normalized_score / 2;
 
           const rarity_score_of_each_value: RarityScoreOfValue = {
@@ -326,7 +334,9 @@ const NFTCards = () => {
          })
       })
     }
+    // dispatch(assignNormalizedRank())
     dispatch(assignRank())
+
     dispatch(setIsSnipping({action: "startTop20"}))
 
     
@@ -376,7 +386,10 @@ const NFTCards = () => {
       handlePage(0,1)
   },[isSnipping.started])
 
-
+  useEffect(()=> {
+    handlePage(0,page)
+},[normalization])
+  
   // console.log("Initially ", isSnipping)
 
   return (

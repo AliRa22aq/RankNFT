@@ -225,7 +225,8 @@ const NFTForm = () => {
                     allAttributes.push(attributes)            
             
                     const newTokens: any = {
-                          rank: null,
+                          rank: 0,
+                          normalized_rank: 0,
                           tokenID: token.value.config.data,  
                           attributes: attributes,
                           opensea: {price: 0, permalink: ""},

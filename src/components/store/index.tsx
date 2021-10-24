@@ -20,7 +20,8 @@ export interface Attribute2 {
 }
 
 export interface AttributesOfEachToekn {
-  rank: number | null,
+  rank: number,
+  normalized_rank: number,
   tokenID: string
   attributes: Attribute[],
   opensea_data: any,
@@ -114,6 +115,8 @@ interface DataType {
     allAvailableAttributes: CountOfEachAttribute[] | null,
 
     list_of_all_tokens: AttributesOfEachToekn[] | null,
+    list_of_all_tokens_normalized: AttributesOfEachToekn[] | null,
+    list_of_all_tokens_not_normalized: AttributesOfEachToekn[] | null,
     list_of_all_tokensBackup: AttributesOfEachToekn[] | null,
 
     // list_of_all_tokens_onSale: AttributesOfEachToekn[] | null,
@@ -131,6 +134,7 @@ interface DataType {
     projectInfo: ProjectInfo | null,
     loading_contractData: Loading,
     isSnipping: Loading,
+    normalization: boolean
 
     
 
@@ -154,6 +158,8 @@ const initialState: DataType = {
     uploadedContractAddress: "",
     allAvailableAttributes: null,
     list_of_all_tokens: null,
+    list_of_all_tokens_normalized: null,
+    list_of_all_tokens_not_normalized: null,
     list_of_all_tokensBackup: null,
     // list_of_all_tokens_onSale: null,
     list_of_all_tokens_top_20: null,
@@ -167,7 +173,7 @@ const initialState: DataType = {
     projectInfo: null,
     loading_contractData: {requested: false, started: false, completed: false, showNFTs: false, openSeaDataArrived: false, startTop20: false, startRemaining: false},
     isSnipping: {requested: false, started: false, completed: false, showNFTs: false, openSeaDataArrived: false, startTop20: false, startRemaining: false},
-
+    normalization: false
 
 }
 
@@ -278,20 +284,42 @@ const dataSlice = createSlice({
 
 
     assignRank(state){
-
+      console.log("normal ranking started")
       if(state.list_of_all_tokens){
         // console.log("assining rank start ", JSON.stringify(state.list_of_all_tokens))
         state.list_of_all_tokens = state.list_of_all_tokens?.sort( (a, b) => {
           return b.rarity_score - a.rarity_score;
         });
 
-        // Object.values(state.list_of_all_tokens2).forEach((token, index) => {
-        //   token.rank = index + 1
-        // })
-
         state.list_of_all_tokens.forEach((token, index)=> {
           token.rank = index + 1
         })
+
+        state.list_of_all_tokens_not_normalized = state.list_of_all_tokens
+
+
+      console.log("normalized ranking started")
+
+        state.list_of_all_tokens = state.list_of_all_tokens?.sort( (a, b) => {
+          return b.normalized_rarity_score - a.normalized_rarity_score;
+        });
+
+        state.list_of_all_tokens.forEach((token, index)=> {
+          token.normalized_rank = index + 1
+        })
+
+        state.list_of_all_tokens_normalized = state.list_of_all_tokens
+      
+      }
+
+    },
+
+    assignNormalizedRank(state){
+      console.log("normalized ranking started")
+
+      if(state.list_of_all_tokens){
+        // console.log("assining rank start ", JSON.stringify(state.list_of_all_tokens))
+
 
 
         // console.log("assining rank ends ", JSON.stringify(state.list_of_all_tokens))
@@ -300,6 +328,22 @@ const dataSlice = createSlice({
 
     },
 
+    switchNormalization(state){
+      if(state.list_of_all_tokens && state.normalization === true){
+        state.list_of_all_tokens = state.list_of_all_tokens?.sort( (a, b) => {
+            return a.rank - b.rank ;
+        });
+        state.normalization = !state.normalization
+
+      }
+      else if (state.list_of_all_tokens && state.normalization === false){
+        state.list_of_all_tokens = state.list_of_all_tokens?.sort( (a, b) => {
+            return a.normalized_rank - b.normalized_rank; 
+        })
+        state.normalization = !state.normalization
+      }
+
+    },
 
 
     sortByRarityScore(state,  { payload }: PayloadAction<"accs"|"decs"|"Ratity+Price">) {
@@ -307,25 +351,25 @@ const dataSlice = createSlice({
 
       if(state.list_of_all_tokens){
 
-        // if(payload === "Ratity+Price"){
-        //   state.list_of_all_tokens = state.list_of_all_tokens.sort( (a, b) => {
-        //       // return b.rarity_score - a.rarity_score;  
-        //       return  a.opensea.price - b.opensea.price || b.rarity_score - a.rarity_score;
-        //     });
-        //   // state.list_of_all_tokens = state.list_of_all_tokens.sort( (a, b) => {
-        //   //     return a.opensea.price - b.opensea.price;
-        //   //   });
-
-        // }
         if(payload === "decs"){
           state.list_of_all_tokens = state.list_of_all_tokens.sort( (a, b) => {
-              return b.rarity_score - a.rarity_score;
+              if(state.normalization === true){
+                return b.normalized_rank - a.normalized_rank;
+              }
+              else{
+                return b.rank - a.rank;
+              }
             });
         }
         else if(payload === "accs"){
           state.list_of_all_tokens = state.list_of_all_tokens.sort( (a, b) => {
+            if(state.normalization === true){
               return a.rarity_score - b.rarity_score;
-            });
+            }
+            else{
+              return a.rank - b.rank;
+            }
+          });
         }
       }
       // console.log("Sorting End by Rarity", state.list_of_all_tokens)
@@ -387,7 +431,7 @@ const dataSlice = createSlice({
         if(payload === true){
           state.list_of_all_tokensBackup = state.list_of_all_tokens
           state.list_of_all_tokens = state.list_of_all_tokens.filter((token) => {
-            return Number(token.opensea.price) !== 0
+            return token.opensea.saleType === "onSale"
           })
         }
         else if(payload === false){
@@ -796,7 +840,12 @@ const dataSlice = createSlice({
 
     convertInList(state){
       state.list_of_all_tokens = Object.values(state.list_of_all_tokens2)
-    }
+    },
+
+    // switchNormalization(state){
+    //   state.normalization = !state.normalization
+    // }
+
       
 
 
@@ -811,6 +860,6 @@ const dataSlice = createSlice({
 // Extract the action creators object and the reducer
 const { actions, reducer } = dataSlice
 // Extract and export each action creator by name
-export const  {sortByRankAndPrice, setProcessingProgress, setLoadingProgress, assignRank, setOnlyOnSaleState, getTop20NFTs, setCountOfAllAttribute3, convertInList, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, addTokenInList3, setOpenseaData2, addTokenInList2, setCountOfAllAttribute2, setInitialCountOfAllAttribute2, sortByPrice, setOpenseaData, reSetSnipping, setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
+export const  {switchNormalization, assignNormalizedRank, sortByRankAndPrice, setProcessingProgress, setLoadingProgress, assignRank, setOnlyOnSaleState, getTop20NFTs, setCountOfAllAttribute3, convertInList, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, addTokenInList3, setOpenseaData2, addTokenInList2, setCountOfAllAttribute2, setInitialCountOfAllAttribute2, sortByPrice, setOpenseaData, reSetSnipping, setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
 // Export the reducer, either as a default or named export
 export default reducer
