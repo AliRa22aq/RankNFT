@@ -11,8 +11,8 @@ import axios from "axios";
 import CircularProgress from '@mui/material/CircularProgress';
 import * as yup from 'yup';
 import async  from "async";
-var request = require('request') // https://www.npmjs.com/package/request
-
+// var request = require('request') // https://www.npmjs.com/package/request
+// require('dotenv').config()
 
 
 interface Data {
@@ -207,14 +207,14 @@ const NFTForm = () => {
       setLoading(true)
 
       // TODO: Ask ben to provide Infure API Kye
-       var web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/767a0bfaa2ba4ef6b9fc954a84712a26')) 
+       var web3 = new Web3(new Web3.providers.HttpProvider(`https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`)) 
        
 
       // let uri: string;
       // let abi: any;
       // let abiJSON: any;
       // try{
-      //   uri = `https://api.etherscan.io/api?module=contract&action=getabi&address=${contractAdrs}&apikey=WKEB4C6A8MPPIYF5699I3A1ZEII57MXG2A`
+      //   uri = `https://api.etherscan.io/api?module=contract&action=getabi&address=${contractAdrs}&apikey=*******************`
       //   abi = await fetch(uri)
       //   abiJSON = await abi.json()   
       // } catch(e){
@@ -222,8 +222,9 @@ const NFTForm = () => {
       //   setLoading(false);
       //   throw("Unabel to find this contract address");
       // }
+      console.log("process.env",  process.env.REACT_APP_INFURA_KEY)
 
-      const uri = `https://api.etherscan.io/api?module=contract&action=getabi&address=${contractAdrs}&apikey=WKEB4C6A8MPPIYF5699I3A1ZEII57MXG2A`
+      const uri = `https://api.etherscan.io/api?module=contract&action=getabi&address=${contractAdrs}&apikey=${process.env.REACT_APP_ETHERSCAN_KEY}`
       const abii = await fetch(uri)
       const abi = await abii.json()   
         

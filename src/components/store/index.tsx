@@ -4,6 +4,8 @@ import { RankNFT as RankNFTType } from '../../../types/web3-v1-contracts/RankNFT
 import web3 from 'web3';
 // import axios from "axios";
 import _ from "lodash";
+import {firstBy} from "thenby";
+
 
 // import { sort } from 'fast-sort';
 
@@ -427,18 +429,25 @@ const dataSlice = createSlice({
 
     sortByRankAndPrice(state) {
 
-      // console.log("Sorting start by price", state.list_of_all_tokens)
-      // if(state.list_of_all_tokens){
-      //   state.list_of_all_tokensBackup = state.list_of_all_tokens
-      //   state.list_of_all_tokens = state.list_of_all_tokens.filter((token) => {
-      //     return Number(token.opensea.price) !== 0
-      //   })        
-      //   state.list_of_all_tokens = state.list_of_all_tokens.sort( (a, b) => {
-      //         return  a.rarity_score - b.rarity_score || b.opensea.price - a.opensea.price;
-      // });
+      console.log("sortByRankAndPrice", state.list_of_all_tokens)
+
+      if(state.list_of_all_tokens){
+
+        if(state.normalization === true){
+          state.list_of_all_tokens = state.list_of_all_tokens.sort(
+              firstBy(function (v1:any, v2:any) { return v2.normalized_rarity_score - v1.normalized_rarity_score; })
+              .thenBy(function (v1: any, v2: any) { return v2.opensea.price - v1.opensea.price; })
+              );
+        } 
+        else  {
+            state.list_of_all_tokens = state.list_of_all_tokens.sort(
+              firstBy(function (v1:any, v2:any) { return v2.rarity_score - v1.rarity_score; })
+              .thenBy(function (v1: any, v2: any) { return v2.opensea.price - v1.opensea.price; })
+              );
+        }      
         
-      // }
-      // console.log("Sorting End by price", state.list_of_all_tokens)
+      }
+      console.log("sortByRankAndPrice", state.list_of_all_tokens)
     },
 
     setOnlyOnSaleState(state, { payload }: PayloadAction<boolean>){

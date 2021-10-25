@@ -40,7 +40,7 @@ const NFTCards = () => {
   const { list_of_all_tokens_not_normalized,list_of_all_tokens_normalized, list_of_all_tokens_remaining, list_of_all_tokens_top_20, countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
   
   
-  // console.log("ranked list_of_all_tokens_not_normalized", list_of_all_tokens_not_normalized)
+  console.log("list_of_all_tokens", list_of_all_tokens)
   // console.log("ranked list_of_all_tokens_normalized", list_of_all_tokens_normalized)
 
 
