@@ -54,3 +54,25 @@
     justify-content: center;
 
 }
+
+.progress{
+    /* border: 1px solid black; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.progress-text{
+    /* border: 1px solid black; */
+    font-size: large;
+    margin-left: 5px;
+}
+
+.progress-loading{
+    /* border: 1px solid black; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+
+}

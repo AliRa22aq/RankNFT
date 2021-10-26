@@ -98,6 +98,15 @@ export interface Loading {
   startRemaining: boolean,
 }
 
+export interface Progress {
+  snip : {started: boolean, ended: boolean},
+  dataFetch : {started: boolean, ended: boolean},
+  dataProcess : {started: boolean, ended: boolean},
+  raritiesAssign : {started: boolean, ended: boolean},
+  openseaFetch : {started: boolean, ended: boolean},
+}
+
+
 interface DataType {
     userAddress: string,
     isOwner: boolean,
@@ -135,6 +144,7 @@ interface DataType {
 
     projectInfo: ProjectInfo | null,
     loading_contractData: Loading,
+    progress: Progress,    
     isSnipping: Loading,
     normalization: boolean
 
@@ -175,7 +185,16 @@ const initialState: DataType = {
     projectInfo: null,
     loading_contractData: {requested: false, started: false, completed: false, showNFTs: false, openSeaDataArrived: false, startTop20: false, startRemaining: false},
     isSnipping: {requested: false, started: false, completed: false, showNFTs: false, openSeaDataArrived: false, startTop20: false, startRemaining: false},
-    normalization: false
+
+    normalization: false,
+
+    progress : {
+      snip : {started: false, ended: false},
+      dataFetch : {started: false, ended: false},
+      dataProcess : {started: false, ended: false},
+      raritiesAssign : {started: false, ended: false},
+      openseaFetch : {started: false, ended: false},
+    }
 
 }
 
@@ -876,10 +895,56 @@ const dataSlice = createSlice({
       state.list_of_all_tokens = Object.values(state.list_of_all_tokens2)
     },
 
-    // switchNormalization(state){
-    //   state.normalization = !state.normalization
-    // }
+    resetProgress(state){
+      state.progress = {
+        snip : {started: false, ended: false},
+        dataFetch : {started: false, ended: false},
+        dataProcess : {started: false, ended: false},
+        raritiesAssign : {started: false, ended: false},
+        openseaFetch : {started: false, ended: false},  
+      }
+    },
 
+    setProgress(state, {payload}: PayloadAction<{
+      action: "snip"|"dataFetch"|"dataProcess"|"raritiesAssign"|"openseaFetch", 
+      status: "started"|"ended"
+    }>) {
+      if(payload.action === "snip" && payload.status === "started"){
+          state.progress.snip.started = true
+      }
+      else if(payload.action === "snip" && payload.status === "ended"){
+          state.progress.snip.ended = true
+      }
+
+      else if(payload.action === "dataFetch" && payload.status === "started"){
+        state.progress.dataFetch.started = true
+      }
+      else if(payload.action === "dataFetch" && payload.status === "ended"){
+        state.progress.dataFetch.ended = true
+      }
+
+      else if(payload.action === "dataProcess" && payload.status === "started"){
+        state.progress.dataProcess.started = true
+      }
+      else if(payload.action === "dataProcess" && payload.status === "ended"){
+        state.progress.dataProcess.ended = true
+      }
+
+      else if(payload.action === "raritiesAssign" && payload.status === "started"){
+        state.progress.raritiesAssign.started = true
+      }
+      else if(payload.action === "raritiesAssign" && payload.status === "ended"){
+        state.progress.raritiesAssign.ended = true
+      }
+
+      else if(payload.action === "openseaFetch" && payload.status === "started"){
+        state.progress.openseaFetch.started = true
+      }
+      else if(payload.action === "openseaFetch" && payload.status === "ended"){
+        state.progress.openseaFetch.ended = true
+      }
+  
+    }
       
 
 
@@ -894,6 +959,6 @@ const dataSlice = createSlice({
 // Extract the action creators object and the reducer
 const { actions, reducer } = dataSlice
 // Extract and export each action creator by name
-export const  {switchNormalization, assignNormalizedRank, sortByRankAndPrice, setProcessingProgress, setLoadingProgress, assignRank, setOnlyOnSaleState, getTop20NFTs, setCountOfAllAttribute3, convertInList, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, addTokenInList3, setOpenseaData2, addTokenInList2, setCountOfAllAttribute2, setInitialCountOfAllAttribute2, sortByPrice, setOpenseaData, reSetSnipping, setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
+export const  {resetProgress, setProgress, switchNormalization, assignNormalizedRank, sortByRankAndPrice, setProcessingProgress, setLoadingProgress, assignRank, setOnlyOnSaleState, getTop20NFTs, setCountOfAllAttribute3, convertInList, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, addTokenInList3, setOpenseaData2, addTokenInList2, setCountOfAllAttribute2, setInitialCountOfAllAttribute2, sortByPrice, setOpenseaData, reSetSnipping, setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
 // Export the reducer, either as a default or named export
 export default reducer

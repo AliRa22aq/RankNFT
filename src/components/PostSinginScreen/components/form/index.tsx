@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import "./style.css";
 import { useDispatch, useSelector } from 'react-redux';
-import {setLoadingProgress, setCountOfAllAttribute3, setOpenseaData2, addTokenInList3, addTokenInList2, setCountOfAllAttribute2, setInitialCountOfAllAttribute2, setOpenseaData, TraitCount, reSetSnipping, setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress, setAvailableAttributes, CountOfEachAttribute, addTokenInList, AttributesOfEachToekn } from '../../../store';
+import {resetProgress, setProgress, setLoadingProgress, setCountOfAllAttribute3, setOpenseaData2, addTokenInList3, addTokenInList2, setCountOfAllAttribute2, setInitialCountOfAllAttribute2, setOpenseaData, TraitCount, reSetSnipping, setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress, setAvailableAttributes, CountOfEachAttribute, addTokenInList, AttributesOfEachToekn } from '../../../store';
 import Grid from "@mui/material/Grid";
 import { Form, Formik, Field } from "formik";
 import { TextField} from 'formik-material-ui';
@@ -138,6 +138,7 @@ const NFTForm = () => {
       }
 
       // console.log("step 1: Snipping started with URL ", url)
+      dispatch(setProgress({action: "dataFetch", status: "started"}));
 
       await requestingAllAPIs(1, url, 0, 1000, from, to)
       await requestingAllAPIs(2, url, 1001, 2000, from, to)
@@ -150,17 +151,17 @@ const NFTForm = () => {
       await requestingAllAPIs(9, url, 8001, 9000, from, to)
       await requestingAllAPIs(10, url, 9001, 10000, from, to)
 
-      // console.log(allRequests.flat());
+      dispatch(setProgress({action: "dataFetch", status: "ended"}));
 
 
       let allTokens: any = [];
       let allAttributes: any = [];
 
 
+      dispatch(setProgress({action: "dataProcess", status: "started"}));
+
       let allRawTokens: any = allRequests.flat();
       allRawTokens.forEach((token :any, key: number) => {
-
-        // dispatch(setLoadingProgress(key + 1))
 
         if(token.status === 'fulfilled'){
 
@@ -205,9 +206,11 @@ const NFTForm = () => {
       dispatch(setCountOfAllAttribute3(allAttributes))          
 
       ////////////////////////////////////////////////
+      dispatch(setProgress({action: "dataProcess", status: "ended"}));
 
       dispatch(setIsSnipping({action: "completed"}))
 
+      // dispatch(setProgress({action: "raritiesAssign", status: "started"}));
 
   }
 
@@ -470,7 +473,11 @@ const NFTForm = () => {
     }
 
   const startSnipping = async (from: number, to: number) => {
+    dispatch(resetProgress());
+
     console.log("startSnipping Started")
+    dispatch(setProgress({action: "snip", status: "started"}));
+
 
     dispatch(reSetSnipping())
     dispatch(setLoadingNFTs(false))

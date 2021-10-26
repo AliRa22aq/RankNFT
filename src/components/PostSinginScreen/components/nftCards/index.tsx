@@ -2,7 +2,7 @@ import  React, {useEffect, useState} from "react";
 import "./style.css";
 // import { intervalToDuration, formatDistanceToNow } from 'date-fns'
 import { useSelector, useDispatch } from 'react-redux';
-import { switchNormalization, assignNormalizedRank, sortByRankAndPrice, setProcessingProgress, setLoadingProgress, setOpenseaData, assignRank, setIsSnipping, setOnlyOnSaleState, setOpenseaData2, getTop20NFTs, addTokenInList3, AttributesOfEachToekn2, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, CountOfEachAttribute2Values, CountOfEachAttribute2, sortByPrice, sortByTokenID, sortByRarityScore, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute, setCountOfAllAttribute2 } from '../../../store';
+import { setProgress, switchNormalization, assignNormalizedRank, sortByRankAndPrice, setProcessingProgress, setLoadingProgress, setOpenseaData, assignRank, setIsSnipping, setOnlyOnSaleState, setOpenseaData2, getTop20NFTs, addTokenInList3, AttributesOfEachToekn2, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, CountOfEachAttribute2Values, CountOfEachAttribute2, sortByPrice, sortByTokenID, sortByRarityScore, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute, setCountOfAllAttribute2 } from '../../../store';
 const Web3 = require("web3");
 import Switch from '@mui/material/Switch';
 import Button from '@mui/material/Button';
@@ -25,6 +25,7 @@ import Select from '@mui/material/Select';
 
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
+import LoadingProgress from "../RarityReport/LoadingProgress";
 
 
 const NFTCards = () => {
@@ -227,10 +228,13 @@ const NFTCards = () => {
 
   const getTopRatedNFTs = async () => {
     console.log("getTopRatedNFTs Started")
+    dispatch(setProgress({action: "openseaFetch", status: "started"}));
 
     const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
     await fetchOpenseaData(1, 0, 3300);
+    dispatch(setProgress({action: "openseaFetch", status: "ended"}));
+
     // handleSort(0)
     await delayFn(20000)
     await fetchOpenseaData(2, 3301, 6600);
@@ -297,6 +301,7 @@ const NFTCards = () => {
 
     console.log("findRarityScore2 Started")
 
+
     // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
 
@@ -347,11 +352,13 @@ const NFTCards = () => {
           dispatch(setRarityScoreToEachNFTAttribuValue2(rarity_score_of_each_value))
          })
       })
+      dispatch(setProgress({action: "raritiesAssign", status: "ended"}));
     }
     // dispatch(assignNormalizedRank())
     dispatch(assignRank())
 
     dispatch(setIsSnipping({action: "startTop20"}))
+
 
     
   }
@@ -387,6 +394,7 @@ const NFTCards = () => {
 
   useEffect(()=> {
     if(isSnipping.completed === true){
+      dispatch(setProgress({action: "raritiesAssign", status: "started"}));
       findRarityScore2()
     }
   }, [isSnipping.completed])
@@ -446,19 +454,22 @@ const NFTCards = () => {
 
                  </div> :
 
-                  isSnipping.requested && !isSnipping.started  && !isSnipping.completed && !isSnipping.showNFTs? 
-                  // <div> Wait we are fetching data </div> : 
-                  <WaitPage /> :                
+                  // isSnipping.requested && !isSnipping.started  && !isSnipping.completed && !isSnipping.showNFTs? 
+                  // // <div> Wait we are fetching data </div> : 
+                  // <WaitPage /> :                
                   
-                  isSnipping.requested && isSnipping.started  && !isSnipping.completed && !isSnipping.showNFTs? 
-                  <div> <RarityReport /> </div> :
+                  // isSnipping.requested && isSnipping.started  && !isSnipping.completed && !isSnipping.showNFTs? 
+                  // <div> <RarityReport /> </div> :
                   
-                  isSnipping.requested && isSnipping.started  && isSnipping.completed && !isSnipping.showNFTs?
-                  // <div> Wait we are processing the data. </div> :
-                  <div> <ProgressReport /> </div> :
-                  
-                  
-                  isSnipping.requested && isSnipping.started  && isSnipping.completed && isSnipping.showNFTs? 
+                  // isSnipping.requested && isSnipping.started  && isSnipping.completed && !isSnipping.showNFTs?
+                  // // <div> Wait we are processing the data. </div> :
+                  // <div> <ProgressReport /> </div> :
+                  !isSnipping.showNFTs? 
+                  <LoadingProgress /> :
+
+
+                  isSnipping.showNFTs? 
+                  // isSnipping.requested && isSnipping.started  && isSnipping.completed && isSnipping.showNFTs? 
                   //  <NFTs /> 
                   <div className="NFT-Secreen">
 
