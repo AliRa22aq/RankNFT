@@ -47,10 +47,10 @@ const NFTCards = () => {
   const handleSort = (e: number) => {
     // console.log(e)
     setSortBy(e);
-    // if(e === 0){
-    //   setOnlyOnSale(true)
-    //   dispatch(sortByRankAndPrice())
-    // }
+    if(e === 0){
+      // setOnlyOnSale(true)
+      dispatch(sortByRankAndPrice())
+    }
     if(e === 1){
       dispatch(sortByRarityScore("accs"))
     }
@@ -96,7 +96,7 @@ const NFTCards = () => {
     if(onlyOnSale === false){
       // console.log("onlyOnsale", onlyOnSale)
       dispatch(setOnlyOnSaleState(!onlyOnSale))
-      handleSort(4)  
+      handleSort(0)  
       setOnlyOnSale(!onlyOnSale)
       // handlePage(0,1)
       // handleSort(1)    
@@ -226,6 +226,8 @@ const NFTCards = () => {
   }
 
   const getTopRatedNFTs = async () => {
+    console.log("getTopRatedNFTs Started")
+
     const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
     await fetchOpenseaData(1, 0, 3300);
@@ -293,6 +295,8 @@ const NFTCards = () => {
     
   const findRarityScore2 = async () => {
 
+    console.log("findRarityScore2 Started")
+
     // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
 
@@ -303,6 +307,7 @@ const NFTCards = () => {
   
       // console.log("Normalization is on")
       let traits_count = 0;
+      const attribute_count_in_categories = Object.keys(countOfAllAttribute2).length;
 
       // console.log("countOfAllAttribute2 ", countOfAllAttribute2)
       
@@ -313,7 +318,6 @@ const NFTCards = () => {
         
 
         //  console.log("countOfAllAttribute2 Values", Object.keys(countOfAllAttribute2))
-        const attribute_count_in_categories = Object.keys(countOfAllAttribute2).length;
         const average_trait_count = traits_count/attribute_count_in_categories;
         
         // console.log("countOfAllAttribute2 attribute_count_in_categories",attribute_count_in_categories )
@@ -479,7 +483,7 @@ const NFTCards = () => {
                                   label="Sort By"
                                   onChange={(e) => handleSort(Number(e.target.value))}
                                 >
-                                  {/* <MenuItem value={0}> {`Hight Rank + Lowest Price`} </MenuItem> */}
+                                  <MenuItem value={0}> {`Hight Rank + Lowest Price`} </MenuItem>
                                   <MenuItem value={1}> {`Rarity Score (high -> low)`} </MenuItem>
                                   <MenuItem value={2}> {`Rarity Score (low -> high)`} </MenuItem>
                                   <MenuItem value={3}> {`Price (high -> low)`} </MenuItem>

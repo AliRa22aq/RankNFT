@@ -273,6 +273,7 @@ const dataSlice = createSlice({
 
     setLoadingProgress(state, { payload }: PayloadAction<number>) {
       if (state.projectInfo && state.projectInfo.range) {
+        console.log("pay load in setProgress")
         state.projectInfo.loadingProgree = payload * 100 / state.projectInfo.range.range;
       }
     },
@@ -435,15 +436,23 @@ const dataSlice = createSlice({
 
         if(state.normalization === true){
           state.list_of_all_tokens = state.list_of_all_tokens.sort(
-              firstBy(function (v1:any, v2:any) { return v2.normalized_rarity_score - v1.normalized_rarity_score; })
-              .thenBy(function (v1: any, v2: any) { return v2.opensea.price - v1.opensea.price; })
-              );
-        } 
+          (a, b) => {
+            if (b.opensea.price === a.opensea.price) {
+              return b.normalized_rarity_score - a.normalized_rarity_score;
+           }
+           return b.opensea.price - a.opensea.price;
+          } 
+        );
+      } 
         else  {
             state.list_of_all_tokens = state.list_of_all_tokens.sort(
-              firstBy(function (v1:any, v2:any) { return v2.rarity_score - v1.rarity_score; })
-              .thenBy(function (v1: any, v2: any) { return v2.opensea.price - v1.opensea.price; })
-              );
+              (a, b) => {
+                if (b.opensea.price === a.opensea.price) {
+                  return b.rarity_score - a.rarity_score;
+               }
+               return b.opensea.price - a.opensea.price;
+              } 
+          );
         }      
         
       }

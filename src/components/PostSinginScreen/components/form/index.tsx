@@ -76,14 +76,22 @@ const NFTForm = () => {
   });
 
   
-  const fetchAllTokenData = async (tokenURI: string, from: number, to: number) => {
-    // console.log("tokenURI", tokenURI)    
+  const fetchAllTokenData = async (URI: string, from: number, to: number) => {
+    
+    console.log("fetchAllTokenData Started")
+    
+    let tokenURI = URI
+
+    if(tokenURI.includes("ID")){
+      tokenURI = tokenURI.replace("ID", String(Number(projectInfo.totalSupply) - 1))
+      console.log("ID checking", tokenURI)
+    }
 
     try{
-      let fetchAPI =  await axios.get( tokenURI ) as any      
+      let fetchAPI =  await axios.get( tokenURI ) as any
       // console.log("fetchAPI res", fetchAPI)    
     } catch(e){
-      alert("Unable to fetch information. Make sure you have installed and enabled Moesif CORS extention")
+      alert("Unable to fetch information. Make sure you have installed and enabled Moesif CORS extention and refresh the page")
       throw("Aborting")
     }
     
@@ -150,7 +158,10 @@ const NFTForm = () => {
 
 
       let allRawTokens: any = allRequests.flat();
-      allRawTokens.forEach((token :any) => {
+      allRawTokens.forEach((token :any, key: number) => {
+
+        // dispatch(setLoadingProgress(key + 1))
+
         if(token.status === 'fulfilled'){
 
           console.log(token.value.data)
@@ -201,6 +212,7 @@ const NFTForm = () => {
   }
 
   const fetchData = async  ( contractAdrs : string, URl?:string, setFieldValue?: any ) => {
+    console.log("fetchData Started")
 
       setData(initialData)
       setNeedrange(false)
@@ -222,7 +234,6 @@ const NFTForm = () => {
       //   setLoading(false);
       //   throw("Unabel to find this contract address");
       // }
-      console.log("process.env",  process.env.REACT_APP_INFURA_KEY)
 
       const uri = `https://api.etherscan.io/api?module=contract&action=getabi&address=${contractAdrs}&apikey=${process.env.REACT_APP_ETHERSCAN_KEY}`
       const abii = await fetch(uri)
@@ -310,8 +321,9 @@ const NFTForm = () => {
       } catch(e){
 
         do{
-          var tokenURIInput = prompt("Please enter Token URI in below format  \nhttps://api.lostboy.io/boy/5135 \nIncluding token ID ");
-        } while(tokenURIInput === "")   
+          var tokenURIInput = prompt("Please enter Token URI with 'ID' string like in below format  \nhttps://api.lostboy.io/boy/ID \nIncluding token ID ");
+          console.log("tokenURIInput", tokenURIInput)
+        } while(!tokenURIInput || !tokenURIInput.includes("ID"))   
 
         if (tokenURIInput != null) {
           // console.log(tokenURIInput)
@@ -458,6 +470,7 @@ const NFTForm = () => {
     }
 
   const startSnipping = async (from: number, to: number) => {
+    console.log("startSnipping Started")
 
     dispatch(reSetSnipping())
     dispatch(setLoadingNFTs(false))
@@ -578,7 +591,7 @@ const NFTForm = () => {
               }
               {
                 data?.baseTokenURI ? 
-                <div> BaseTokenURI : {data?.baseTokenURI.replace(data.totalSupply ? String(Number(data.totalSupply) - 1) : "9999", "[ID]")} </div> : 
+                <div> BaseTokenURI : {data?.baseTokenURI} </div> : 
                 null
               }
 
