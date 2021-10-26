@@ -1,13 +1,6 @@
 import React, {useEffect} from "react"
 import "./styles.css"
-import { useSelector, useDispatch } from 'react-redux';
-import { CountOfEachAttribute } from '../../../store';
-import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
-
-import { CountOfEachAttribute2Values } from '../../../store';
-import CheckIcon from '@mui/icons-material/Check';
-import HourglassFullIcon from '@mui/icons-material/HourglassFull';
+import { useSelector } from 'react-redux';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
@@ -60,11 +53,11 @@ const LoadingProgress = () => {
 
                     {
                         !progress.openseaFetch.started && !progress.openseaFetch.ended ? 
-                        <div className="progress"> <HourglassEmptyIcon color="action" /> Waiting to start Opensea data fetching. </div> :                                                                         
+                        <div className="progress"> <HourglassEmptyIcon color="action" /> <span className="progress-text"> Waiting to start Opensea data fetching.</span> </div> :                                                                         
                         progress.openseaFetch.started && !progress.openseaFetch.ended ? 
-                        <div className="progress"> <CheckBoxOutlineBlankIcon color="action"/> Opensea data fetching started. </div> : 
+                        <div className="progress"> <CheckBoxOutlineBlankIcon color="action"/> <span className="progress-text"> Opensea data fetching started.</span> </div> : 
                         progress.openseaFetch.started && progress.openseaFetch.ended ? 
-                        <div className="progress"> <CheckBoxIcon color="primary" /> Successfully fetched the Opensea data of all the tokens. </div> :
+                        <div className="progress"> <CheckBoxIcon color="primary" /> <span className="progress-text"> Successfully fetched the Opensea data of all the tokens.</span> </div> :
                         null
                     }
                     <br />

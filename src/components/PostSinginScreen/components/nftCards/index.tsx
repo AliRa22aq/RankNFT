@@ -1,22 +1,13 @@
 import  React, {useEffect, useState} from "react";
 import "./style.css";
-// import { intervalToDuration, formatDistanceToNow } from 'date-fns'
 import { useSelector, useDispatch } from 'react-redux';
-import { setProgress, switchNormalization, assignNormalizedRank, sortByRankAndPrice, setProcessingProgress, setLoadingProgress, setOpenseaData, assignRank, setIsSnipping, setOnlyOnSaleState, setOpenseaData2, getTop20NFTs, addTokenInList3, AttributesOfEachToekn2, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, CountOfEachAttribute2Values, CountOfEachAttribute2, sortByPrice, sortByTokenID, sortByRarityScore, RarityScoreOfValue,setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, TraitCount, Attribute, AttributesOfEachToekn, CountOfEachAttribute, setCountOfAllAttribute2 } from '../../../store';
-const Web3 = require("web3");
+import { setProgress, switchNormalization, sortByRankAndPrice, setOpenseaData, assignRank, setIsSnipping, setOnlyOnSaleState, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, sortByPrice, sortByTokenID, sortByRarityScore, RarityScoreOfValue, AttributesOfEachToekn } from '../../../store';
 import Switch from '@mui/material/Switch';
-import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import NFTCard from "../nftCard";
-import RarityReport from "../RarityReport/RarityReport";
- import ProgressReport from "../RarityReport/ProgressReport";
-import WaitPage from "../RarityReport/WaitPage";
-
 import axios from "axios";
-
-// import { OpenSeaPort, Network  } from 'opensea-js'
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -37,13 +28,9 @@ const NFTCards = () => {
   const [list_of_NFTs_for_currentPage, set_list_of_NFTs_for_currentPage] = useState<AttributesOfEachToekn[] | null>([])
   const [sortBy, setSortBy] = useState<number>(1);
 
-  
   const { list_of_all_tokens_not_normalized,list_of_all_tokens_normalized, list_of_all_tokens_remaining, list_of_all_tokens_top_20, countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
   
-  
   console.log("list_of_all_tokens", list_of_all_tokens)
-  // console.log("ranked list_of_all_tokens_normalized", list_of_all_tokens_normalized)
-
 
   const handleSort = (e: number) => {
     // console.log(e)
@@ -110,63 +97,6 @@ const NFTCards = () => {
       // handlePage(0,1)
       handleSort(1)    
     }
-  }
-  
-
-  const findRarityScore = () => {
-
-    // dispatch(setRarityScoreToAttributeValue(null))
-
-    // const totalSupply:number = projectInfo && projectInfo.range.range
-    // // console.log("totalSupply ", totalSupply)
-
-    // // Normalized Scoring
-    // if(countOfAllAttribute){
-  
-    //   // console.log("Normalization is on")
-    //   let traits_count = 0;
-      
-    //   countOfAllAttribute.map((eachAttribute: CountOfEachAttribute) => {
-    //     traits_count = traits_count + eachAttribute.total_variations
-    //   })
-      
-    //   const attribute_count_in_categories = countOfAllAttribute.length;
-    //   const average_trait_count = traits_count/countOfAllAttribute.length;
-      
-    //   // console.log("traits_count",traits_count )
-    //   // console.log("attribute_count_in_categories",attribute_count_in_categories )
-
-    //   countOfAllAttribute.map((eachAttribute: CountOfEachAttribute) => {
-
-    //     eachAttribute.trait_count && eachAttribute.trait_count.map((eachValue: TraitCount) => {
-
-    //       const chance_of_occuring = eachValue.count/totalSupply;
-    //       const rarity_score = 1/chance_of_occuring;
-
-    //       const normalized_score = rarity_score * average_trait_count / attribute_count_in_categories;
-    //       const final_normalized_score = normalized_score / 2;
-
-    //       // const rarity_score_of_each_value: RarityScoreOfValue = {
-    //       //   value: eachValue.value,  rarity_score: rarity_score , normalized_rarity_score:  final_normalized_score
-    //       // }
-    //       const rarity_score_of_each_value: RarityScoreOfValue = {
-    //         trait_type: eachAttribute.trait_type,
-    //         value: eachValue.value,  
-    //         rarity_score: rarity_score , 
-    //         normalized_rarity_score:  final_normalized_score
-    //   }
-
-    //       // console.log("aliiiii", rarity_score_of_each_value)
-    //       dispatch(setRarityScoreToAttributeValue(rarity_score_of_each_value))
-    //       dispatch(setRarityScoreToEachNFTAttribuValue(rarity_score_of_each_value))
-
-    //     })
-    //   })
-    // }
-    // // dispatch(sortByRarityScore())
-    // handleInputLength()
-    // // setShowNFTs(true)
-
   }
 
   const fetchOpenseaData = async (iteration: number, min: number, max?:number) => {
@@ -242,59 +172,6 @@ const NFTCards = () => {
     await fetchOpenseaData(2, 6601, 10000);
 
 
-  }
-
-  const getRemainingNFTs = async () => {
-    // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
-
-    // let arrayOfLinks: any = [];
-    // let count = 1
-    // const initialLink = `https://api.opensea.io/api/v1/assets?asset_contract_address=${projectInfo?.contractAddress}`;
-      
-    //   console.log("list_of_all_tokens", list_of_all_tokens)
-    //   if(list_of_all_tokens){
-      
-
-    //   const ramaining80 = list_of_all_tokens.slice(1500)
-    //   let link = initialLink;
-    //   ramaining80.forEach((token: any) => {
-    //     console.log(`${token.tokenID} ->  ${token.rarity_score}`)
-    //     link = link.concat(`&token_ids=${token.tokenID}`);
-    //     if(count%30==0 || count === ramaining80.length){
-    //       arrayOfLinks.push(link.concat("&limit=30"))
-    //       link = initialLink;
-    //     }
-    //     count++
-    //   })
-
-    //   console.log("remaining arrayOfLinks", arrayOfLinks)
-
-    //   await delayFn(5000)
-
-    //   // const opensea_apis: any = [];
-    //   const opensea_res: any = [];
-    //   // arrayOfLinks.map(async (opensea_api:any)=> {
-    //   //     await delayFn(5000)
-    //   //     console.log("opensea_link", opensea_api)
-    //   //     const res:any = await axios.get(opensea_api)
-    //   //     opensea_res.push(res.data.assets)
-          
-    //   //   })
-    //   for(let i = 0; i < arrayOfLinks.length; i++){
-    //     await delayFn(5000)
-    //     console.log("opensea_link", arrayOfLinks[i])
-    //     axios.get(arrayOfLinks[i]).then((res:any)=> {
-    //        opensea_res.push(res.data.assets)
-    //     })
-    //   }
-        
-
-
-    //   await delayFn(5000)
-
-    //   console.log("final opensea_res ",  opensea_res.flat())
-    //   dispatch(setOpenseaData(opensea_res.flat()))   
-    // }
   }
     
   const findRarityScore2 = async () => {
@@ -415,17 +292,6 @@ const NFTCards = () => {
 
 },[normalization])
 
-// useEffect(()=> {
-//   handleSort(1)
-//   handleInputLength()
-// },[onlyOnSale, normalization])
-
-
-
-
-  
-  // console.log("Initially ", isSnipping)
-
   return (
     <div className="cards-container">
       
@@ -453,20 +319,8 @@ const NFTCards = () => {
                   </div>
 
                  </div> :
-
-                  // isSnipping.requested && !isSnipping.started  && !isSnipping.completed && !isSnipping.showNFTs? 
-                  // // <div> Wait we are fetching data </div> : 
-                  // <WaitPage /> :                
-                  
-                  // isSnipping.requested && isSnipping.started  && !isSnipping.completed && !isSnipping.showNFTs? 
-                  // <div> <RarityReport /> </div> :
-                  
-                  // isSnipping.requested && isSnipping.started  && isSnipping.completed && !isSnipping.showNFTs?
-                  // // <div> Wait we are processing the data. </div> :
-                  // <div> <ProgressReport /> </div> :
                   !isSnipping.showNFTs? 
                   <LoadingProgress /> :
-
 
                   isSnipping.showNFTs? 
                   // isSnipping.requested && isSnipping.started  && isSnipping.completed && isSnipping.showNFTs? 

@@ -1,14 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RankNFT as RankNFTType } from '../../../types/web3-v1-contracts/RankNFT'
-// import { BN } from "bn.js";
 import web3 from 'web3';
-// import axios from "axios";
-import _ from "lodash";
-import {firstBy} from "thenby";
-
-
-// import { sort } from 'fast-sort';
-
 
 export interface Attribute {
   trait_type :string, 
@@ -456,20 +448,20 @@ const dataSlice = createSlice({
         if(state.normalization === true){
           state.list_of_all_tokens = state.list_of_all_tokens.sort(
           (a, b) => {
-            if (b.opensea.price === a.opensea.price) {
+            if (a.opensea.price === b.opensea.price) {
               return b.normalized_rarity_score - a.normalized_rarity_score;
            }
-           return b.opensea.price - a.opensea.price;
+           return a.opensea.price - b.opensea.price;
           } 
         );
       } 
         else  {
             state.list_of_all_tokens = state.list_of_all_tokens.sort(
               (a, b) => {
-                if (b.opensea.price === a.opensea.price) {
+                if (a.opensea.price === b.opensea.price) {
                   return b.rarity_score - a.rarity_score;
                }
-               return b.opensea.price - a.opensea.price;
+               return a.opensea.price - b.opensea.price;
               } 
           );
         }      

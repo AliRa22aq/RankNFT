@@ -2,7 +2,6 @@ import React from "react"
 import './style.css';
 // import { useSelector } from 'react-redux';
 import Grid from '@mui/material/Grid';
-// import web3 from "web3"
 import SubscriptionCards from './components/SubscriptionCards'
 
 const NotSubscriber = () => {

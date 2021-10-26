@@ -139,8 +139,6 @@ const SubscriptionCards = () => {
   
           }
       </Grid>
-
-      {/* </Grid> */}
     </div>
   );
 };

@@ -49,13 +49,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
     setOpen(true)
   };
   const handleClose = () => setOpen(false);
-
-  // const onSale = token?.opensea_data?.sell_orders && token?.opensea_data?.sell_orders[0]? true:false; 
-  // const onSale = token.opensea.price && Number(token.opensea.price) > 0 ? true:false; 
   const onSale = token.opensea.saleType === "onSale" ? true:false; 
-  // console.log("===> price in card " , token.opensea.price)
-
-  // const saleType = token.opensea.saleType === "onsale" ? "onsale" : "on"
 
   let sortedAttributes = [...token.attributes]
   sortedAttributes = sortedAttributes.sort((a:any, b:any) => {return b.value_rarity_score - a.value_rarity_score})
@@ -113,7 +107,6 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
                 <span className="price">
                 <img className="price" src={ether} alt="ether" width="10px" height="10px" />
                 </span>
-                {/* {web3.utils.fromWei((token.opensea.price).toString(), "ether") }  */}
                 {token.opensea.price} 
 
                 </div>:
@@ -121,11 +114,9 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
             }
             {
               token.opensea.permalink?
-              //  <div className="openseaSVG-container">
                 <a href={token.opensea.permalink}  target="_blank" > 
                      <img className="openseaSVG" src={OpenSea}  alt="opensea"  width="100px" height="20px" /> 
                 </a> :
-              //  </div>:
               null
             }
             
@@ -169,7 +160,6 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
                 <span className="price">
                 <img src={ether} alt="ether" width="13px" height="13px" />
                 </span>
-                {/* {web3.utils.fromWei((token.opensea.price).toString(), "ether") }  */}
                 {token.opensea.price} 
                 </div>:
               null 
@@ -179,7 +169,6 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
               <a href={token.opensea.permalink}  target="_blank" > 
                 <img className="openseaSVG2" src={OpenSea}  alt="opensea"  width="150px" height="30px" /> 
               </a>:
-              //  <div><a href={token.opensea.permalink}  target="_blank" > see on Opensea </a> </div>:
               null
             }
             </div>
@@ -202,19 +191,6 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
           <div className="NFT-rarity-details-attributes-heading"> Attributes and Scores</div>
           <div className="NFT-rarity-details-attributes"> 
             <NFTtable attributes={sortedAttributes} normalization={normalization}/>
-            {/* {
-               sortedAttributes?.map((attribute: Attribute, key:number) => {
-                return(
-                  <div key={key}> 
-                   { `${attribute.trait_type} : ${attribute.value}` }
-                   { normalization ? 
-                    ` (${Math.round(attribute.value_normalized_rarity_score) * 100 / projectInfo.totalSupply } %)` : 
-                    ` (${Math.round(attribute.value_rarity_score) * 100 / projectInfo.totalSupply } %)`
-                   }
-                  </div>
-                )
-              })
-            } */}
           </div>
 
           <div className="NFT-rarity-details" > {token.description ? token.description : null} </div>

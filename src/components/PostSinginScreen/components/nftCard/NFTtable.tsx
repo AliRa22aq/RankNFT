@@ -18,13 +18,7 @@ interface TableProps {
 
 const NFTtable: FC<TableProps> = ({attributes, normalization}) => {
 
-
-    // countOfAllAttribute2
     const {projectInfo, countOfAllAttribute2} = useSelector((state: any) => state);
-    // console.log("countOfAllAttribute2 ", countOfAllAttribute2)
-    // console.log("projectInfo ", projectInfo)
-
-    // let newAttributes:any = [];
     
     const newAttributes = attributes.map((attribute) => {
       const att =  {  
@@ -35,7 +29,6 @@ const NFTtable: FC<TableProps> = ({attributes, normalization}) => {
           score: attribute.value_rarity_score.toFixed(2),
           normalized_score: attribute.value_normalized_rarity_score.toFixed(2)
         }
-        // newAttributes.push(att)
         return att;
     })
 
@@ -55,25 +48,6 @@ const NFTtable: FC<TableProps> = ({attributes, normalization}) => {
             <TableCell align="center">Score</TableCell>
           </TableRow>
         </TableHead>
-        {/* <TableBody>
-          {attributes.map((attribute) => (
-            <TableRow
-              key={attribute.trait_type}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 , width: 50} }}
-            >
-              <TableCell component="th" scope="row">
-                {attribute.trait_type}
-              </TableCell>
-              <TableCell align="center"> {attribute.value} </TableCell>
-              <TableCell align="center"> {countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].count} </TableCell>
-              <TableCell align="center"> {`${(countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].count / projectInfo.range.range * 100).toFixed(2)}%`} </TableCell>
-              <TableCell align="center">{ normalization ? 
-                        attribute.value_normalized_rarity_score.toFixed(2) : 
-                        attribute.value_rarity_score.toFixed(2) }
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody> */}
 
         <TableBody>
           {newAttributes.map((attribute: any) => (

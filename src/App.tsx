@@ -29,13 +29,11 @@ const App = () => {
   return (
     <div>
       <Header />
-
         <PreSignInScreen />
-      
+        
       {
          isDeveloper || isOwner || (isWaletConnect && isWhiteListed && isSubscriber) ?
           <PostSignInScreen /> : null
-        
       }
 
       <Footer />

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import "./style.css";
 import { useDispatch, useSelector } from 'react-redux';
-import {resetProgress, setProgress, setLoadingProgress, setCountOfAllAttribute3, setOpenseaData2, addTokenInList3, addTokenInList2, setCountOfAllAttribute2, setInitialCountOfAllAttribute2, setOpenseaData, TraitCount, reSetSnipping, setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress, setAvailableAttributes, CountOfEachAttribute, addTokenInList, AttributesOfEachToekn } from '../../../store';
+import {resetProgress, setProgress, setCountOfAllAttribute3, addTokenInList3, reSetSnipping, setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress } from '../../../store';
 import Grid from "@mui/material/Grid";
 import { Form, Formik, Field } from "formik";
 import { TextField} from 'formik-material-ui';
@@ -10,9 +10,6 @@ const Web3 = require("web3");
 import axios from "axios";
 import CircularProgress from '@mui/material/CircularProgress';
 import * as yup from 'yup';
-import async  from "async";
-// var request = require('request') // https://www.npmjs.com/package/request
-// require('dotenv').config()
 
 
 interface Data {
@@ -21,8 +18,6 @@ interface Data {
   name: string | null,
   minToken: string
   baseTokenURI: string  | null,
-  // attributes: any  |  null,
-  // uri : string | null
 }
 const initialData = {
   contractInfo: {contractFunctions: null, contractAddrs: ""},
@@ -30,8 +25,6 @@ const initialData = {
   minToken: "1",
   name:  null,
   baseTokenURI: null,
-  // attributes: null,
-  // uri : null
 }
 
 
@@ -39,9 +32,7 @@ const NFTForm = () => {
 
   const provider = new Web3.providers.HttpProvider('https://mainnet.infura.io')
 
-  const { projectInfo, isSnipping, countOfAllAttribute2, list_of_all_tokens2, list_of_all_tokens } = useSelector((state: any) => state);
-  // console.log("countOfAllAttribute2", countOfAllAttribute2)
-  // console.log("list_of_all_tokens2", list_of_all_tokens2)
+  const { projectInfo, isSnipping } = useSelector((state: any) => state);
 
   const dispatch = useDispatch();
 
@@ -49,21 +40,9 @@ const NFTForm = () => {
   
   const [data, setData] = useState<Data>(initialData);
   const [loading, setLoading] = useState(false);
-  const [needURI, setneedURI] = useState(false);
+  // const [needURI, setneedURI] = useState(false);
   const [needRange, setNeedrange] = useState(false);
-  const [delayNFT, setDelayNFT] = useState(0);
-  const [delayOpensea, setDelayOpensea] = useState(0);
 
-  const handleDelayNFT = (ms: any) => {
-    setDelayNFT(ms)
-    // console.log("ms: ", ms)
-  }
-
-  const handleDelayOpensea = (ms: any) => {
-    setDelayOpensea(ms)
-    // console.log("ms: ", ms)
-
-  }
 
   let schema1 = yup.object().shape({
     address: yup.string().length(42, "not a contract address").required(),
@@ -210,8 +189,6 @@ const NFTForm = () => {
 
       dispatch(setIsSnipping({action: "completed"}))
 
-      // dispatch(setProgress({action: "raritiesAssign", status: "started"}));
-
   }
 
   const fetchData = async  ( contractAdrs : string, URl?:string, setFieldValue?: any ) => {
@@ -250,11 +227,8 @@ const NFTForm = () => {
       };
 
       var MyContract = new web3.eth.Contract(JSON.parse(abi.result), contractAdrs)
-      // console.log("asset ", MyContract)
 
-
-
-      let name: string = "";
+      let name: string = "Undifined";
       let totalSupply: string = "10000";
       let minToken: string = "0";
       let tokenURI: string = "";
@@ -264,15 +238,6 @@ const NFTForm = () => {
         name = await MyContract.methods.name().call();
       } catch(e){
            console.error("Unable to get the name of the project")
-
-        // do{
-        //   var nameOfProject = prompt("Please enter name of the project \nName i.e. Crypto Kitties");
-        // } while(nameOfProject === "")   
-
-        // if (nameOfProject != null) {
-        //   // console.log(nameOfProject)
-        //   name = nameOfProject;
-        // }
       }
 
 
@@ -281,16 +246,6 @@ const NFTForm = () => {
       } catch(e){
 
         console.error("Unable to get total supply")
-        // totalSupply = "123"
-        // do{
-        //   var totalSupplyOfProject = prompt("Please enter Total supply of tokens \nTotal supply i.e. 10000 or 9999");
-        // } while(totalSupplyOfProject === "")   
-
-        // if (totalSupplyOfProject != null) {
-        //   console.log(totalSupplyOfProject)
-        //   totalSupply = totalSupplyOfProject;
-
-        // }
       }
 
 
@@ -300,26 +255,12 @@ const NFTForm = () => {
           minToken = "0"
         }
       } catch(e){
-
-        // console.error("Unable to get index of first token")
-
-        // do{
-        //   var minTokenOfProject = prompt("Please enter first token ID of the porject \ne.i. 0 or 1");
-        // } while(minTokenOfProject === "")   
-
-        // if (minTokenOfProject != null) {
-        //   console.log(minToken)
-        //   minToken = minToken;
-        //   if(Number(minToken) > 1){
-        //     minToken = "0"
-        //   }
-        // }
+        console.error("Unable to get index of first token")
       }
 
 
       try{
         tokenURI = await MyContract.methods.tokenURI(String(Number(totalSupply) - 1)).call();
-        // console.log("Token URI for ", String(Number(totalSupply) - 1), tokenURI)
 
       } catch(e){
 
@@ -518,8 +459,6 @@ const NFTForm = () => {
             onSubmit={async (values, { setFieldValue  }) => {
             
                 dispatch(setUploadedContractAddress(values.address))
-                // console.log("yesssss")  
-                // fetchData(values.address, values.uri, setFieldValue)  
                 fetchData(values.address)  
 
             }}>
@@ -672,7 +611,6 @@ const NFTForm = () => {
                           color="primary"
                           type="submit"
                           className="form-button"
-                          // disabled={isSnipping.started? true: false}
                           >
                                     <div >Snip </div>
                         </Button>
@@ -691,15 +629,6 @@ const NFTForm = () => {
     }
 
       </div>
-
-        <div> 
-          {/* <p>Set NFT Delay in ms</p>
-          <input value={delayNFT} onChange={(e) => handleDelayNFT(e.target.value)} />
-          <br />
-          <p>Set Opensea Delay in ms</p>
-          <input value={delayOpensea} onChange={(e) => handleDelayOpensea(e.target.value)} />  */}
-        </div>
-
     </div>
 
     )
