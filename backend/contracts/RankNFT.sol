@@ -233,18 +233,18 @@ contract RankNFT is Ownable {
     return whitelistedUsers;
   }
   
-  function refresh_list_of_whitelisted_users() public onlyOwner{
+  // function refresh_list_of_whitelisted_users() public onlyOwner{
       
-    address[] memory allWhitelistedUsers = whitelistedUsers;
+  //   address[] memory allWhitelistedUsers = whitelistedUsers;
 
-    whitelistedUsers = new address[](0);
+  //   whitelistedUsers = new address[](0);
       
-    for(uint i = 0; i < allWhitelistedUsers.length; i++){
-        if( whitelisting_period[allWhitelistedUsers[i]] >  block.timestamp){
-            whitelistedUsers.push(allWhitelistedUsers[i]);
-        }
-    }
-  }
+  //   for(uint i = 0; i < allWhitelistedUsers.length; i++){
+  //       if( whitelisting_period[allWhitelistedUsers[i]] >  block.timestamp){
+  //           whitelistedUsers.push(allWhitelistedUsers[i]);
+  //       }
+  //   }
+  // }
   
   
   function total_balance_available() public view returns(uint256) {

@@ -878,8 +878,8 @@ const dataSlice = createSlice({
       state.countOfAllAttribute= null,
       state.countOfAllAttribute2 = {},
       state.rarityScoreOfAllValues= null,
-      state.isSnipping =  {requested: false, started: false, completed: false, showNFTs: false, openSeaDataArrived: false, startTop20: false, startRemaining: false}
-  
+      state.isSnipping =  {requested: false, started: false, completed: false, showNFTs: false, openSeaDataArrived: false, startTop20: false, startRemaining: false},
+      state.normalization = false;
     
     },
 

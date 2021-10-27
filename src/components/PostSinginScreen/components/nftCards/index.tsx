@@ -22,13 +22,13 @@ import LoadingProgress from "../RarityReport/LoadingProgress";
 const NFTCards = () => {
   
   const dispatch = useDispatch();
-  const [normalization, setNormalization] = useState(false)
+  // const [normalization, setNormalization] = useState(false)
   const [onlyOnSale, setOnlyOnSale] = useState(false)
   const [page, setPage] = useState(1)
   const [list_of_NFTs_for_currentPage, set_list_of_NFTs_for_currentPage] = useState<AttributesOfEachToekn[] | null>([])
   const [sortBy, setSortBy] = useState<number>(1);
 
-  const { list_of_all_tokens_not_normalized,list_of_all_tokens_normalized, list_of_all_tokens_remaining, list_of_all_tokens_top_20, countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
+  const { normalization, list_of_all_tokens_not_normalized,list_of_all_tokens_normalized, list_of_all_tokens_remaining, list_of_all_tokens_top_20, countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
   
   console.log("list_of_all_tokens", list_of_all_tokens)
 
@@ -63,14 +63,14 @@ const NFTCards = () => {
       
   const handleNormalization = () => {
     if(normalization === true){
-      setNormalization(!normalization)
+      // setNormalization(!normalization)
       dispatch(switchNormalization())
       setSortBy(1);
       handlePage(0,1)
 
     }
     else if(normalization === false){
-      setNormalization(!normalization)
+      // setNormalization(!normalization)
       dispatch(switchNormalization())
       setSortBy(1);
       handlePage(0,1)
@@ -184,13 +184,14 @@ const NFTCards = () => {
 
     const totalSupply:number = projectInfo && projectInfo.range && projectInfo.range.range
 
+    
     // Normalized Scoring
     if(countOfAllAttribute2){
-  
+      
       // console.log("Normalization is on")
       let traits_count = 0;
       const attribute_count_in_categories = Object.keys(countOfAllAttribute2).length;
-
+      
       // console.log("countOfAllAttribute2 ", countOfAllAttribute2)
       
       Object.values(countOfAllAttribute2).map((eachAttribute: any) => {
@@ -198,7 +199,6 @@ const NFTCards = () => {
           traits_count = traits_count + eachAttribute.total_variations
         })
         
-
         //  console.log("countOfAllAttribute2 Values", Object.keys(countOfAllAttribute2))
         const average_trait_count = traits_count/attribute_count_in_categories;
         
@@ -206,16 +206,25 @@ const NFTCards = () => {
         // console.log("countOfAllAttribute2 average_trait_count",average_trait_count )
         
           Object.values(countOfAllAttribute2).map((eachAttribute: any, key: number) => {
-              
-              // dispatch(setProcessingProgress(key+1))
+            
+            // dispatch(setProcessingProgress(key+1))
           
               Object.values(eachAttribute.trait_count).map((eachValue: any) => {
-            
-                  const chance_of_occuring = eachValue.count/totalSupply;
-                  const rarity_score = 1/chance_of_occuring;
+                
+                const chance_of_occuring = eachValue.count/totalSupply;
+                const rarity_score = 1/chance_of_occuring;
+                
+                const normalized_score = (rarity_score * average_trait_count) / eachAttribute.total_variations;
+                const final_normalized_score = normalized_score / 2;
+                
+                console.log("test name", eachValue.value)
+                console.log("test rarity_score", rarity_score)
+                console.log("test totalSupply", average_trait_count)
+                console.log("test eachValue.count", eachValue.count)
+                console.log("test normalized_score", normalized_score)
+                console.log("test final_normalized_score", final_normalized_score)
+                // return 
 
-          const normalized_score = rarity_score * average_trait_count / eachValue.count;
-          const final_normalized_score = normalized_score / 2;
 
           const rarity_score_of_each_value: RarityScoreOfValue = {
                 trait_type: eachAttribute.trait_type,
