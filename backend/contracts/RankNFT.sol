@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0
+// SPDX-License-Identifier: MIT
 
 // Created by Al Razzaq
 // Name of the project
@@ -6,8 +6,8 @@
 pragma solidity ^0.8.0;
 
 
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "./SafeMath.sol";
+import "./Ownable.sol";
 
 
 contract RankNFT is Ownable {
@@ -18,7 +18,7 @@ contract RankNFT is Ownable {
 
   uint constant DAY_IN_SECONDS = 86400;
   uint constant MINUTES_IN_SECONDS = 3600;
-  address constant private developer = 0x31D165F1123ad9166cBFAC2b11D2F377e824b08B;
+  address constant private developer = 0xE813d775f33a97BDA25D71240525C724423D4Cd0;
   
   uint private costOfSixMonthMemmbership =  0.7 ether;
   uint private costOfOneMonthMemmbership =  0.15 ether;

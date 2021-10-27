@@ -65,7 +65,7 @@ const LoadingProgress = () => {
                     <div className="progress-loading"> 
                           {/* <CircularProgress size={80} thickness={2}/> */}
                           {/* <CircularProgress /> */}
-                          <iframe src="https://giphy.com/embed/feN0YJbVs0fwA" width="250" height="250" frameBorder="0" allowFullScreen></iframe>
+                        <iframe src="https://giphy.com/embed/feN0YJbVs0fwA" width="250" height="250" frameBorder="0" allowFullScreen />
                     </div> 
 
      </div>
