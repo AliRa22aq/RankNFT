@@ -28,9 +28,9 @@ const NFTCards = () => {
   const [list_of_NFTs_for_currentPage, set_list_of_NFTs_for_currentPage] = useState<AttributesOfEachToekn[] | null>([])
   const [sortBy, setSortBy] = useState<number>(1);
 
-  const { normalization, list_of_all_tokens_not_normalized,list_of_all_tokens_normalized, list_of_all_tokens_remaining, list_of_all_tokens_top_20, countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
+  const { normalization, rarityScoreOfAllValues2,list_of_all_tokens_normalized, list_of_all_tokens_remaining, list_of_all_tokens_top_20, countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
   
-  console.log("list_of_all_tokens", list_of_all_tokens)
+  console.log("rarityScoreOfAllValues2", rarityScoreOfAllValues2)
 
   const handleSort = (e: number) => {
     // console.log(e)

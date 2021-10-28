@@ -596,18 +596,26 @@ const dataSlice = createSlice({
               
       Object.values(state.list_of_all_tokens2).map((token) => {
 
-        token.attributes.map((attribute) => {
-            if (attribute.value === payload.value) {
+        token.attributes.map((attribute, key) => {
+
+          
+          if (attribute.trait_type === payload.trait_type && attribute.value === payload.value) {
+            if(Number(token.tokenID) === 42){
+                console.log("Test Attribute ", JSON.stringify(attribute))
+                console.log("Test payload=> ", payload)
+              }
+  
               
-              attribute.value_rarity_score = payload.rarity_score;
+              attribute.value_rarity_score =  payload.rarity_score;
               attribute.value_normalized_rarity_score = payload.normalized_rarity_score;
 
               token.rarity_score = token.rarity_score + payload.rarity_score;
-              console.log("Test rarity_score=> ", token.tokenID, token.rarity_score, token.rarity_score)
-              // if(token.tokenID === "42"){
-              // }
+              token.normalized_rarity_score = token.normalized_rarity_score + payload.normalized_rarity_score;
 
-              // token.normalized_rarity_score = token.normalized_rarity_score + payload.normalized_rarity_score;
+              if(Number(token.tokenID) === 42){
+              console.log("Test rarity_score=> ", key + 1, payload.rarity_score, token.rarity_score)
+              }
+
             }
         })
 
