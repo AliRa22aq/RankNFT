@@ -31,7 +31,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   const web3 = new Web3(window.ethereum);  
   const {projectInfo} = useSelector((state: any) => state);
 
-  //https://cloudflare-ipfs.com/ipfs/
+  //https://cloudflare-ipfs.com
 
    console.log("imageOfNFT token.image", token.image)
 
@@ -45,10 +45,10 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   let imageOfNFT = token.image;
 
   if(check){
-    imageOfNFT = token.image.replace("ipfs://", "https://cloudflare-ipfs.com/ipfs/")
+    imageOfNFT = token.image.replace("ipfs://", "https://ipfs.io/ipfs/")
   }
   else if(check2){
-    imageOfNFT = token.image.replace("https://gateway.pinata.cloud/ipfs/", "https://cloudflare-ipfs.com/ipfs/")
+    imageOfNFT = token.image.replace("https://gateway.pinata.cloud/ipfs/", "https://ipfs.io/ipfs/")
   }
 
   console.log("imageOfNFT", imageOfNFT)

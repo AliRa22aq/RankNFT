@@ -425,16 +425,15 @@ const NFTForm = () => {
     // dispatch(setIsSnipping({action: null}))
     dispatch(setIsSnipping({action: "requested"}))
 
+
     dispatch(setProjectRange({from: from, to: to, range: to - from + 1}))
-    
-    // https://ipfs.io/ipfs/
 
     if(data?.baseTokenURI && data?.baseTokenURI?.includes("ipfs://")) {
-      let url = data?.baseTokenURI?.replace("ipfs://", "https://cloudflare-ipfs.com/ipfs/");
+      let url = data?.baseTokenURI?.replace("ipfs://", "https://ipfs.io/ipfs/");
       fetchAllTokenData(url, from, to)
     }
     else if(data?.baseTokenURI && data?.baseTokenURI?.includes("https://gateway.pinata.cloud/ipfs/")){
-      let url = data?.baseTokenURI?.replace("https://gateway.pinata.cloud/ipfs/", "https://cloudflare-ipfs.com/ipfs/");
+      let url = data?.baseTokenURI?.replace("https://gateway.pinata.cloud/ipfs/", "https://ipfs.io/ipfs/");
       fetchAllTokenData(url, from, to)
     }
     else if(data?.baseTokenURI && data?.baseTokenURI?.includes("https://")){
