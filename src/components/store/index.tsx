@@ -16,7 +16,7 @@ export interface Attribute2 {
 export interface AttributesOfEachToekn {
   rank: number,
   normalized_rank: number,
-  tokenID: string
+  tokenID: number
   attributes: Attribute[],
   opensea_data: any,
   opensea: {saleType: string, price: number, permalink: string},
@@ -592,6 +592,7 @@ const dataSlice = createSlice({
     },
 
     setRarityScoreToEachNFTAttribuValue2( state, { payload }: PayloadAction<RarityScoreOfValue> ) {
+
               
       Object.values(state.list_of_all_tokens2).map((token) => {
 
@@ -602,7 +603,11 @@ const dataSlice = createSlice({
               attribute.value_normalized_rarity_score = payload.normalized_rarity_score;
 
               token.rarity_score = token.rarity_score + payload.rarity_score;
-              token.normalized_rarity_score = token.normalized_rarity_score + payload.normalized_rarity_score;
+              console.log("Test rarity_score=> ", token.tokenID, token.rarity_score, token.rarity_score)
+              // if(token.tokenID === "42"){
+              // }
+
+              // token.normalized_rarity_score = token.normalized_rarity_score + payload.normalized_rarity_score;
             }
         })
 
@@ -876,7 +881,8 @@ const dataSlice = createSlice({
       state.list_of_all_tokens_top_20 =  null,
       state.list_of_all_tokens_remaining = null,
       state.countOfAllAttribute= null,
-      state.countOfAllAttribute2 = {},
+      // state.countOfAllAttribute2 = {},
+      state.rarityScoreOfAllValues2 = {}
       state.rarityScoreOfAllValues= null,
       state.isSnipping =  {requested: false, started: false, completed: false, showNFTs: false, openSeaDataArrived: false, startTop20: false, startRemaining: false},
       state.normalization = false;

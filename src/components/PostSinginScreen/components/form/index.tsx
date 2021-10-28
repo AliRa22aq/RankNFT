@@ -144,21 +144,21 @@ const NFTForm = () => {
 
         if(token.status === 'fulfilled'){
 
-          console.log(token.value.data)
+          // console.log(token.value.data)
 
           let attributes = token.value.data.attributes
           let trait_count = token.value.data.attributes.length
-          console.log("trait_count", trait_count)
+          // console.log("trait_count", trait_count)
     
           token.value.data.attributes.forEach((attribute: any)=> {
             if(attribute.value && String(attribute.value).toLowerCase() === "none"){
-              console.log("attribute.value matched", attribute.value)
+              // console.log("attribute.value matched", attribute.value)
               trait_count--
             }
           })
     
           attributes.push({trait_type: "trait_count", value: trait_count})
-          console.log("trait_count", trait_count)
+          // console.log("trait_count", trait_count)
           allAttributes.push(attributes)            
   
           const newTokens: any = {
@@ -194,9 +194,12 @@ const NFTForm = () => {
   const fetchData = async  ( contractAdrs : string, URl?:string, setFieldValue?: any ) => {
     console.log("fetchData Started")
 
+      dispatch(setProjectInfo(null))
       setData(initialData)
       setNeedrange(false)
       setLoading(true)
+
+      
 
       // TODO: Ask ben to provide Infure API Kye
        var web3 = new Web3(new Web3.providers.HttpProvider(`https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`)) 
@@ -415,12 +418,12 @@ const NFTForm = () => {
 
   const startSnipping = async (from: number, to: number) => {
     dispatch(resetProgress());
+    dispatch(reSetSnipping())
 
     console.log("startSnipping Started")
     dispatch(setProgress({action: "snip", status: "started"}));
 
 
-    dispatch(reSetSnipping())
     dispatch(setLoadingNFTs(false))
     // dispatch(setIsSnipping({action: null}))
     dispatch(setIsSnipping({action: "requested"}))
@@ -458,7 +461,7 @@ const NFTForm = () => {
             validationSchema={schema1} 
             onSubmit={async (values, { setFieldValue  }) => {
             
-                dispatch(setUploadedContractAddress(values.address))
+                // dispatch(setUploadedContractAddress(values.address))
                 fetchData(values.address)  
 
             }}>

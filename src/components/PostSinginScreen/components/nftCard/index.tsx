@@ -33,14 +33,14 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
 
   //https://cloudflare-ipfs.com
 
-   console.log("imageOfNFT token.image", token.image)
+  //  console.log("imageOfNFT token.image", token.image)
 
 
   const check = token.image.includes("ipfs://");
   const check2 = token.image.includes("https://gateway.pinata.cloud/ipfs/");
 
-  console.log("imageOfNFT check", check)
-  console.log("imageOfNFT check2", check2)
+  // console.log("imageOfNFT check", check)
+  // console.log("imageOfNFT check2", check2)
 
   let imageOfNFT = token.image;
 
@@ -51,7 +51,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
     imageOfNFT = token.image.replace("https://gateway.pinata.cloud/ipfs/", "https://ipfs.io/ipfs/")
   }
 
-  console.log("imageOfNFT", imageOfNFT)
+  // console.log("imageOfNFT", imageOfNFT)
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
