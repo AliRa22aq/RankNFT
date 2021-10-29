@@ -10,7 +10,7 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 
 const LoadingProgress = () => {
     const { progress } = useSelector((state: any) => state);
-    console.log("progress => ", progress)
+    // console.log("progress => ", progress)
 
     return(
         <div className="Loading-NFTs-Data-container">

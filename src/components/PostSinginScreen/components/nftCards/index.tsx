@@ -30,7 +30,7 @@ const NFTCards = () => {
 
   const { normalization, rarityScoreOfAllValues2,list_of_all_tokens_normalized, list_of_all_tokens_remaining, list_of_all_tokens_top_20, countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
   
-  console.log("rarityScoreOfAllValues2", rarityScoreOfAllValues2)
+  // console.log("rarityScoreOfAllValues2", rarityScoreOfAllValues2)
 
   const handleSort = (e: number) => {
     // console.log(e)
@@ -157,7 +157,7 @@ const NFTCards = () => {
   }
 
   const getTopRatedNFTs = async () => {
-    console.log("getTopRatedNFTs Started")
+    // console.log("getTopRatedNFTs Started")
     dispatch(setProgress({action: "openseaFetch", status: "started"}));
 
     const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
@@ -176,7 +176,7 @@ const NFTCards = () => {
     
   const findRarityScore2 = async () => {
 
-    console.log("findRarityScore2 Started")
+    // console.log("findRarityScore2 Started")
 
 
     // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));

@@ -57,13 +57,13 @@ const NFTForm = () => {
   
   const fetchAllTokenData = async (URI: string, from: number, to: number) => {
     
-    console.log("fetchAllTokenData Started")
+    // console.log("fetchAllTokenData Started")
     
     let tokenURI = URI
 
     if(tokenURI.includes("ID")){
       tokenURI = tokenURI.replace("ID", String(Number(projectInfo.totalSupply) - 1))
-      console.log("ID checking", tokenURI)
+      // console.log("ID checking", tokenURI)
     }
 
     try{
@@ -118,6 +118,8 @@ const NFTForm = () => {
 
       // console.log("step 1: Snipping started with URL ", url)
       dispatch(setProgress({action: "dataFetch", status: "started"}));
+      // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
+
 
       await requestingAllAPIs(1, url, 0, 1000, from, to)
       await requestingAllAPIs(2, url, 1001, 2000, from, to)
@@ -148,14 +150,14 @@ const NFTForm = () => {
 
           let attributes = token.value.data.attributes
           let trait_count = token.value.data.attributes.length
-          console.log("attributes", attributes)
+          // console.log("attributes", attributes)
     
           token.value.data.attributes.forEach((attribute: any)=> {
             if(
               attribute.value 
               && (String(attribute.value).toLowerCase() === "none" || String(attribute.value).toLowerCase() === "nothing")
               ){
-              console.log("attribute.value matched", attribute.value)
+              // console.log("attribute.value matched", attribute.value)
               trait_count--
             }
           })
@@ -195,7 +197,7 @@ const NFTForm = () => {
   }
 
   const fetchData = async  ( contractAdrs : string, URl?:string, setFieldValue?: any ) => {
-    console.log("fetchData Started")
+    // console.log("fetchData Started")
 
       dispatch(setProjectInfo(null))
       setData(initialData)
@@ -272,7 +274,7 @@ const NFTForm = () => {
 
         do{
           var tokenURIInput = prompt("Please enter Token URI with 'ID' string like in below format  \nhttps://api.lostboy.io/boy/ID \nIncluding token ID ");
-          console.log("tokenURIInput", tokenURIInput)
+          // console.log("tokenURIInput", tokenURIInput)
         } while(!tokenURIInput || !tokenURIInput.includes("ID"))   
 
         if (tokenURIInput != null) {
@@ -423,7 +425,7 @@ const NFTForm = () => {
     dispatch(resetProgress());
     dispatch(reSetSnipping())
 
-    console.log("startSnipping Started")
+    // console.log("startSnipping Started")
     dispatch(setProgress({action: "snip", status: "started"}));
 
 
@@ -460,13 +462,11 @@ const NFTForm = () => {
 
     <div className="form-container" >
 
-    <Formik initialValues={{ address: '0xc1a1e381389cb927f1d57511e144b644ef0c6385'}}
+    <Formik initialValues={{ address: ''}}
             validationSchema={schema1} 
             onSubmit={async (values, { setFieldValue  }) => {
-            
                 // dispatch(setUploadedContractAddress(values.address))
                 fetchData(values.address)  
-
             }}>
 
     {() => (

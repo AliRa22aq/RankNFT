@@ -441,7 +441,7 @@ const dataSlice = createSlice({
 
     sortByRankAndPrice(state) {
 
-      console.log("sortByRankAndPrice", state.list_of_all_tokens)
+      // console.log("sortByRankAndPrice", state.list_of_all_tokens)
 
       if(state.list_of_all_tokens){
 
@@ -467,7 +467,7 @@ const dataSlice = createSlice({
         }      
         
       }
-      console.log("sortByRankAndPrice", state.list_of_all_tokens)
+      // console.log("sortByRankAndPrice", state.list_of_all_tokens)
     },
 
     setOnlyOnSaleState(state, { payload }: PayloadAction<boolean>){
@@ -600,10 +600,10 @@ const dataSlice = createSlice({
 
           
           if (attribute.trait_type === payload.trait_type && attribute.value === payload.value) {
-            if(Number(token.tokenID) === 42){
-                console.log("Test Attribute ", JSON.stringify(attribute))
-                console.log("Test payload=> ", payload)
-              }
+            // if(Number(token.tokenID) === 42){
+            //     console.log("Test Attribute ", JSON.stringify(attribute))
+            //     console.log("Test payload=> ", payload)
+            //   }
   
               
               attribute.value_rarity_score =  payload.rarity_score;
@@ -612,9 +612,9 @@ const dataSlice = createSlice({
               token.rarity_score = token.rarity_score + payload.rarity_score;
               token.normalized_rarity_score = token.normalized_rarity_score + payload.normalized_rarity_score;
 
-              if(Number(token.tokenID) === 42){
-              console.log("Test rarity_score=> ", key + 1, payload.rarity_score, token.rarity_score)
-              }
+              // if(Number(token.tokenID) === 42){
+              // console.log("Test rarity_score=> ", key + 1, payload.rarity_score, token.rarity_score)
+              // }
 
             }
         })
