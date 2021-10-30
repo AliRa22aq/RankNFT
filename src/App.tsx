@@ -11,9 +11,13 @@ import { RankNFT as RankNFTType } from '../types/web3-v1-contracts/RankNFT'
 const RankNFTABI = require("./abis/RankNFT.json");
 
 const App = () => {
+
   const dispatch = useDispatch()
+  
   const { isDeveloper, isOwner, isWaletConnect, isWhiteListed, isSubscriber} = useSelector((state: any) => state);
+  
   const contractAddress = "0x659672bDAA2d7f30AAa709C8bcB12843E23AD442";
+
   dispatch(setContractAddress(contractAddress));
 
   const loadContract = async () => {

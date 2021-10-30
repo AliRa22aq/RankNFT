@@ -46,15 +46,18 @@ const Header = () => {
     let userCurrentAddress;
 
     if (window.ethereum) {
-      window.web3 = new Web3(window.ethereum);
-      await window.ethereum.enable();
-      dispatch(userWalletconnected(true));
+      // window.web3 = new Web3(window.ethereum);
+      // await window.ethereum.enable();
       // console.log(window.web3.currentProvider.isMetaMask);
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      dispatch(userWalletconnected(true));
 
+      // console.log("accounts =>", accounts[0])
       // Get current logged in user address
-      const accounts = await window.web3.eth.getAccounts();
+      // const accounts = await window.web3.eth.getAccounts();
       userCurrentAddress = accounts[0];
-      dispatch(setActiveUser(accounts[0]));
+      dispatch(setActiveUser(userCurrentAddress));
+
     } else if (window.web3) {
       window.web3 = new Web3(window.web3.currentProvider);
       dispatch(userWalletconnected(true));
@@ -68,13 +71,15 @@ const Header = () => {
     }
 
     const owner = await ContractData.methods.owner().call();
-    if (owner === userCurrentAddress) {
+    if (owner.toLowerCase()  === userCurrentAddress.toLowerCase()) {
+      console.log("You are Owner")
       dispatch(setOwner(true));
       dispatch(setLoading(false));
     }
 
     const developer = await ContractData.methods.developer_address().call();
-    if (developer === userCurrentAddress) {
+    if (developer.toLowerCase() === userCurrentAddress.toLowerCase()) {
+      console.log("You are Developer")
       dispatch(setDeveloper(developer === userCurrentAddress));
       dispatch(setLoading(false));
     }

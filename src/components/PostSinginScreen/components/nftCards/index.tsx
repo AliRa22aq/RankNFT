@@ -311,10 +311,11 @@ const NFTCards = () => {
                  <div className="before-NFT-welcome-Secreen"> 
 
                    <div className="before-NFT-welcome-Secreen-text1">
-                      Welcome. Please Enter an NFT contract address and load it to snip
+                        Welcome to NFT Sniper. < br /> < br />
+                        Enter an NFT contract address and load it to snip
                   </div>
 
-                  <div className="before-NFT-welcome-Secreen-rules-header">
+                  {/* <div className="before-NFT-welcome-Secreen-rules-header">
                       Rules of snipping
                   </div>
 
@@ -325,7 +326,7 @@ const NFTCards = () => {
                       <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
                       <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
                       <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-                  </div>
+                  </div> */}
 
                  </div> :
                   !isSnipping.showNFTs? 

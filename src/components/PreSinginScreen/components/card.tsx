@@ -27,7 +27,7 @@ let subscriptionData: Data[] = [
     days: "One Day",
     price: "0.03",
     day: "1 day",
-    status: "enabled"
+    status: "disabled"
 
   },
   {
@@ -35,7 +35,7 @@ let subscriptionData: Data[] = [
     days: "Seven Days",
     price: "0.06",
     day: "7 days",
-    status: "disabled"
+    status: "enabled"
 
   },
   {
