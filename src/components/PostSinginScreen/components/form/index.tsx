@@ -148,28 +148,30 @@ const NFTForm = () => {
 
           // console.log(token.value.data)
 
-          let attributes = token.value.data.attributes
-          let trait_count = token.value.data.attributes.length
+          let attributes = token.value.data.attributes ? token.value.data.attributes : [];
+          let trait_count = token.value.data.attributes ? token.value.data.attributes.length : 0
           // console.log("attributes", attributes)
     
-          token.value.data.attributes.forEach((attribute: any)=> {
+          token.value.data.attributes?.forEach((attribute: any)=> {
             if(
               attribute.value 
               && (String(attribute.value).toLowerCase() === "none" || String(attribute.value).toLowerCase() === "nothing")
               ){
               // console.log("attribute.value matched", attribute.value)
-              trait_count--
+              if(trait_count > 0){
+                trait_count--
+              }
             }
           })
     
-          attributes.push({trait_type: "trait_count", value: trait_count})
+          attributes?.push({trait_type: "trait_count", value: trait_count})
           // console.log("trait_count", trait_count)
           allAttributes.push(attributes)            
   
           const newTokens: any = {
                 rank: 0,
                 normalized_rank: 0,
-                tokenID: token.value.config.data,  
+                tokenID: token.value.config.data,
                 attributes: attributes,
                 opensea: {price: 0, permalink: ""},
                 rarity_score: 0,
