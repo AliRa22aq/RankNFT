@@ -23,12 +23,12 @@ const NFTCards = () => {
   
   const dispatch = useDispatch();
   // const [normalization, setNormalization] = useState(false)
-  const [onlyOnSale, setOnlyOnSale] = useState(false)
+  // const [onlyOnSale, setOnlyOnSale] = useState(false)
   const [page, setPage] = useState(1)
   const [list_of_NFTs_for_currentPage, set_list_of_NFTs_for_currentPage] = useState<AttributesOfEachToekn[] | null>([])
   const [sortBy, setSortBy] = useState<number>(1);
 
-  const { normalization, rarityScoreOfAllValues2,list_of_all_tokens_normalized, list_of_all_tokens_remaining, list_of_all_tokens_top_20, countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
+  const { onlyOnSale, normalization, rarityScoreOfAllValues2,list_of_all_tokens_normalized, list_of_all_tokens_remaining, list_of_all_tokens_top_20, countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
   
   // console.log("rarityScoreOfAllValues2", rarityScoreOfAllValues2)
 
@@ -82,20 +82,14 @@ const NFTCards = () => {
     // console.log("Inital onlyOnsale", onlyOnSale)
 
     if(onlyOnSale === false){
-      // console.log("onlyOnsale", onlyOnSale)
-      dispatch(setOnlyOnSaleState(!onlyOnSale))
+      dispatch(setOnlyOnSaleState())
       handleSort(0)  
-      setOnlyOnSale(!onlyOnSale)
-      // handlePage(0,1)
-      // handleSort(1)    
-
+      handlePage(0,1)
     }
     else if(onlyOnSale === true){
-      // console.log("onlyOnsale", onlyOnSale)
-      setOnlyOnSale(!onlyOnSale)
-      dispatch(setOnlyOnSaleState(!onlyOnSale))
-      // handlePage(0,1)
-      handleSort(1)    
+      dispatch(setOnlyOnSaleState())
+      handleSort(1)
+      handlePage(0,1)      
     }
   }
 
@@ -296,10 +290,9 @@ const NFTCards = () => {
       handlePage(0,1)
   },[isSnipping.started])
 
-  useEffect(()=> {
-    handlePage(0,page)
-
-},[normalization])
+//   useEffect(()=> {
+//     handlePage(0,page)
+// },[normalization, onlyOnSale])
 
   return (
     <div className="cards-container">

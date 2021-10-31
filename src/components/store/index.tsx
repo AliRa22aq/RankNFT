@@ -70,8 +70,8 @@ interface Range {
 }
 
 export interface ProjectInfo {
-    contractAddress?: string,
-    totalSupply:  number,
+    contractAddress: string,
+    totalSupply:  string,
     firstTokenIndex: string | null,
     name:  string,
     baseTokenURI?: string | null,
@@ -138,7 +138,10 @@ interface DataType {
     loading_contractData: Loading,
     progress: Progress,    
     isSnipping: Loading,
-    normalization: boolean
+    normalization: boolean,
+    onlyOnSale: boolean
+
+    
 
     
 
@@ -179,6 +182,8 @@ const initialState: DataType = {
     isSnipping: {requested: false, started: false, completed: false, showNFTs: false, openSeaDataArrived: false, startTop20: false, startRemaining: false},
 
     normalization: false,
+    onlyOnSale: false,
+
 
     progress : {
       snip : {started: false, ended: false},
@@ -375,7 +380,6 @@ const dataSlice = createSlice({
 
     },
 
-
     sortByRarityScore(state,  { payload }: PayloadAction<"accs"|"decs"|"Ratity+Price">) {
       // console.log("Sorting start by Rarity", state.list_of_all_tokens)
 
@@ -470,25 +474,19 @@ const dataSlice = createSlice({
       // console.log("sortByRankAndPrice", state.list_of_all_tokens)
     },
 
-    setOnlyOnSaleState(state, { payload }: PayloadAction<boolean>){
+    setOnlyOnSaleState(state){
       // console.log("setOnlyOnSaleState")
-      if(state.list_of_all_tokens){
-        if(payload === true){
+        if(state.list_of_all_tokens && state.onlyOnSale === false){
           state.list_of_all_tokensBackup = state.list_of_all_tokens
           state.list_of_all_tokens = state.list_of_all_tokens.filter((token) => {
             return token.opensea.saleType === "onSale"
           })
-        }
-        else if(state.list_of_all_tokensBackup && payload === false){
+        state.onlyOnSale = !state.onlyOnSale
+      }
+        else if(state.list_of_all_tokensBackup && state.onlyOnSale === true){
           state.list_of_all_tokens = state.list_of_all_tokensBackup
-          // .sort((a, b) => {
-          //   return b.rarity_score - a.rarity_score;
-          // });
-          // state.list_of_all_tokens = state.list_of_all_tokens.sort( (a, b) => {
-          //   return b.rarity_score - a.rarity_score;
-          // });
+          state.onlyOnSale = !state.onlyOnSale
         }
-    }
     },
 
 
@@ -646,10 +644,6 @@ const dataSlice = createSlice({
       // }
        
     },
-
-
-
-    getTop20NFTs(state){},
 
     setInitalCountOfAllAttribute( state, { payload }: PayloadAction<CountOfEachAttribute[] | null> ) {
       if (payload === null) {
@@ -893,7 +887,8 @@ const dataSlice = createSlice({
       state.rarityScoreOfAllValues2 = {}
       state.rarityScoreOfAllValues= null,
       state.isSnipping =  {requested: false, started: false, completed: false, showNFTs: false, openSeaDataArrived: false, startTop20: false, startRemaining: false},
-      state.normalization = false;
+      state.normalization = false,
+      state.onlyOnSale = false
     
     },
 
@@ -965,6 +960,6 @@ const dataSlice = createSlice({
 // Extract the action creators object and the reducer
 const { actions, reducer } = dataSlice
 // Extract and export each action creator by name
-export const  {resetProgress, setProgress, switchNormalization, assignNormalizedRank, sortByRankAndPrice, setProcessingProgress, setLoadingProgress, assignRank, setOnlyOnSaleState, getTop20NFTs, setCountOfAllAttribute3, convertInList, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, addTokenInList3, setOpenseaData2, addTokenInList2, setCountOfAllAttribute2, setInitialCountOfAllAttribute2, sortByPrice, setOpenseaData, reSetSnipping, setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
+export const  {resetProgress, setProgress, switchNormalization, assignNormalizedRank, sortByRankAndPrice, setProcessingProgress, setLoadingProgress, assignRank, setOnlyOnSaleState, setCountOfAllAttribute3, convertInList, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, addTokenInList3, setOpenseaData2, addTokenInList2, setCountOfAllAttribute2, setInitialCountOfAllAttribute2, sortByPrice, setOpenseaData, reSetSnipping, setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
 // Export the reducer, either as a default or named export
 export default reducer

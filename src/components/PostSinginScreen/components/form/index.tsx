@@ -57,20 +57,19 @@ const NFTForm = () => {
   
   const fetchAllTokenData = async (URI: string, from: number, to: number) => {
     
-    // console.log("fetchAllTokenData Started")
+    
     
     let tokenURI = URI
 
     if(tokenURI.includes("ID")){
-      if(projectInfo.totalSupply !== "Undifined"){
-        tokenURI = tokenURI.replace("ID", String(Number(projectInfo.totalSupply) - 1))
-      }
-      else{
+      if(projectInfo.totalSupply === "Undifined"){
         tokenURI = tokenURI.replace("ID", "123")
       }
-      // console.log("ID checking", tokenURI)
-    }
-
+      else{
+        tokenURI = tokenURI.replace("ID", String(Number(projectInfo.totalSupply) - 1))
+      }
+     }
+    
     try{
       let fetchAPI =  await axios.get( tokenURI ) as any
       // console.log("fetchAPI res", fetchAPI)    
@@ -100,7 +99,7 @@ const NFTForm = () => {
 
           for(var i = start;  i <= end;  i=i+1) {         
             let activeURL =  url.replace("extension" , String(i))
-            // console.log("Loop #",  i, activeURL )
+            console.log("Loop #",  i, activeURL )
             const request = axios.get( activeURL,  {data: i})
             requests.push(request)              
           }
@@ -118,11 +117,11 @@ const NFTForm = () => {
 
       
       if(projectInfo?.totalSupply){
-        if(projectInfo.totalSupply !== "Undifined"){
-          url = tokenURI.replace( String(Number(projectInfo.totalSupply) - 1), "extension");
+        if(projectInfo.totalSupply === "Undifined"){
+          url = tokenURI.replace( "123", "extension");
         } 
         else {
-          url = tokenURI.replace( "123", "extension");
+          url = tokenURI.replace( String(Number(projectInfo.totalSupply) - 1), "extension");
         }
       }
 
@@ -280,11 +279,11 @@ const NFTForm = () => {
 
 
       try{
-        if(totalSupply !== "Undifined"){
-          tokenURI = await MyContract.methods.tokenURI(String(Number(totalSupply) - 1)).call();
+        if(totalSupply === "Undifined"){
+          tokenURI = await MyContract.methods.tokenURI("123").call();
         } 
         else {
-          tokenURI = await MyContract.methods.tokenURI("123").call();
+          tokenURI = await MyContract.methods.tokenURI(String(Number(totalSupply) - 1)).call();
         }
 
       } catch(e){
@@ -317,7 +316,7 @@ const NFTForm = () => {
 
       dispatch(setProjectInfo({
         contractAddress: contractAdrs,
-        totalSupply:  Number(totalSupply), 
+        totalSupply:  totalSupply, 
         name:  name, 
         baseTokenURI: tokenURI,
         firstTokenIndex: minToken,
