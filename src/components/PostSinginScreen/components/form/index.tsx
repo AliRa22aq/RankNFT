@@ -51,7 +51,7 @@ const NFTForm = () => {
 
   let schema2 = yup.object().shape({
     from: yup.number().positive().moreThan(projectInfo?.firstTokenIndex - 1, "should be equal or more than minimum token").lessThan(yup.ref("to"), "not a valid range ").required(),
-    to: yup.number().positive().lessThan(projectInfo?.totalSupply + 1, "Should be less then total supply").moreThan(yup.ref("from"), "not a valid range ").moreThan(1, "should be more than 1").required()
+    to: yup.number().positive().moreThan(yup.ref("from"), "not a valid range ").moreThan(1, "should be more than 1").required()
   });
 
   
@@ -62,7 +62,12 @@ const NFTForm = () => {
     let tokenURI = URI
 
     if(tokenURI.includes("ID")){
-      tokenURI = tokenURI.replace("ID", String(Number(projectInfo.totalSupply) - 1))
+      if(projectInfo.totalSupply !== "Undifined"){
+        tokenURI = tokenURI.replace("ID", String(Number(projectInfo.totalSupply) - 1))
+      }
+      else{
+        tokenURI = tokenURI.replace("ID", "123")
+      }
       // console.log("ID checking", tokenURI)
     }
 
@@ -113,7 +118,12 @@ const NFTForm = () => {
 
       
       if(projectInfo?.totalSupply){
+        if(projectInfo.totalSupply !== "Undifined"){
           url = tokenURI.replace( String(Number(projectInfo.totalSupply) - 1), "extension");
+        } 
+        else {
+          url = tokenURI.replace( "123", "extension");
+        }
       }
 
       // console.log("step 1: Snipping started with URL ", url)
@@ -152,7 +162,7 @@ const NFTForm = () => {
           let trait_count = token.value.data.attributes ? token.value.data.attributes.length : 0
           // console.log("attributes", attributes)
     
-          token.value.data.attributes?.forEach((attribute: any)=> {
+          token.value.data.attributes?.forEach((attribute: any)=> {            
             if(
               attribute.value 
               && (String(attribute.value).toLowerCase() === "none" || String(attribute.value).toLowerCase() === "nothing")
@@ -172,7 +182,7 @@ const NFTForm = () => {
                 rank: 0,
                 normalized_rank: 0,
                 tokenID: token.value.config.data,
-                attributes: attributes,
+                attributes: attributes ? attributes : [],
                 opensea: {price: 0, permalink: ""},
                 rarity_score: 0,
                 normalized_rarity_score: 0,
@@ -239,7 +249,7 @@ const NFTForm = () => {
       var MyContract = new web3.eth.Contract(JSON.parse(abi.result), contractAdrs)
 
       let name: string = "Undifined";
-      let totalSupply: string = "10000";
+      let totalSupply: string = "Undifined";
       let minToken: string = "0";
       let tokenURI: string = "";
 
@@ -270,7 +280,12 @@ const NFTForm = () => {
 
 
       try{
-        tokenURI = await MyContract.methods.tokenURI(String(Number(totalSupply) - 1)).call();
+        if(totalSupply !== "Undifined"){
+          tokenURI = await MyContract.methods.tokenURI(String(Number(totalSupply) - 1)).call();
+        } 
+        else {
+          tokenURI = await MyContract.methods.tokenURI("123").call();
+        }
 
       } catch(e){
 
