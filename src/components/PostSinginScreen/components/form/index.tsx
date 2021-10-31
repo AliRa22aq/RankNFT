@@ -582,7 +582,12 @@ const NFTForm = () => {
 
 {
       needRange ?
-        <Formik initialValues={{ from: Number(data.minToken), to: Number(data.totalSupply) + Number(data.minToken) - 1  }}  
+        <Formik initialValues={{ from: Number(data.minToken), 
+          to: data.totalSupply === "Undifined" ? 10000 :
+          Number(data.totalSupply) + Number(data.minToken) - 1  
+        
+        }} 
+
                 validationSchema={schema2} 
                 onSubmit={async (values) => {
                 startSnipping(values.from, values.to)
