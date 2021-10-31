@@ -51,7 +51,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
     imageOfNFT = token.image.replace("https://gateway.pinata.cloud/ipfs/", "https://ipfs.io/ipfs/")
   }
 
-  // console.log("imageOfNFT", imageOfNFT)
+  // console.log("imageOfNFT", token.rank, imageOfNFT)
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => {

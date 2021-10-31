@@ -30,7 +30,7 @@ const initialData = {
 
 const NFTForm = () => {
 
-  const provider = new Web3.providers.HttpProvider('https://mainnet.infura.io')
+  // const provider = new Web3.providers.HttpProvider('https://mainnet.infura.io')
 
   const { projectInfo, isSnipping } = useSelector((state: any) => state);
 
@@ -99,7 +99,7 @@ const NFTForm = () => {
 
           for(var i = start;  i <= end;  i=i+1) {         
             let activeURL =  url.replace("extension" , String(i))
-            console.log("Loop #",  i, activeURL )
+            // console.log("Loop #",  i, activeURL )
             const request = axios.get( activeURL,  {data: i})
             requests.push(request)              
           }
@@ -174,7 +174,6 @@ const NFTForm = () => {
           })
     
           attributes?.push({trait_type: "trait_count", value: trait_count})
-          // console.log("trait_count", trait_count)
           allAttributes.push(attributes)            
   
           const newTokens: any = {
@@ -187,9 +186,11 @@ const NFTForm = () => {
                 normalized_rarity_score: 0,
                 image: token.value.data.image,
                 title: token.value.data.title? token.value.data.title: "",
-                name: token.value.data.name? token.value.data.name: "" 
+                name: token.value.data.name? token.value.data.name: `#${String(token.value.config.data)}`
               }
   
+          // console.log("newTokens", newTokens)
+
           allTokens.push(newTokens)
 
         }
