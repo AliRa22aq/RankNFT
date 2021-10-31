@@ -29,28 +29,35 @@ interface Props {
 const NFTCard: FC<Props> = ({token, normalization}) => {
 
   const web3 = new Web3(window.ethereum);  
-  const {projectInfo} = useSelector((state: any) => state);
+  const [isVideo, setIsVideo] = useState(false);
+  // const {projectInfo} = useSelector((state: any) => state);
 
   //https://cloudflare-ipfs.com
 
   //  console.log("imageOfNFT token.image", token.image)
 
 
-  const check = token.image.includes("ipfs://");
-  const check2 = token.image.includes("https://gateway.pinata.cloud/ipfs/");
+  // const check = token.image.includes("ipfs://");
+  // const check2 = token.image.includes("https://gateway.pinata.cloud/ipfs/");
 
   // console.log("imageOfNFT check", check)
   // console.log("imageOfNFT check2", check2)
 
   let imageOfNFT = token.image;
 
-  if(check){
+  if(token.image.includes("ipfs://")){
     imageOfNFT = token.image.replace("ipfs://", "https://ipfs.io/ipfs/")
   }
-  else if(check2){
+  else if(token.image.includes("https://gateway.pinata.cloud/ipfs/")){
     imageOfNFT = token.image.replace("https://gateway.pinata.cloud/ipfs/", "https://ipfs.io/ipfs/")
   }
 
+  // if(token.image.includes("mp4")){
+  //   console.log("imageOfNFT token.image", token.image)
+  //   // setIsVideo(true)
+  //   "Video detected"
+
+  // }
   // console.log("imageOfNFT", token.rank, imageOfNFT)
 
   const [open, setOpen] = useState(false);
@@ -92,6 +99,15 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
             null
         }
 
+        {
+          // isVideo ?
+
+          // <video id="video" >
+          //       <source src={imageOfNFT} />
+          // </video> 
+
+          // :
+
           <CardMedia
             component="img"
             height="200"
@@ -99,6 +115,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
             alt={undefined}
             onClick={handleOpen}
           />
+        }
       </CardActionArea>
 
         <CardContent>
