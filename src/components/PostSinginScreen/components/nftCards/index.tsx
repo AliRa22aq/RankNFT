@@ -25,8 +25,8 @@ const NFTCards = () => {
   // const [normalization, setNormalization] = useState(false)
   // const [onlyOnSale, setOnlyOnSale] = useState(false)
   const [page, setPage] = useState(1)
+  const [sortBy, setSortBy] = useState<number>(0);
   const [list_of_NFTs_for_currentPage, set_list_of_NFTs_for_currentPage] = useState<AttributesOfEachToekn[] | null>([])
-  const [sortBy, setSortBy] = useState<number>(1);
 
   const { onlyOnSale, normalization, rarityScoreOfAllValues2,list_of_all_tokens_normalized, list_of_all_tokens_remaining, list_of_all_tokens_top_20, countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
   
@@ -36,7 +36,6 @@ const NFTCards = () => {
     // console.log(e)
     setSortBy(e);
     if(e === 0){
-      // setOnlyOnSale(true)
       dispatch(sortByRankAndPrice())
     }
     if(e === 1){
@@ -65,31 +64,30 @@ const NFTCards = () => {
     if(normalization === true){
       // setNormalization(!normalization)
       dispatch(switchNormalization())
-      setSortBy(1);
-      handlePage(0,1)
+      // setSortBy(sortBy);
+      // handlePage(0,1)
 
     }
     else if(normalization === false){
       // setNormalization(!normalization)
       dispatch(switchNormalization())
-      setSortBy(1);
-      handlePage(0,1)
+      // setSortBy(sortBy);
+      // handlePage(0,1)
 
     }
   }
 
   const handleOnSale = () => {
-    // console.log("Inital onlyOnsale", onlyOnSale)
 
     if(onlyOnSale === false){
       dispatch(setOnlyOnSaleState())
-      handleSort(0)  
-      handlePage(0,1)
+      // handleSort(sortBy)
+      // handlePage(0,1)
     }
     else if(onlyOnSale === true){
       dispatch(setOnlyOnSaleState())
-      handleSort(1)
-      handlePage(0,1)      
+      // handleSort(sortBy)
+      // handlePage(0,1)      
     }
   }
 
@@ -258,19 +256,9 @@ const NFTCards = () => {
   }
 
 
-  useEffect(()=> {
-    if(isSnipping.showNFTs){
-      handleInputLength()
-    }
-  }, [page, isSnipping.showNFTs])
 
-  useEffect(()=> {
-    if(list_of_all_tokens2){
-      handlePage(0,1);
-      handleInputLength()
 
-    } 
-  }, [sortBy, onlyOnSale])
+
 
   useEffect(()=> {
     if(isSnipping.completed === true){
@@ -290,9 +278,68 @@ const NFTCards = () => {
       handlePage(0,1)
   },[isSnipping.started])
 
+
+  useEffect(()=> {
+    if(isSnipping.showNFTs){
+      handleInputLength()
+    }
+  }, [page, isSnipping.showNFTs])
+
+
+
+  useEffect(()=> {
+    if(list_of_all_tokens2){
+      handlePage(0,1);
+      handleInputLength()
+
+    } 
+  }, [sortBy])
+
+
+  useEffect(()=> {
+      // setSortBy(sortBy);
+      handlePage(0,1);
+      handleInputLength()
+  }, [onlyOnSale])
+
+
+  useEffect(()=> {
+    setSortBy(0);
+    handlePage(0,1);
+    handleInputLength()
+}, [normalization])
+
+
+
+
+
+
+
+  //   useEffect(()=> {
+//     if(list_of_all_tokens2){
+//       handlePage(0,1);
+//       handleInputLength()
+//     } 
+//   }, [sortBy])
+
+
 //   useEffect(()=> {
-//     handlePage(0,page)
-// },[normalization, onlyOnSale])
+//     handleInputLength()
+//   }, [page])
+
+//   useEffect(()=> {
+//     handleSort(sortBy)
+//     handlePage(0,1);
+//     handleInputLength()
+//   },[onlyOnSale])
+
+// useEffect(()=> {
+//   handleSort(sortBy)
+//   handlePage(0,1);
+//   handleInputLength()
+// },[normalization])
+
+
 
   return (
     <div className="cards-container">
@@ -351,7 +398,7 @@ const NFTCards = () => {
                                   label="Sort By"
                                   onChange={(e) => handleSort(Number(e.target.value))}
                                 >
-                                  <MenuItem value={0}> {`Hight Rank + Lowest Price`} </MenuItem>
+                                  <MenuItem value={0}> {`Low Price & Hight Rank`} </MenuItem>
                                   <MenuItem value={1}> {`Rarity Score (high -> low)`} </MenuItem>
                                   <MenuItem value={2}> {`Rarity Score (low -> high)`} </MenuItem>
                                   <MenuItem value={3}> {`Price (high -> low)`} </MenuItem>

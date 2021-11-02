@@ -30,18 +30,8 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
 
   const web3 = new Web3(window.ethereum);  
   const [isVideo, setIsVideo] = useState(false);
-  // const {projectInfo} = useSelector((state: any) => state);
+  const {projectInfo, onlyOnSale} = useSelector((state: any) => state);
 
-  //https://cloudflare-ipfs.com
-
-  //  console.log("imageOfNFT token.image", token.image)
-
-
-  // const check = token.image.includes("ipfs://");
-  // const check2 = token.image.includes("https://gateway.pinata.cloud/ipfs/");
-
-  // console.log("imageOfNFT check", check)
-  // console.log("imageOfNFT check2", check2)
 
   let imageOfNFT = token.image;
 
@@ -52,13 +42,6 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
     imageOfNFT = token.image.replace("https://gateway.pinata.cloud/ipfs/", "https://ipfs.io/ipfs/")
   }
 
-  // if(token.image.includes("mp4")){
-  //   console.log("imageOfNFT token.image", token.image)
-  //   // setIsVideo(true)
-  //   "Video detected"
-
-  // }
-  // console.log("imageOfNFT", token.rank, imageOfNFT)
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -69,7 +52,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
 
   let sortedAttributes = [...token.attributes]
   sortedAttributes = sortedAttributes.sort((a:any, b:any) => {return b.value_rarity_score - a.value_rarity_score})
-
+  
   return (
     <div>
     <Card sx={{ height: 335, width: 200 }} >

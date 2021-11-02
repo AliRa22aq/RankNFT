@@ -139,7 +139,8 @@ interface DataType {
     progress: Progress,    
     isSnipping: Loading,
     normalization: boolean,
-    onlyOnSale: boolean
+    onlyOnSale: boolean,
+    sortType: number
 
     
 
@@ -183,6 +184,7 @@ const initialState: DataType = {
 
     normalization: false,
     onlyOnSale: false,
+    sortType: 0,
 
 
     progress : {
@@ -289,15 +291,17 @@ const dataSlice = createSlice({
 
     setLoadingProgress(state, { payload }: PayloadAction<number>) {
       if (state.projectInfo && state.projectInfo.range) {
-        console.log("pay load in setProgress")
-        state.projectInfo.loadingProgree = payload * 100 / state.projectInfo.range.range;
+        console.log("pay load in setProgress");
+        state.projectInfo.loadingProgree =
+          (payload * 100) / state.projectInfo.range.range;
       }
     },
 
     setProcessingProgress(state, { payload }: PayloadAction<number>) {
       // console.log("ProcessesingProgree payload ", payload)
       if (state.projectInfo) {
-        state.projectInfo.processingProgress =  payload * 100 / Object.keys(state.countOfAllAttribute2).length
+        state.projectInfo.processingProgress =
+          (payload * 100) / Object.keys(state.countOfAllAttribute2).length;
         // console.log("ProcessesingProgree ", state.projectInfo.processingProgress)
       }
     },
@@ -315,180 +319,223 @@ const dataSlice = createSlice({
       state.loadingNFTS = payload;
     },
 
-    assignRank(state){
-      if(state.list_of_all_tokens){
-        
+    assignRank(state) {
+      if (state.list_of_all_tokens) {
         // console.log("normalized ranking started")
-  
-          state.list_of_all_tokens = state.list_of_all_tokens?.sort( (a, b) => {
-            return b.normalized_rarity_score - a.normalized_rarity_score;
-          });
-  
-          state.list_of_all_tokens.forEach((token, index)=> {
-            token.normalized_rank = index + 1
-          })
-  
-          state.list_of_all_tokens_normalized = state.list_of_all_tokens
 
+        state.list_of_all_tokens = state.list_of_all_tokens?.sort((a, b) => {
+          return b.normalized_rarity_score - a.normalized_rarity_score;
+        });
 
-      // console.log("normal ranking started")
+        state.list_of_all_tokens.forEach((token, index) => {
+          token.normalized_rank = index + 1;
+        });
 
-        state.list_of_all_tokens = state.list_of_all_tokens?.sort( (a, b) => {
+        state.list_of_all_tokens_normalized = state.list_of_all_tokens;
+
+        state.list_of_all_tokens = state.list_of_all_tokens?.sort((a, b) => {
           return b.rarity_score - a.rarity_score;
         });
 
-        state.list_of_all_tokens.forEach((token, index)=> {
-          token.rank = index + 1
-        })
-
-        state.list_of_all_tokens_not_normalized = state.list_of_all_tokens
-
-      
-      }
-
-    },
-
-    assignNormalizedRank(state){
-      // console.log("normalized ranking started")
-
-      if(state.list_of_all_tokens){
-        // console.log("assining rank start ", JSON.stringify(state.list_of_all_tokens))
-
-
-
-        // console.log("assining rank ends ", JSON.stringify(state.list_of_all_tokens))
-      
-      }
-
-    },
-
-    switchNormalization(state){
-
-      if(state.list_of_all_tokens && state.normalization === true){
-        state.list_of_all_tokens = state.list_of_all_tokens?.sort( (a, b) => {
-            return a.rank - b.rank ;
+        state.list_of_all_tokens.forEach((token, index) => {
+          token.rank = index + 1;
         });
-        state.normalization = !state.normalization
+
+        state.list_of_all_tokens_not_normalized = state.list_of_all_tokens;
+      }
+    },
+
+    assignNormalizedRank(state) {},
+
+    switchNormalization(state) {
+
+      if (state.normalization === true) {
+
+        state.list_of_all_tokens?.sort((a, b) => {
+          if (a.opensea.price === b.opensea.price) {
+            return b.rarity_score - a.rarity_score;
+          }
+          return a.opensea.price - b.opensea.price;
+        });
+
+        state.list_of_all_tokensBackup?.sort((a, b) => {
+          if (a.opensea.price === b.opensea.price) {
+            return b.rarity_score - a.rarity_score;
+          }
+          return a.opensea.price - b.opensea.price;
+        });
+
+        state.normalization = !state.normalization;
 
       }
-      else if (state.list_of_all_tokens && state.normalization === false){
-        state.list_of_all_tokens = state.list_of_all_tokens?.sort( (a, b) => {
-            return a.normalized_rank - b.normalized_rank; 
-        })
-        state.normalization = !state.normalization
-      }
+
+        else if (state.normalization === false) {
+
+          state.list_of_all_tokens?.sort((a, b) => {
+            if (a.opensea.price === b.opensea.price) {
+              return b.normalized_rarity_score - a.normalized_rarity_score;
+            }
+            return a.opensea.price - b.opensea.price;
+          });
+  
+          state.list_of_all_tokensBackup?.sort((a, b) => {
+            if (a.opensea.price === b.opensea.price) {
+              return b.normalized_rarity_score - a.normalized_rarity_score;
+            }
+            return a.opensea.price - b.opensea.price;
+          });
+
+          state.normalization = !state.normalization;
+        
+        }
+
 
     },
 
-    sortByRarityScore(state,  { payload }: PayloadAction<"accs"|"decs"|"Ratity+Price">) {
-      // console.log("Sorting start by Rarity", state.list_of_all_tokens)
+    sortByRarityScore( state, { payload }: PayloadAction<"accs" | "decs" | "Ratity+Price">) {
+        if (payload === "decs") {
 
-      if(state.list_of_all_tokens){
-        //  console.log("state.normalization ", state.normalization)
-        if(payload === "decs"){
-          state.list_of_all_tokens = state.list_of_all_tokens.sort( (a, b) => {
-              if(state.normalization === true){
-                return b.normalized_rank - a.normalized_rank;
-              }
-              else{
-                return b.rank - a.rank;
-              }
-            });
-        }
-        else if(payload === "accs"){
-          state.list_of_all_tokens = state.list_of_all_tokens.sort( (a, b) => {
-            if(state.normalization === true){
-              return a.normalized_rank - b.normalized_rank;
-            }
-            else{
-              return a.rank - b.rank;
+          state.list_of_all_tokens?.sort((a, b) => {
+            if (state.normalization === true) {
+              return b.normalized_rank - a.normalized_rank;
+            } else {
+              return b.rank - a.rank;
             }
           });
-        }
-      }
-      // console.log("Sorting End by Rarity", state.list_of_all_tokens)
+
+          state.list_of_all_tokensBackup?.sort((a, b) => {
+                if (state.normalization === true) {
+                  return b.normalized_rank - a.normalized_rank;
+                } else {
+                  return b.rank - a.rank;
+                }
+              });
+        } 
+        
+        else if (payload === "accs") {
+
+          state.list_of_all_tokens?.sort((a, b) => {
+            if (state.normalization === true) {
+                return a.normalized_rank - b.normalized_rank;
+            } else {
+                return a.rank - b.rank;
+            }
+          });
+
+          state.list_of_all_tokensBackup?.sort((a, b) => {
+              if (state.normalization === true) {
+                  return a.normalized_rank - b.normalized_rank;
+              } else {
+                  return a.rank - b.rank;
+              }
+              });
+          }
     },
 
-    sortByTokenID(state,  { payload }: PayloadAction<"accs"|"decs">) {
+    sortByTokenID(state, { payload }: PayloadAction<"accs" | "decs">) {
       // console.log("Sorting start by ID", state.list_of_all_tokens)
-      if(state.list_of_all_tokens){
-        if(payload === "accs"){
-        state.list_of_all_tokens.sort( (a, b) => {
+        if (payload === "accs") {
+          state.list_of_all_tokens?.sort((a, b) => {
+            return Number(a.tokenID) - Number(b.tokenID);
+          });
+
+          state.list_of_all_tokensBackup?.sort((a, b) => {
             return Number(a.tokenID) - Number(b.tokenID);
           });
         }
-        if(payload === "decs"){
-          state.list_of_all_tokens.sort( (a, b) => {
-              return Number(b.tokenID) - Number(a.tokenID);
-            });
-          }
-      }
-      // console.log("Sorting End by ID" , state.list_of_all_tokens)
-    },
 
-    sortByPrice(state,  { payload }: PayloadAction<"accs"|"decs">) {
-      // console.log("Sorting start by price", state.list_of_all_tokens)
-      if(state.list_of_all_tokens){
-          if(payload === "decs"){
-              state.list_of_all_tokens.sort( (a, b) => {
-                return Number(b.opensea.price) - Number(a.opensea.price);
-              });
-            }
-            if(payload === "accs"){
-                state.list_of_all_tokens.sort( (a, b) => {
-                  return Number(a.opensea.price) - Number(b.opensea.price);
-                });
-              }
-      }
-      // console.log("Sorting End by price", state.list_of_all_tokens)
-    },
+        else if (payload === "decs") {
 
-    sortByRankAndPrice(state) {
+          state.list_of_all_tokens?.sort((a, b) => {
+            return Number(b.tokenID) - Number(a.tokenID);
+          });
 
-      // console.log("sortByRankAndPrice", state.list_of_all_tokens)
-
-      if(state.list_of_all_tokens){
-
-        if(state.normalization === true){
-          state.list_of_all_tokens = state.list_of_all_tokens.sort(
-          (a, b) => {
-            if (a.opensea.price === b.opensea.price) {
-              return b.normalized_rarity_score - a.normalized_rarity_score;
-           }
-           return a.opensea.price - b.opensea.price;
-          } 
-        );
-      } 
-        else  {
-            state.list_of_all_tokens = state.list_of_all_tokens.sort(
-              (a, b) => {
-                if (a.opensea.price === b.opensea.price) {
-                  return b.rarity_score - a.rarity_score;
-               }
-               return a.opensea.price - b.opensea.price;
-              } 
-          );
-        }      
-        
-      }
-      // console.log("sortByRankAndPrice", state.list_of_all_tokens)
-    },
-
-    setOnlyOnSaleState(state){
-      // console.log("setOnlyOnSaleState")
-        if(state.list_of_all_tokens && state.onlyOnSale === false){
-          state.list_of_all_tokensBackup = state.list_of_all_tokens
-          state.list_of_all_tokens = state.list_of_all_tokens.filter((token) => {
-            return token.opensea.saleType === "onSale"
-          })
-        state.onlyOnSale = !state.onlyOnSale
-      }
-        else if(state.list_of_all_tokensBackup && state.onlyOnSale === true){
-          state.list_of_all_tokens = state.list_of_all_tokensBackup
-          state.onlyOnSale = !state.onlyOnSale
+          state.list_of_all_tokensBackup?.sort((a, b) => {
+            return Number(b.tokenID) - Number(a.tokenID);
+          });
+          
         }
     },
 
+    sortByPrice(state, { payload }: PayloadAction<"accs" | "decs">) {
+      if (payload === "decs") {
+
+        state.list_of_all_tokens?.sort((a, b) => {
+          return Number(b.opensea.price) - Number(a.opensea.price);
+        });
+
+        state.list_of_all_tokensBackup?.sort((a, b) => {
+          return Number(b.opensea.price) - Number(a.opensea.price);
+        });
+      } 
+      
+      else if (payload === "accs") {
+
+        state.list_of_all_tokens?.sort((a, b) => {
+          return Number(a.opensea.price) - Number(b.opensea.price);
+        });
+
+        state.list_of_all_tokensBackup?.sort((a, b) => {
+          return Number(a.opensea.price) - Number(b.opensea.price);
+        });
+      }
+    },
+
+    sortByRankAndPrice(state) {
+      if (state.normalization === true) {
+        
+        state.list_of_all_tokens?.sort((a, b) => {
+          if (a.opensea.price === b.opensea.price) {
+            return b.normalized_rarity_score - a.normalized_rarity_score;
+          }
+          return a.opensea.price - b.opensea.price;
+        });
+
+        state.list_of_all_tokensBackup?.sort((a, b) => {
+          if (a.opensea.price === b.opensea.price) {
+            return b.normalized_rarity_score - a.normalized_rarity_score;
+          }
+          return a.opensea.price - b.opensea.price;
+        });
+      } 
+      
+      else if (state.normalization === false) {
+
+        state.list_of_all_tokens?.sort((a, b) => {
+          if (a.opensea.price === b.opensea.price) {
+            return b.rarity_score - a.rarity_score;
+          }
+          return a.opensea.price - b.opensea.price;
+        });
+
+        state.list_of_all_tokensBackup?.sort((a, b) => {
+          if (a.opensea.price === b.opensea.price) {
+            return b.rarity_score - a.rarity_score;
+          }
+          return a.opensea.price - b.opensea.price;
+        });
+      }
+    },
+
+    setOnlyOnSaleState(state) {
+      // console.log("setOnlyOnSaleState")
+      if (state.list_of_all_tokens && state.onlyOnSale === false) {
+        state.list_of_all_tokensBackup = state.list_of_all_tokens;
+        state.list_of_all_tokens = state.list_of_all_tokens.filter((token) => {
+          return token.opensea.saleType === "onSale";
+        });
+        state.onlyOnSale = !state.onlyOnSale;
+      } 
+      
+      else if (state.list_of_all_tokensBackup && state.onlyOnSale === true) {
+        state.list_of_all_tokens = state.list_of_all_tokensBackup;
+        state.onlyOnSale = !state.onlyOnSale;
+      }
+    },
+
+    setSortType(state, { payload }: PayloadAction<number>) {
+      state.sortType;
+    },
 
     setAvailableAttributes(
       state,
@@ -508,7 +555,10 @@ const dataSlice = createSlice({
       }
     },
 
-    addTokenInList( state, { payload }: PayloadAction<AttributesOfEachToekn[] | null> ) {
+    addTokenInList(
+      state,
+      { payload }: PayloadAction<AttributesOfEachToekn[] | null>
+    ) {
       // console.log("payload added ", payload)
       if (payload === null) {
         state.list_of_all_tokens = null;
@@ -521,29 +571,24 @@ const dataSlice = createSlice({
       }
     },
 
-    
-    addTokenInList2( state, { payload }: PayloadAction<AttributesOfEachToekn> ) {
+    addTokenInList2(state, { payload }: PayloadAction<AttributesOfEachToekn>) {
       // console.log("payload in addTokenInList2 ", payload)
 
-          state.list_of_all_tokens2[payload.tokenID] = payload
-
-
-      
+      state.list_of_all_tokens2[payload.tokenID] = payload;
     },
 
-    addTokenInList3( state, { payload }: PayloadAction<AttributesOfEachToekn[]> ) {
+    addTokenInList3(
+      state,
+      { payload }: PayloadAction<AttributesOfEachToekn[]>
+    ) {
       // console.log("payload in addTokenInList3 ", payload)
 
       payload.map((token: AttributesOfEachToekn) => {
-        state.list_of_all_tokens2[token.tokenID] = token        
-      })
-
-
-      
+        state.list_of_all_tokens2[token.tokenID] = token;
+      });
     },
 
     setRarityScoreToAttributeValue(
-
       state,
       { payload }: PayloadAction<RarityScoreOfValue | null>
     ) {
@@ -559,68 +604,67 @@ const dataSlice = createSlice({
           ];
         }
       }
-
     },
 
-    setRarityScoreToEachNFTAttribuValue( state, { payload }: PayloadAction<RarityScoreOfValue> ) {
-      
+    setRarityScoreToEachNFTAttribuValue(
+      state,
+      { payload }: PayloadAction<RarityScoreOfValue>
+    ) {
       // console.log("lis of all tokens ", state.list_of_all_tokens)
 
-      state.list_of_all_tokens?.map(
-        (token: AttributesOfEachToekn) => {
-          
-          token.attributes.map((attribute: Attribute) => {
-            if (attribute.value === payload.value) {
-              
-              attribute.value_rarity_score = payload.rarity_score;
-              attribute.value_normalized_rarity_score = payload.normalized_rarity_score;
+      state.list_of_all_tokens?.map((token: AttributesOfEachToekn) => {
+        token.attributes.map((attribute: Attribute) => {
+          if (attribute.value === payload.value) {
+            attribute.value_rarity_score = payload.rarity_score;
+            attribute.value_normalized_rarity_score =
+              payload.normalized_rarity_score;
 
-              token.rarity_score = token.rarity_score + payload.rarity_score;
-              token.normalized_rarity_score = token.normalized_rarity_score + payload.normalized_rarity_score;
-            }
-          });
+            token.rarity_score = token.rarity_score + payload.rarity_score;
+            token.normalized_rarity_score =
+              token.normalized_rarity_score + payload.normalized_rarity_score;
+          }
         });
-       
+      });
     },
 
-    setRarityScoreToAttributeValue2(state, { payload }: PayloadAction<RarityScoreOfValue> ) {
-
+    setRarityScoreToAttributeValue2(
+      state,
+      { payload }: PayloadAction<RarityScoreOfValue>
+    ) {
       state.rarityScoreOfAllValues2[payload.value] = payload;
-
     },
 
-    setRarityScoreToEachNFTAttribuValue2( state, { payload }: PayloadAction<RarityScoreOfValue> ) {
-
-              
+    setRarityScoreToEachNFTAttribuValue2(
+      state,
+      { payload }: PayloadAction<RarityScoreOfValue>
+    ) {
       Object.values(state.list_of_all_tokens2).map((token) => {
-
         token.attributes.map((attribute, key) => {
-
-          
-          if (attribute.trait_type === payload.trait_type && attribute.value === payload.value) {
+          if (
+            attribute.trait_type === payload.trait_type &&
+            attribute.value === payload.value
+          ) {
             // if(Number(token.tokenID) === 42){
             //     console.log("Test Attribute ", JSON.stringify(attribute))
             //     console.log("Test payload=> ", payload)
             //   }
-  
-              
-              attribute.value_rarity_score =  payload.rarity_score;
-              attribute.value_normalized_rarity_score = payload.normalized_rarity_score;
 
-              token.rarity_score = token.rarity_score + payload.rarity_score;
-              token.normalized_rarity_score = token.normalized_rarity_score + payload.normalized_rarity_score;
+            attribute.value_rarity_score = payload.rarity_score;
+            attribute.value_normalized_rarity_score =
+              payload.normalized_rarity_score;
 
-              // if(Number(token.tokenID) === 42){
-              // console.log("Test rarity_score=> ", key + 1, payload.rarity_score, token.rarity_score)
-              // }
+            token.rarity_score = token.rarity_score + payload.rarity_score;
+            token.normalized_rarity_score =
+              token.normalized_rarity_score + payload.normalized_rarity_score;
 
-            }
-        })
+            // if(Number(token.tokenID) === 42){
+            // console.log("Test rarity_score=> ", key + 1, payload.rarity_score, token.rarity_score)
+            // }
+          }
+        });
+      });
 
-      })
-
-      state.list_of_all_tokens = Object.values(state.list_of_all_tokens2)
-
+      state.list_of_all_tokens = Object.values(state.list_of_all_tokens2);
 
       // if(state.list_of_all_tokens_top_20 === null){
       // console.log("Active list_of_all_tokens_top_20")
@@ -638,14 +682,16 @@ const dataSlice = createSlice({
       // }
       // else {
       //   console.log("Active list_of_all_tokens")
-        
+
       //   state.list_of_all_tokens = Object.values(state.list_of_all_tokens2)
       //   // state.list_of_all_tokens_onSale = state.list_of_all_tokens.filter(onSaleFiler)
       // }
-       
     },
 
-    setInitalCountOfAllAttribute( state, { payload }: PayloadAction<CountOfEachAttribute[] | null> ) {
+    setInitalCountOfAllAttribute(
+      state,
+      { payload }: PayloadAction<CountOfEachAttribute[] | null>
+    ) {
       if (payload === null) {
         state.countOfAllAttribute = null;
       } else {
@@ -653,18 +699,14 @@ const dataSlice = createSlice({
       }
     },
 
-    setCountOfAllAttribute(state, { payload }: PayloadAction<Attribute[] >) {
-
+    setCountOfAllAttribute(state, { payload }: PayloadAction<Attribute[]>) {
       if (state.countOfAllAttribute !== null) {
         state.countOfAllAttribute.forEach(
           (countOfEachAttribute: CountOfEachAttribute) => {
-
             payload.forEach((attribute: Attribute) => {
-
-            // Find the trait type
-              // if (state.countOfAllAttribute?.find(e => e.trait_type == attribute.trait_type)){ 
-                 if (countOfEachAttribute.trait_type === attribute.trait_type) {
-
+              // Find the trait type
+              // if (state.countOfAllAttribute?.find(e => e.trait_type == attribute.trait_type)){
+              if (countOfEachAttribute.trait_type === attribute.trait_type) {
                 // initiate the trait count array to store all the trait values and add first trait value
                 if (countOfEachAttribute.trait_count === null) {
                   const new_trait_count = { value: attribute.value, count: 1 };
@@ -672,27 +714,31 @@ const dataSlice = createSlice({
                   countOfEachAttribute.total_variations++;
                 }
 
-                // Trait array already existed. 
+                // Trait array already existed.
                 else {
-
                   // Check if value already present or not
                   // const checkValue = (obj: any) => obj.value === String(attribute.value);
                   // const isPresent = countOfEachAttribute.trait_count.some(checkValue)
-                  const isPresent = countOfEachAttribute.trait_count.find(e => e.value == attribute.value)
+                  const isPresent = countOfEachAttribute.trait_count.find(
+                    (e) => e.value == attribute.value
+                  );
 
-                   // Value matched, increase its count by one
-                    if (isPresent) {
+                  // Value matched, increase its count by one
+                  if (isPresent) {
                     // countOfEachAttribute.trait_count &&
-                      countOfEachAttribute.trait_count.forEach((trait) => {
-                        if (trait.value === attribute.value) {
-                          trait.count++;
-                        }
-                      });
-                  } 
+                    countOfEachAttribute.trait_count.forEach((trait) => {
+                      if (trait.value === attribute.value) {
+                        trait.count++;
+                      }
+                    });
+                  }
 
                   // Value doesn't match, add a new entry and increase the count of variations by one
                   else {
-                    const new_trait_count = { value: attribute.value, count: 1 };
+                    const new_trait_count = {
+                      value: attribute.value,
+                      count: 1,
+                    };
                     countOfEachAttribute.trait_count = [
                       ...countOfEachAttribute.trait_count,
                       new_trait_count,
@@ -701,257 +747,418 @@ const dataSlice = createSlice({
                   }
                 }
               }
-            })
+            });
           }
-        )
+        );
       }
     },
 
-    setInitialCountOfAllAttribute2(state, { payload }: PayloadAction<Attribute[] >) {
+    setInitialCountOfAllAttribute2(
+      state,
+      { payload }: PayloadAction<Attribute[]>
+    ) {
       payload.forEach((attribute) => {
-        state.countOfAllAttribute2[attribute.trait_type] = {trait_type: attribute.trait_type, trait_count: {}, total_variations: 0};
-
-      })
-
+        state.countOfAllAttribute2[attribute.trait_type] = {
+          trait_type: attribute.trait_type,
+          trait_count: {},
+          total_variations: 0,
+        };
+      });
     },
 
-    setCountOfAllAttribute2(state, { payload }: PayloadAction<Attribute[] >) {
-
+    setCountOfAllAttribute2(state, { payload }: PayloadAction<Attribute[]>) {
       // console.log("payload in setCOunt", payload)
       payload.forEach((attribute) => {
         if (!state.countOfAllAttribute2[attribute.trait_type])
-            state.countOfAllAttribute2[attribute.trait_type] = {trait_type: attribute.trait_type, trait_count: {}, total_variations: 0};
+          state.countOfAllAttribute2[attribute.trait_type] = {
+            trait_type: attribute.trait_type,
+            trait_count: {},
+            total_variations: 0,
+          };
 
-        if (!state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value]) {
-            state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value] = {value: attribute.value, count: 1};
-            state.countOfAllAttribute2[attribute.trait_type].total_variations+=1;
-        }
-        else state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].count +=1;
-      })
-
+        if (
+          !state.countOfAllAttribute2[attribute.trait_type].trait_count[
+            attribute.value
+          ]
+        ) {
+          state.countOfAllAttribute2[attribute.trait_type].trait_count[
+            attribute.value
+          ] = { value: attribute.value, count: 1 };
+          state.countOfAllAttribute2[
+            attribute.trait_type
+          ].total_variations += 1;
+        } else
+          state.countOfAllAttribute2[attribute.trait_type].trait_count[
+            attribute.value
+          ].count += 1;
+      });
     },
 
-    setCountOfAllAttribute3(state, { payload }: PayloadAction<Attribute[][] >) {
-
+    setCountOfAllAttribute3(state, { payload }: PayloadAction<Attribute[][]>) {
       payload.forEach((attributes) => {
         attributes.forEach((attribute) => {
           if (!state.countOfAllAttribute2[attribute.trait_type])
-          state.countOfAllAttribute2[attribute.trait_type] = {trait_type: attribute.trait_type, trait_count: {}, total_variations: 0};
+            state.countOfAllAttribute2[attribute.trait_type] = {
+              trait_type: attribute.trait_type,
+              trait_count: {},
+              total_variations: 0,
+            };
 
-          if (!state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value]) {
-              state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value] = {value: attribute.value, count: 1};
-              state.countOfAllAttribute2[attribute.trait_type].total_variations+=1;
-          }
-          else state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].count +=1;
-        })    
-      })
+          if (
+            !state.countOfAllAttribute2[attribute.trait_type].trait_count[
+              attribute.value
+            ]
+          ) {
+            state.countOfAllAttribute2[attribute.trait_type].trait_count[
+              attribute.value
+            ] = { value: attribute.value, count: 1 };
+            state.countOfAllAttribute2[
+              attribute.trait_type
+            ].total_variations += 1;
+          } else
+            state.countOfAllAttribute2[attribute.trait_type].trait_count[
+              attribute.value
+            ].count += 1;
+        });
+      });
 
       // console.log("countOfAllAttribute2", state.countOfAllAttribute2)
-
     },
 
-    setOpenseaData(state, {payload}:PayloadAction< any>){
+    setOpenseaData(state, { payload }: PayloadAction<any>) {
       // console.log("setOpenseaData started", payload)
 
-      if(state.list_of_all_tokens){
-        state.list_of_all_tokens.map((token:AttributesOfEachToekn ) => {
+      if (state.list_of_all_tokens) {
+        state.list_of_all_tokens.map((token: AttributesOfEachToekn) => {
           payload.map((openseaAsset: any) => {
-            if(token.tokenID == openseaAsset.token_id){
+            if (token.tokenID == openseaAsset.token_id) {
               // console.log("opensea data matched", token.tokenID)
 
-              const onSale = openseaAsset?.sell_orders && openseaAsset?.sell_orders[0] ? true:false;
+              const onSale =
+                openseaAsset?.sell_orders && openseaAsset?.sell_orders[0]
+                  ? true
+                  : false;
               let saleType = "none";
-              
-              if(onSale){
-                // console.log("===> payment_token_contract", openseaAsset?.sell_orders[0].payment_token_contract.symbol)
-                
-                if(openseaAsset?.sell_orders[0].payment_token_contract.symbol === "ETH"){
-                  saleType = "onSale"
-                }
-                else if(openseaAsset?.sell_orders[0].payment_token_contract.symbol === "WETH"){
-                  saleType = "onAuction"
-                }
 
+              if (onSale) {
+                // console.log("===> payment_token_contract", openseaAsset?.sell_orders[0].payment_token_contract.symbol)
+
+                if (
+                  openseaAsset?.sell_orders[0].payment_token_contract.symbol ===
+                  "ETH"
+                ) {
+                  saleType = "onSale";
+                } else if (
+                  openseaAsset?.sell_orders[0].payment_token_contract.symbol ===
+                  "WETH"
+                ) {
+                  saleType = "onAuction";
+                }
               }
               // console.log("===> payment_token_contract", openseaAsset )
 
-              const price = onSale ? 
-              Number(web3.utils.fromWei(openseaAsset?.sell_orders[0].base_price, "ether")): 
-              0
-              
+              const price = onSale
+                ? Number(
+                    web3.utils.fromWei(
+                      openseaAsset?.sell_orders[0].base_price,
+                      "ether"
+                    )
+                  )
+                : 0;
+
               // if(price>0){
               //   console.log("===> converted price", price)
               // }
 
-              token.opensea_data = openseaAsset
-              token.opensea = {price: price, permalink: openseaAsset.permalink, saleType}
+              token.opensea_data = openseaAsset;
+              token.opensea = {
+                price: price,
+                permalink: openseaAsset.permalink,
+                saleType,
+              };
             }
-          })
-        })
+          });
+        });
       }
 
-        // state.list_of_all_tokens = Object.values(state.list_of_all_tokens2).sort( (a, b) => {
-        //   return b.rarity_score - a.rarity_score;
-        // });
-      state.isSnipping.showNFTs = true
+      // state.list_of_all_tokens = Object.values(state.list_of_all_tokens2).sort( (a, b) => {
+      //   return b.rarity_score - a.rarity_score;
+      // });
+      state.isSnipping.showNFTs = true;
     },
 
-    setOpenseaData2(state, {payload}:PayloadAction< any>){
-
+    setOpenseaData2(state, { payload }: PayloadAction<any>) {
       // console.log("opensea payload", payload)
 
-        payload.map((openseaAsset: any) => {
-          // console.log("opensea Asset", openseaAsset)
-          const onSale = openseaAsset?.sell_orders && openseaAsset?.sell_orders[0] ? true:false;
-          const price = onSale ? Math.round(openseaAsset?.sell_orders[0].current_price) : 0
+      payload.map((openseaAsset: any) => {
+        // console.log("opensea Asset", openseaAsset)
+        const onSale =
+          openseaAsset?.sell_orders && openseaAsset?.sell_orders[0]
+            ? true
+            : false;
+        const price = onSale
+          ? Math.round(openseaAsset?.sell_orders[0].current_price)
+          : 0;
 
-          if(state.list_of_all_tokens2[openseaAsset.token_id]){
-            state.list_of_all_tokens2[openseaAsset.token_id].opensea.permalink = openseaAsset.permalink
-            // state.list_of_all_tokens2[openseaAsset.token_id].opensea.price = String(price)    
-            // console.log(" opensea token after update", state.list_of_all_tokens2[openseaAsset.token_id])
-          }
+        if (state.list_of_all_tokens2[openseaAsset.token_id]) {
+          state.list_of_all_tokens2[openseaAsset.token_id].opensea.permalink =
+            openseaAsset.permalink;
+          // state.list_of_all_tokens2[openseaAsset.token_id].opensea.price = String(price)
+          // console.log(" opensea token after update", state.list_of_all_tokens2[openseaAsset.token_id])
+        }
+      });
 
-        })
-
-        state.list_of_all_tokens = Object.values(state.list_of_all_tokens2).sort( (a, b) => {
-            return b.rarity_score - a.rarity_score;
-          });
-
+      state.list_of_all_tokens = Object.values(state.list_of_all_tokens2).sort(
+        (a, b) => {
+          return b.rarity_score - a.rarity_score;
+        }
+      );
     },
 
-    setLoadingContractData(state, {payload}: PayloadAction<{action: "started"|"completed", value: boolean}>){
-
-      if(payload.action === "started"){
-        state.loading_contractData =  {...state.loading_contractData, started: payload.value}
+    setLoadingContractData(
+      state,
+      {
+        payload,
+      }: PayloadAction<{ action: "started" | "completed"; value: boolean }>
+    ) {
+      if (payload.action === "started") {
+        state.loading_contractData = {
+          ...state.loading_contractData,
+          started: payload.value,
+        };
       }
 
-      if(payload.action === "completed"){
-        state.loading_contractData =  {...state.loading_contractData, completed: payload.value}
+      if (payload.action === "completed") {
+        state.loading_contractData = {
+          ...state.loading_contractData,
+          completed: payload.value,
+        };
       }
-
     },
 
-    setIsSnipping(state, {payload}: PayloadAction<{
-      action: "allowSnipping"|"requested"|"started"|"completed"|"showNFTs"|"stop"|"startTop20"|"startRemaining"|null}>
-      ){
-
-      if(payload.action === null){
-        state.isSnipping =  {requested: false, started: false, completed: false, showNFTs: false, openSeaDataArrived: false, startTop20: false, startRemaining: false}
-      }
-      else {
-        if(payload.action === "requested"){
-          state.isSnipping =  {requested: true, started: false, completed: false, showNFTs: false, openSeaDataArrived: false, startTop20: false, startRemaining: false}
+    setIsSnipping(
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        action:
+          | "allowSnipping"
+          | "requested"
+          | "started"
+          | "completed"
+          | "showNFTs"
+          | "stop"
+          | "startTop20"
+          | "startRemaining"
+          | null;
+      }>
+    ) {
+      if (payload.action === null) {
+        state.isSnipping = {
+          requested: false,
+          started: false,
+          completed: false,
+          showNFTs: false,
+          openSeaDataArrived: false,
+          startTop20: false,
+          startRemaining: false,
+        };
+      } else {
+        if (payload.action === "requested") {
+          state.isSnipping = {
+            requested: true,
+            started: false,
+            completed: false,
+            showNFTs: false,
+            openSeaDataArrived: false,
+            startTop20: false,
+            startRemaining: false,
+          };
         }
 
-        if(payload.action === "started"){
-          state.isSnipping =  {requested: true, started: true, completed: false, showNFTs: false, openSeaDataArrived: false, startTop20: false, startRemaining: false}
-        }
-  
-        if(payload.action === "completed"){
-          state.isSnipping =  {requested: true, started: true, completed: true, showNFTs: false, openSeaDataArrived: false, startTop20: false, startRemaining: false}
-        }
-
-        if(payload.action === "showNFTs"){
-          state.isSnipping =  {requested: true, started: true, completed: true, showNFTs: true, openSeaDataArrived: false, startTop20: false, startRemaining: false}
-        }
-
-        
-        if(payload.action === "startTop20"){
-          state.isSnipping =  {requested: true, started: true, completed: true, showNFTs: false, openSeaDataArrived: false, startTop20: true, startRemaining: false}
+        if (payload.action === "started") {
+          state.isSnipping = {
+            requested: true,
+            started: true,
+            completed: false,
+            showNFTs: false,
+            openSeaDataArrived: false,
+            startTop20: false,
+            startRemaining: false,
+          };
         }
 
-        if(payload.action === "startRemaining"){
-          state.isSnipping =  {requested: true, started: true, completed: true, showNFTs: true, openSeaDataArrived: false, startTop20: false, startRemaining: true}
+        if (payload.action === "completed") {
+          state.isSnipping = {
+            requested: true,
+            started: true,
+            completed: true,
+            showNFTs: false,
+            openSeaDataArrived: false,
+            startTop20: false,
+            startRemaining: false,
+          };
         }
 
-        if(payload.action === "allowSnipping"){
-          state.isSnipping =  {requested: true, started: false, completed: true, showNFTs: true, openSeaDataArrived: false, startTop20: false, startRemaining: false}
+        if (payload.action === "showNFTs") {
+          state.isSnipping = {
+            requested: true,
+            started: true,
+            completed: true,
+            showNFTs: true,
+            openSeaDataArrived: false,
+            startTop20: false,
+            startRemaining: false,
+          };
         }
-        if(payload.action === "stop"){
-          state.isSnipping =  {requested: false, started: false, completed: false, showNFTs: false, openSeaDataArrived: true, startTop20: false, startRemaining: false}
+
+        if (payload.action === "startTop20") {
+          state.isSnipping = {
+            requested: true,
+            started: true,
+            completed: true,
+            showNFTs: false,
+            openSeaDataArrived: false,
+            startTop20: true,
+            startRemaining: false,
+          };
+        }
+
+        if (payload.action === "startRemaining") {
+          state.isSnipping = {
+            requested: true,
+            started: true,
+            completed: true,
+            showNFTs: true,
+            openSeaDataArrived: false,
+            startTop20: false,
+            startRemaining: true,
+          };
+        }
+
+        if (payload.action === "allowSnipping") {
+          state.isSnipping = {
+            requested: true,
+            started: false,
+            completed: true,
+            showNFTs: true,
+            openSeaDataArrived: false,
+            startTop20: false,
+            startRemaining: false,
+          };
+        }
+        if (payload.action === "stop") {
+          state.isSnipping = {
+            requested: false,
+            started: false,
+            completed: false,
+            showNFTs: false,
+            openSeaDataArrived: true,
+            startTop20: false,
+            startRemaining: false,
+          };
           // state.isSnipping =  {requested: false, started: false, completed: false, showNFTs: false, openSeaDataArrived: false}
         }
       }
     },
 
-    reSetSnipping(state){
-
-      state.allAvailableAttributes= null,
-      state.countOfAllAttribute2 = {},      
-      state.list_of_all_tokens= null,
-      state.list_of_all_tokens2= {},
-      state.list_of_all_tokens_top_20 =  null,
-      state.list_of_all_tokens_remaining = null,
-      state.countOfAllAttribute= null,
-      // state.countOfAllAttribute2 = {},
-      state.rarityScoreOfAllValues2 = {}
-      state.rarityScoreOfAllValues= null,
-      state.isSnipping =  {requested: false, started: false, completed: false, showNFTs: false, openSeaDataArrived: false, startTop20: false, startRemaining: false},
-      state.normalization = false,
-      state.onlyOnSale = false
-    
+    reSetSnipping(state) {
+      (state.allAvailableAttributes = null),
+        (state.countOfAllAttribute2 = {}),
+        (state.list_of_all_tokens = null),
+        (state.list_of_all_tokens2 = {}),
+        (state.list_of_all_tokens_top_20 = null),
+        (state.list_of_all_tokens_remaining = null),
+        (state.countOfAllAttribute = null),
+        // state.countOfAllAttribute2 = {},
+        (state.rarityScoreOfAllValues2 = {});
+      (state.rarityScoreOfAllValues = null),
+        (state.isSnipping = {
+          requested: false,
+          started: false,
+          completed: false,
+          showNFTs: false,
+          openSeaDataArrived: false,
+          startTop20: false,
+          startRemaining: false,
+        }),
+        (state.normalization = false),
+        (state.onlyOnSale = false),
+        (state.sortType = 0);
     },
 
-    convertInList(state){
-      state.list_of_all_tokens = Object.values(state.list_of_all_tokens2)
+    convertInList(state) {
+      state.list_of_all_tokens = Object.values(state.list_of_all_tokens2);
     },
 
-    resetProgress(state){
+    resetProgress(state) {
       state.progress = {
-        snip : {started: false, ended: false},
-        dataFetch : {started: false, ended: false},
-        dataProcess : {started: false, ended: false},
-        raritiesAssign : {started: false, ended: false},
-        openseaFetch : {started: false, ended: false},  
-      }
+        snip: { started: false, ended: false },
+        dataFetch: { started: false, ended: false },
+        dataProcess: { started: false, ended: false },
+        raritiesAssign: { started: false, ended: false },
+        openseaFetch: { started: false, ended: false },
+      };
     },
 
-    setProgress(state, {payload}: PayloadAction<{
-      action: "snip"|"dataFetch"|"dataProcess"|"raritiesAssign"|"openseaFetch", 
-      status: "started"|"ended"
-    }>) {
-      if(payload.action === "snip" && payload.status === "started"){
-          state.progress.snip.started = true
+    setProgress(
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        action:
+          | "snip"
+          | "dataFetch"
+          | "dataProcess"
+          | "raritiesAssign"
+          | "openseaFetch";
+        status: "started" | "ended";
+      }>
+    ) {
+      if (payload.action === "snip" && payload.status === "started") {
+        state.progress.snip.started = true;
+      } else if (payload.action === "snip" && payload.status === "ended") {
+        state.progress.snip.ended = true;
+      } else if (
+        payload.action === "dataFetch" &&
+        payload.status === "started"
+      ) {
+        state.progress.dataFetch.started = true;
+      } else if (payload.action === "dataFetch" && payload.status === "ended") {
+        state.progress.dataFetch.ended = true;
+      } else if (
+        payload.action === "dataProcess" &&
+        payload.status === "started"
+      ) {
+        state.progress.dataProcess.started = true;
+      } else if (
+        payload.action === "dataProcess" &&
+        payload.status === "ended"
+      ) {
+        state.progress.dataProcess.ended = true;
+      } else if (
+        payload.action === "raritiesAssign" &&
+        payload.status === "started"
+      ) {
+        state.progress.raritiesAssign.started = true;
+      } else if (
+        payload.action === "raritiesAssign" &&
+        payload.status === "ended"
+      ) {
+        state.progress.raritiesAssign.ended = true;
+      } else if (
+        payload.action === "openseaFetch" &&
+        payload.status === "started"
+      ) {
+        state.progress.openseaFetch.started = true;
+      } else if (
+        payload.action === "openseaFetch" &&
+        payload.status === "ended"
+      ) {
+        state.progress.openseaFetch.ended = true;
       }
-      else if(payload.action === "snip" && payload.status === "ended"){
-          state.progress.snip.ended = true
-      }
-
-      else if(payload.action === "dataFetch" && payload.status === "started"){
-        state.progress.dataFetch.started = true
-      }
-      else if(payload.action === "dataFetch" && payload.status === "ended"){
-        state.progress.dataFetch.ended = true
-      }
-
-      else if(payload.action === "dataProcess" && payload.status === "started"){
-        state.progress.dataProcess.started = true
-      }
-      else if(payload.action === "dataProcess" && payload.status === "ended"){
-        state.progress.dataProcess.ended = true
-      }
-
-      else if(payload.action === "raritiesAssign" && payload.status === "started"){
-        state.progress.raritiesAssign.started = true
-      }
-      else if(payload.action === "raritiesAssign" && payload.status === "ended"){
-        state.progress.raritiesAssign.ended = true
-      }
-
-      else if(payload.action === "openseaFetch" && payload.status === "started"){
-        state.progress.openseaFetch.started = true
-      }
-      else if(payload.action === "openseaFetch" && payload.status === "ended"){
-        state.progress.openseaFetch.ended = true
-      }
-  
-    }
-      
-
-
-  }
-    
-
+    },
+  },
 });
   
 
