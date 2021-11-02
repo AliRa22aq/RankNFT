@@ -184,7 +184,7 @@ const NFTCards = () => {
       let traits_count = 0;
       const attribute_count_in_categories = Object.keys(countOfAllAttribute2).length;
       
-      // console.log("countOfAllAttribute2 ", countOfAllAttribute2)
+      console.log("countOfAllAttribute2 ", countOfAllAttribute2)
       
       Object.values(countOfAllAttribute2).map((eachAttribute: any) => {
         // console.log("countOfAllAttribute2 ", eachAttribute)
@@ -198,9 +198,7 @@ const NFTCards = () => {
         // console.log("countOfAllAttribute2 average_trait_count",average_trait_count )
         
           Object.values(countOfAllAttribute2).map((eachAttribute: any, key: number) => {
-            
-            // dispatch(setProcessingProgress(key+1))
-          
+                      
               Object.values(eachAttribute.trait_count).map((eachValue: any) => {
                 
                 const chance_of_occuring = eachValue.count/totalSupply;
@@ -209,14 +207,6 @@ const NFTCards = () => {
                 const normalized_score = (rarity_score * average_trait_count) / eachAttribute.total_variations;
                 const final_normalized_score = normalized_score / 2;
                 
-                // console.log("test name", eachValue.value)
-                // console.log("test rarity_score", rarity_score)
-                // console.log("test totalSupply", average_trait_count)
-                // console.log("test eachValue.count", eachValue.count)
-                // console.log("test normalized_score", normalized_score)
-                // console.log("test final_normalized_score", final_normalized_score)
-                // return 
-
 
           const rarity_score_of_each_value: RarityScoreOfValue = {
                 trait_type: eachAttribute.trait_type,

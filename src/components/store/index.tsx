@@ -577,15 +577,10 @@ const dataSlice = createSlice({
       state.list_of_all_tokens2[payload.tokenID] = payload;
     },
 
-    addTokenInList3(
-      state,
-      { payload }: PayloadAction<AttributesOfEachToekn[]>
-    ) {
-      // console.log("payload in addTokenInList3 ", payload)
+    addTokenInList3( state, { payload }: PayloadAction<AttributesOfEachToekn2>) {
 
-      payload.map((token: AttributesOfEachToekn) => {
-        state.list_of_all_tokens2[token.tokenID] = token;
-      });
+        state.list_of_all_tokens2 = payload;
+      
     },
 
     setRarityScoreToAttributeValue(
@@ -634,58 +629,41 @@ const dataSlice = createSlice({
       state.rarityScoreOfAllValues2[payload.value] = payload;
     },
 
-    setRarityScoreToEachNFTAttribuValue2(
-      state,
-      { payload }: PayloadAction<RarityScoreOfValue>
-    ) {
+    setRarityScoreToEachNFTAttribuValue2( state, { payload }: PayloadAction<RarityScoreOfValue> ) {
+
       Object.values(state.list_of_all_tokens2).map((token) => {
-        token.attributes.map((attribute, key) => {
-          if (
-            attribute.trait_type === payload.trait_type &&
-            attribute.value === payload.value
-          ) {
-            // if(Number(token.tokenID) === 42){
-            //     console.log("Test Attribute ", JSON.stringify(attribute))
-            //     console.log("Test payload=> ", payload)
-            //   }
 
-            attribute.value_rarity_score = payload.rarity_score;
-            attribute.value_normalized_rarity_score =
-              payload.normalized_rarity_score;
+      token.attributes.map((attribute, key) => {
 
-            token.rarity_score = token.rarity_score + payload.rarity_score;
-            token.normalized_rarity_score =
-              token.normalized_rarity_score + payload.normalized_rarity_score;
+        if ( attribute.trait_type === payload.trait_type && attribute.value === payload.value ) {
 
-            // if(Number(token.tokenID) === 42){
-            // console.log("Test rarity_score=> ", key + 1, payload.rarity_score, token.rarity_score)
-            // }
-          }
-        });
+          attribute.value_rarity_score = payload.rarity_score;
+          attribute.value_normalized_rarity_score = payload.normalized_rarity_score;
+      
+          token.rarity_score = token.rarity_score + payload.rarity_score;
+          token.normalized_rarity_score = token.normalized_rarity_score + payload.normalized_rarity_score;
+
+        }
       });
+    });
+
+
+      // state.list_of_all_tokens2[payload.trait_type].attributes.forEach((attribute) => {
+
+      //   console.log("Yes", state.list_of_all_tokens2[payload.trait_type])
+        
+      //   attribute.value_rarity_score = payload.rarity_score;
+      //   attribute.value_normalized_rarity_score = payload.normalized_rarity_score;
+
+      //   state.list_of_all_tokens2[payload.trait_type].rarity_score = state.list_of_all_tokens2[payload.trait_type].rarity_score + payload.rarity_score;
+      //   state.list_of_all_tokens2[payload.trait_type].normalized_rarity_score = state.list_of_all_tokens2[payload.trait_type].normalized_rarity_score +  payload.normalized_rarity_score;
+
+      // })
 
       state.list_of_all_tokens = Object.values(state.list_of_all_tokens2);
 
-      // if(state.list_of_all_tokens_top_20 === null){
-      // console.log("Active list_of_all_tokens_top_20")
 
-      //   state.list_of_all_tokens_top_20 = Object.values(state.list_of_all_tokens2)
-      //   state.list_of_all_tokens = Object.values(state.list_of_all_tokens2)
 
-      // }
-      //   else if (state.list_of_all_tokens_remaining === null){
-      //   console.log("Active list_of_all_tokens_remaining")
-
-      //   state.list_of_all_tokens_remaining = Object.values(state.list_of_all_tokens2)
-      //   state.list_of_all_tokens = Object.values(state.list_of_all_tokens2)
-      //   console.log("state.list_of_all_tokens", state.list_of_all_tokens)
-      // }
-      // else {
-      //   console.log("Active list_of_all_tokens")
-
-      //   state.list_of_all_tokens = Object.values(state.list_of_all_tokens2)
-      //   // state.list_of_all_tokens_onSale = state.list_of_all_tokens.filter(onSaleFiler)
-      // }
     },
 
     setInitalCountOfAllAttribute(
@@ -719,9 +697,7 @@ const dataSlice = createSlice({
                   // Check if value already present or not
                   // const checkValue = (obj: any) => obj.value === String(attribute.value);
                   // const isPresent = countOfEachAttribute.trait_count.some(checkValue)
-                  const isPresent = countOfEachAttribute.trait_count.find(
-                    (e) => e.value == attribute.value
-                  );
+                  const isPresent = countOfEachAttribute.trait_count.find((e) => e.value == attribute.value);
 
                   // Value matched, increase its count by one
                   if (isPresent) {
@@ -776,21 +752,13 @@ const dataSlice = createSlice({
             total_variations: 0,
           };
 
-        if (
-          !state.countOfAllAttribute2[attribute.trait_type].trait_count[
-            attribute.value
-          ]
-        ) {
-          state.countOfAllAttribute2[attribute.trait_type].trait_count[
-            attribute.value
-          ] = { value: attribute.value, count: 1 };
-          state.countOfAllAttribute2[
-            attribute.trait_type
-          ].total_variations += 1;
-        } else
-          state.countOfAllAttribute2[attribute.trait_type].trait_count[
-            attribute.value
-          ].count += 1;
+        if (!state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value]) {
+          state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value] = { value: attribute.value, count: 1 };
+          state.countOfAllAttribute2[attribute.trait_type].total_variations += 1;
+        } 
+        else{
+          state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].count += 1;
+        }
       });
     },
 

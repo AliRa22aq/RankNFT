@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import "./style.css";
 import { useDispatch, useSelector } from 'react-redux';
-import {resetProgress, setProgress, setCountOfAllAttribute3, addTokenInList3, reSetSnipping, setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress } from '../../../store';
+import {AttributesOfEachToekn2, resetProgress, setProgress, setCountOfAllAttribute3, addTokenInList3, reSetSnipping, setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress } from '../../../store';
 import Grid from "@mui/material/Grid";
 import { Form, Formik, Field } from "formik";
 import { TextField} from 'formik-material-ui';
@@ -144,7 +144,7 @@ const NFTForm = () => {
       dispatch(setProgress({action: "dataFetch", status: "ended"}));
 
 
-      let allTokens: any = [];
+      let allTokens: AttributesOfEachToekn2 = {};
       let allAttributes: any = [];
 
 
@@ -191,19 +191,18 @@ const NFTForm = () => {
   
           // console.log("newTokens", newTokens)
 
-          allTokens.push(newTokens)
+          allTokens[newTokens.tokenID] = newTokens
 
         }
 
       })
 
-      // console.log("allTokens", allTokens)
       dispatch(addTokenInList3(allTokens))
       dispatch(setCountOfAllAttribute3(allAttributes))          
 
       ////////////////////////////////////////////////
-      dispatch(setProgress({action: "dataProcess", status: "ended"}));
 
+      dispatch(setProgress({action: "dataProcess", status: "ended"}));
       dispatch(setIsSnipping({action: "completed"}))
 
   }
