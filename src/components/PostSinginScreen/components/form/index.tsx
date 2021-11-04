@@ -479,11 +479,11 @@ const NFTForm = () => {
       let url = data?.baseTokenURI?.replace("https://gateway.pinata.cloud/ipfs/", "https://ipfs.io/ipfs/");
       fetchAllTokenData(url, from, to)
     }
-    else if(data?.baseTokenURI && data?.baseTokenURI?.includes("https://")){
-      let url = data?.baseTokenURI
+    else if(data?.baseTokenURI && data?.baseTokenURI?.includes("http://")){
+      let url = data?.baseTokenURI?.replace("http://", "https://")
       fetchAllTokenData(url, from, to)
     }      
-    else if(data?.baseTokenURI && data?.baseTokenURI?.includes("http://")){
+    else if(data?.baseTokenURI && data?.baseTokenURI?.includes("https://")){
       let url = data?.baseTokenURI
       fetchAllTokenData(url, from, to)
     }      
