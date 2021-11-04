@@ -56,6 +56,8 @@ const NFTForm = () => {
 
   
   const fetchAllTokenData = async (URI: string, from: number, to: number) => {
+
+    console.log("fetchAllTokenData started")
     
     
     
@@ -75,6 +77,8 @@ const NFTForm = () => {
       // console.log("fetchAPI res", fetchAPI)    
     } catch(e){
       alert("Unable to fetch information. Make sure you have installed and enabled Moesif CORS extention and refresh the page")
+      dispatch(resetProgress());
+      dispatch(reSetSnipping())  
       throw("Aborting")
     }
     
@@ -99,7 +103,7 @@ const NFTForm = () => {
 
           for(var i = start;  i <= end;  i=i+1) {         
             let activeURL =  url.replace("extension" , String(i))
-            // console.log("Loop #",  i, activeURL )
+            console.log("Loop #",  i, activeURL )
             const request = axios.get( activeURL,  {data: i})
             requests.push(request)              
           }
@@ -128,6 +132,8 @@ const NFTForm = () => {
       // console.log("step 1: Snipping started with URL ", url)
       dispatch(setProgress({action: "dataFetch", status: "started"}));
       // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
+
+    console.log("fetchAllTokenData url", url)
 
 
       await requestingAllAPIs(1, url, 0, 1000, from, to)
@@ -209,6 +215,9 @@ const NFTForm = () => {
   }
 
   const fetchData = async  ( contractAdrs : string, URl?:string, setFieldValue?: any ) => {
+
+    console.log("fetchData started")
+
     // console.log("fetchData Started")
 
       dispatch(setProjectInfo(null))
@@ -292,11 +301,19 @@ const NFTForm = () => {
         do{
           var tokenURIInput = prompt("Please enter Token URI with 'ID' string like in below format  \nhttps://api.lostboy.io/boy/ID \nIncluding token ID ");
           // console.log("tokenURIInput", tokenURIInput)
-        } while(!tokenURIInput || !tokenURIInput.includes("ID"))   
+        } while(tokenURIInput !== null && !tokenURIInput.includes("ID"))   
+  
+          console.log("tokenURIInput", tokenURIInput)
 
         if (tokenURIInput != null) {
-          // console.log(tokenURIInput)
+          console.log("tokenURIInput", tokenURIInput)
           tokenURI = tokenURIInput;
+          // 0x06012c8cf97bead5deae237070f9587f8e7a266d
+        }
+        else {
+          console.log("tokenURIInput", tokenURIInput)
+          setLoading(false)
+          throw("No URL found")
         }
       }
       
@@ -442,7 +459,8 @@ const NFTForm = () => {
     dispatch(resetProgress());
     dispatch(reSetSnipping())
 
-    // console.log("startSnipping Started")
+    console.log("startSnipping Started", data)
+
     dispatch(setProgress({action: "snip", status: "started"}));
 
 
@@ -465,6 +483,11 @@ const NFTForm = () => {
       let url = data?.baseTokenURI
       fetchAllTokenData(url, from, to)
     }      
+    else if(data?.baseTokenURI && data?.baseTokenURI?.includes("http://")){
+      let url = data?.baseTokenURI
+      fetchAllTokenData(url, from, to)
+    }      
+
 
   }
 

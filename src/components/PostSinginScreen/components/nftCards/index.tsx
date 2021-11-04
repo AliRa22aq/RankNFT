@@ -22,8 +22,6 @@ import LoadingProgress from "../RarityReport/LoadingProgress";
 const NFTCards = () => {
   
   const dispatch = useDispatch();
-  // const [normalization, setNormalization] = useState(false)
-  // const [onlyOnSale, setOnlyOnSale] = useState(false)
   const [page, setPage] = useState(1)
   const [sortBy, setSortBy] = useState<number>(0);
   const [list_of_NFTs_for_currentPage, set_list_of_NFTs_for_currentPage] = useState<AttributesOfEachToekn[] | null>([])
