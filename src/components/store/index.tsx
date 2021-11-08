@@ -555,27 +555,27 @@ const dataSlice = createSlice({
       }
     },
 
-    addTokenInList(
-      state,
-      { payload }: PayloadAction<AttributesOfEachToekn[] | null>
-    ) {
-      // console.log("payload added ", payload)
-      if (payload === null) {
-        state.list_of_all_tokens = null;
-      } else {
-        if (state.list_of_all_tokens !== null) {
-          state.list_of_all_tokens = [...state.list_of_all_tokens, ...payload];
-        } else {
-          state.list_of_all_tokens = payload;
-        }
-      }
-    },
+    // addTokenInList(
+    //   state,
+    //   { payload }: PayloadAction<AttributesOfEachToekn[] | null>
+    // ) {
+    //   // console.log("payload added ", payload)
+    //   if (payload === null) {
+    //     state.list_of_all_tokens = null;
+    //   } else {
+    //     if (state.list_of_all_tokens !== null) {
+    //       state.list_of_all_tokens = [...state.list_of_all_tokens, ...payload];
+    //     } else {
+    //       state.list_of_all_tokens = payload;
+    //     }
+    //   }
+    // },
 
-    addTokenInList2(state, { payload }: PayloadAction<AttributesOfEachToekn>) {
-      // console.log("payload in addTokenInList2 ", payload)
+    // addTokenInList2(state, { payload }: PayloadAction<AttributesOfEachToekn>) {
+    //   // console.log("payload in addTokenInList2 ", payload)
 
-      state.list_of_all_tokens2[payload.tokenID] = payload;
-    },
+    //   state.list_of_all_tokens2[payload.tokenID] = payload;
+    // },
 
     addTokenInList3( state, { payload }: PayloadAction<AttributesOfEachToekn2>) {
 
@@ -583,44 +583,44 @@ const dataSlice = createSlice({
       
     },
 
-    setRarityScoreToAttributeValue(
-      state,
-      { payload }: PayloadAction<RarityScoreOfValue | null>
-    ) {
-      if (payload === null) {
-        state.rarityScoreOfAllValues = null;
-      } else {
-        if (state.rarityScoreOfAllValues === null) {
-          state.rarityScoreOfAllValues = [payload];
-        } else {
-          state.rarityScoreOfAllValues = [
-            ...state.rarityScoreOfAllValues,
-            payload,
-          ];
-        }
-      }
-    },
+    // setRarityScoreToAttributeValue(
+    //   state,
+    //   { payload }: PayloadAction<RarityScoreOfValue | null>
+    // ) {
+    //   if (payload === null) {
+    //     state.rarityScoreOfAllValues = null;
+    //   } else {
+    //     if (state.rarityScoreOfAllValues === null) {
+    //       state.rarityScoreOfAllValues = [payload];
+    //     } else {
+    //       state.rarityScoreOfAllValues = [
+    //         ...state.rarityScoreOfAllValues,
+    //         payload,
+    //       ];
+    //     }
+    //   }
+    // },
 
-    setRarityScoreToEachNFTAttribuValue(
-      state,
-      { payload }: PayloadAction<RarityScoreOfValue>
-    ) {
-      // console.log("lis of all tokens ", state.list_of_all_tokens)
+    // setRarityScoreToEachNFTAttribuValue(
+    //   state,
+    //   { payload }: PayloadAction<RarityScoreOfValue>
+    // ) {
+    //   // console.log("lis of all tokens ", state.list_of_all_tokens)
 
-      state.list_of_all_tokens?.map((token: AttributesOfEachToekn) => {
-        token.attributes.map((attribute: Attribute) => {
-          if (attribute.value === payload.value) {
-            attribute.value_rarity_score = payload.rarity_score;
-            attribute.value_normalized_rarity_score =
-              payload.normalized_rarity_score;
+    //   state.list_of_all_tokens?.map((token: AttributesOfEachToekn) => {
+    //     token.attributes.map((attribute: Attribute) => {
+    //       if (attribute.value === payload.value) {
+    //         attribute.value_rarity_score = payload.rarity_score;
+    //         attribute.value_normalized_rarity_score =
+    //           payload.normalized_rarity_score;
 
-            token.rarity_score = token.rarity_score + payload.rarity_score;
-            token.normalized_rarity_score =
-              token.normalized_rarity_score + payload.normalized_rarity_score;
-          }
-        });
-      });
-    },
+    //         token.rarity_score = token.rarity_score + payload.rarity_score;
+    //         token.normalized_rarity_score =
+    //           token.normalized_rarity_score + payload.normalized_rarity_score;
+    //       }
+    //     });
+    //   });
+    // },
 
     setRarityScoreToAttributeValue2(
       state,
@@ -628,6 +628,7 @@ const dataSlice = createSlice({
     ) {
       state.rarityScoreOfAllValues2[payload.value] = payload;
     },
+
 
     setRarityScoreToEachNFTAttribuValue2( state, { payload }: PayloadAction<RarityScoreOfValue> ) {
 
@@ -666,105 +667,108 @@ const dataSlice = createSlice({
 
     },
 
-    setInitalCountOfAllAttribute(
-      state,
-      { payload }: PayloadAction<CountOfEachAttribute[] | null>
-    ) {
-      if (payload === null) {
-        state.countOfAllAttribute = null;
-      } else {
-        state.countOfAllAttribute = payload;
-      }
-    },
+    // setInitalCountOfAllAttribute(
+    //   state,
+    //   { payload }: PayloadAction<CountOfEachAttribute[] | null>
+    // ) {
+    //   if (payload === null) {
+    //     state.countOfAllAttribute = null;
+    //   } else {
+    //     state.countOfAllAttribute = payload;
+    //   }
+    // },
 
-    setCountOfAllAttribute(state, { payload }: PayloadAction<Attribute[]>) {
-      if (state.countOfAllAttribute !== null) {
-        state.countOfAllAttribute.forEach(
-          (countOfEachAttribute: CountOfEachAttribute) => {
-            payload.forEach((attribute: Attribute) => {
-              // Find the trait type
-              // if (state.countOfAllAttribute?.find(e => e.trait_type == attribute.trait_type)){
-              if (countOfEachAttribute.trait_type === attribute.trait_type) {
-                // initiate the trait count array to store all the trait values and add first trait value
-                if (countOfEachAttribute.trait_count === null) {
-                  const new_trait_count = { value: attribute.value, count: 1 };
-                  countOfEachAttribute.trait_count = [new_trait_count];
-                  countOfEachAttribute.total_variations++;
-                }
+    // setCountOfAllAttribute(state, { payload }: PayloadAction<Attribute[]>) {
+    //   if (state.countOfAllAttribute !== null) {
+    //     state.countOfAllAttribute.forEach(
+    //       (countOfEachAttribute: CountOfEachAttribute) => {
+    //         payload.forEach((attribute: Attribute) => {
+    //           // Find the trait type
+    //           // if (state.countOfAllAttribute?.find(e => e.trait_type == attribute.trait_type)){
+    //           if (countOfEachAttribute.trait_type === attribute.trait_type) {
+    //             // initiate the trait count array to store all the trait values and add first trait value
+    //             if (countOfEachAttribute.trait_count === null) {
+    //               const new_trait_count = { value: attribute.value, count: 1 };
+    //               countOfEachAttribute.trait_count = [new_trait_count];
+    //               countOfEachAttribute.total_variations++;
+    //             }
 
-                // Trait array already existed.
-                else {
-                  // Check if value already present or not
-                  // const checkValue = (obj: any) => obj.value === String(attribute.value);
-                  // const isPresent = countOfEachAttribute.trait_count.some(checkValue)
-                  const isPresent = countOfEachAttribute.trait_count.find((e) => e.value == attribute.value);
+    //             // Trait array already existed.
+    //             else {
+    //               // Check if value already present or not
+    //               // const checkValue = (obj: any) => obj.value === String(attribute.value);
+    //               // const isPresent = countOfEachAttribute.trait_count.some(checkValue)
+    //               const isPresent = countOfEachAttribute.trait_count.find((e) => e.value == attribute.value);
 
-                  // Value matched, increase its count by one
-                  if (isPresent) {
-                    // countOfEachAttribute.trait_count &&
-                    countOfEachAttribute.trait_count.forEach((trait) => {
-                      if (trait.value === attribute.value) {
-                        trait.count++;
-                      }
-                    });
-                  }
+    //               // Value matched, increase its count by one
+    //               if (isPresent) {
+    //                 // countOfEachAttribute.trait_count &&
+    //                 countOfEachAttribute.trait_count.forEach((trait) => {
+    //                   if (trait.value === attribute.value) {
+    //                     trait.count++;
+    //                   }
+    //                 });
+    //               }
 
-                  // Value doesn't match, add a new entry and increase the count of variations by one
-                  else {
-                    const new_trait_count = {
-                      value: attribute.value,
-                      count: 1,
-                    };
-                    countOfEachAttribute.trait_count = [
-                      ...countOfEachAttribute.trait_count,
-                      new_trait_count,
-                    ];
-                    countOfEachAttribute.total_variations++;
-                  }
-                }
-              }
-            });
-          }
-        );
-      }
-    },
+    //               // Value doesn't match, add a new entry and increase the count of variations by one
+    //               else {
+    //                 const new_trait_count = {
+    //                   value: attribute.value,
+    //                   count: 1,
+    //                 };
+    //                 countOfEachAttribute.trait_count = [
+    //                   ...countOfEachAttribute.trait_count,
+    //                   new_trait_count,
+    //                 ];
+    //                 countOfEachAttribute.total_variations++;
+    //               }
+    //             }
+    //           }
+    //         });
+    //       }
+    //     );
+    //   }
+    // },
 
-    setInitialCountOfAllAttribute2(
-      state,
-      { payload }: PayloadAction<Attribute[]>
-    ) {
-      payload.forEach((attribute) => {
-        state.countOfAllAttribute2[attribute.trait_type] = {
-          trait_type: attribute.trait_type,
-          trait_count: {},
-          total_variations: 0,
-        };
-      });
-    },
+    // setInitialCountOfAllAttribute2(
+    //   state,
+    //   { payload }: PayloadAction<Attribute[]>
+    // ) {
+    //   payload.forEach((attribute) => {
+    //     state.countOfAllAttribute2[attribute.trait_type] = {
+    //       trait_type: attribute.trait_type,
+    //       trait_count: {},
+    //       total_variations: 0,
+    //     };
+    //   });
+    // },
 
-    setCountOfAllAttribute2(state, { payload }: PayloadAction<Attribute[]>) {
-      // console.log("payload in setCOunt", payload)
-      payload.forEach((attribute) => {
-        if (!state.countOfAllAttribute2[attribute.trait_type])
-          state.countOfAllAttribute2[attribute.trait_type] = {
-            trait_type: attribute.trait_type,
-            trait_count: {},
-            total_variations: 0,
-          };
+    // setCountOfAllAttribute2(state, { payload }: PayloadAction<Attribute[]>) {
+    //   // console.log("payload in setCOunt", payload)
+    //   payload.forEach((attribute) => {
+    //     if (!state.countOfAllAttribute2[attribute.trait_type])
+    //       state.countOfAllAttribute2[attribute.trait_type] = {
+    //         trait_type: attribute.trait_type,
+    //         trait_count: {},
+    //         total_variations: 0,
+    //       };
 
-        if (!state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value]) {
-          state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value] = { value: attribute.value, count: 1 };
-          state.countOfAllAttribute2[attribute.trait_type].total_variations += 1;
-        } 
-        else{
-          state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].count += 1;
-        }
-      });
-    },
+    //     if (!state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value]) {
+    //       state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value] = { value: attribute.value, count: 1 };
+    //       state.countOfAllAttribute2[attribute.trait_type].total_variations += 1;
+    //     } 
+    //     else{
+    //       state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].count += 1;
+    //     }
+    //   });
+    // },
 
     setCountOfAllAttribute3(state, { payload }: PayloadAction<Attribute[][]>) {
+
       payload.forEach((attributes) => {
+
         attributes.forEach((attribute) => {
+          
           if (!state.countOfAllAttribute2[attribute.trait_type])
             state.countOfAllAttribute2[attribute.trait_type] = {
               trait_type: attribute.trait_type,
@@ -794,18 +798,18 @@ const dataSlice = createSlice({
     },
 
     setOpenseaData(state, { payload }: PayloadAction<any>) {
-      // console.log("setOpenseaData started", payload)
+      console.log("setOpenseaData started", payload)
 
-      if (state.list_of_all_tokens) {
-        state.list_of_all_tokens.map((token: AttributesOfEachToekn) => {
+      // if (state.list_of_all_tokens) {
+
+        // state.list_of_all_tokens.map((token: AttributesOfEachToekn) => {
+
           payload.map((openseaAsset: any) => {
-            if (token.tokenID == openseaAsset.token_id) {
+
+            // if (token.tokenID == openseaAsset.token_id) {
               // console.log("opensea data matched", token.tokenID)
 
-              const onSale =
-                openseaAsset?.sell_orders && openseaAsset?.sell_orders[0]
-                  ? true
-                  : false;
+              const onSale = openseaAsset?.sell_orders && openseaAsset?.sell_orders[0] ? true : false;
               let saleType = "none";
 
               if (onSale) {
@@ -838,50 +842,55 @@ const dataSlice = createSlice({
               //   console.log("===> converted price", price)
               // }
 
-              token.opensea_data = openseaAsset;
-              token.opensea = {
+              state.list_of_all_tokens2[openseaAsset.token_id].opensea_data = openseaAsset;
+              state.list_of_all_tokens2[openseaAsset.token_id].opensea = {
                 price: price,
                 permalink: openseaAsset.permalink,
                 saleType,
               };
-            }
+
           });
-        });
-      }
+        // });
+
+        state.list_of_all_tokens = Object.values(state.list_of_all_tokens2);
+        
+        // state.isSnipping.showNFTs = true;
+      
+      // }
+        
 
       // state.list_of_all_tokens = Object.values(state.list_of_all_tokens2).sort( (a, b) => {
       //   return b.rarity_score - a.rarity_score;
       // });
-      state.isSnipping.showNFTs = true;
     },
 
-    setOpenseaData2(state, { payload }: PayloadAction<any>) {
-      // console.log("opensea payload", payload)
+    // setOpenseaData2(state, { payload }: PayloadAction<any>) {
+    //   // console.log("opensea payload", payload)
 
-      payload.map((openseaAsset: any) => {
-        // console.log("opensea Asset", openseaAsset)
-        const onSale =
-          openseaAsset?.sell_orders && openseaAsset?.sell_orders[0]
-            ? true
-            : false;
-        const price = onSale
-          ? Math.round(openseaAsset?.sell_orders[0].current_price)
-          : 0;
+    //   payload.map((openseaAsset: any) => {
+    //     // console.log("opensea Asset", openseaAsset)
+    //     const onSale =
+    //       openseaAsset?.sell_orders && openseaAsset?.sell_orders[0]
+    //         ? true
+    //         : false;
+    //     const price = onSale
+    //       ? Math.round(openseaAsset?.sell_orders[0].current_price)
+    //       : 0;
 
-        if (state.list_of_all_tokens2[openseaAsset.token_id]) {
-          state.list_of_all_tokens2[openseaAsset.token_id].opensea.permalink =
-            openseaAsset.permalink;
-          // state.list_of_all_tokens2[openseaAsset.token_id].opensea.price = String(price)
-          // console.log(" opensea token after update", state.list_of_all_tokens2[openseaAsset.token_id])
-        }
-      });
+    //     if (state.list_of_all_tokens2[openseaAsset.token_id]) {
+    //       state.list_of_all_tokens2[openseaAsset.token_id].opensea.permalink =
+    //         openseaAsset.permalink;
+    //       // state.list_of_all_tokens2[openseaAsset.token_id].opensea.price = String(price)
+    //       // console.log(" opensea token after update", state.list_of_all_tokens2[openseaAsset.token_id])
+    //     }
+    //   });
 
-      state.list_of_all_tokens = Object.values(state.list_of_all_tokens2).sort(
-        (a, b) => {
-          return b.rarity_score - a.rarity_score;
-        }
-      );
-    },
+    //   state.list_of_all_tokens = Object.values(state.list_of_all_tokens2).sort(
+    //     (a, b) => {
+    //       return b.rarity_score - a.rarity_score;
+    //     }
+    //   );
+    // },
 
     setLoadingContractData(
       state,
@@ -968,16 +977,20 @@ const dataSlice = createSlice({
           };
         }
 
+        // if (payload.action === "showNFTs") {
+        //   state.isSnipping = {
+        //     requested: true,
+        //     started: true,
+        //     completed: true,
+        //     showNFTs: true,
+        //     openSeaDataArrived: false,
+        //     startTop20: false,
+        //     startRemaining: false,
+        //   };
+        // }
+
         if (payload.action === "showNFTs") {
-          state.isSnipping = {
-            requested: true,
-            started: true,
-            completed: true,
-            showNFTs: true,
-            openSeaDataArrived: false,
-            startTop20: false,
-            startRemaining: false,
-          };
+          state.isSnipping.showNFTs = true
         }
 
         if (payload.action === "startTop20") {
@@ -1055,9 +1068,9 @@ const dataSlice = createSlice({
         (state.sortType = 0);
     },
 
-    convertInList(state) {
-      state.list_of_all_tokens = Object.values(state.list_of_all_tokens2);
-    },
+    // convertInList(state) {
+    //   state.list_of_all_tokens = Object.values(state.list_of_all_tokens2);
+    // },
 
     resetProgress(state) {
       state.progress = {
@@ -1135,6 +1148,6 @@ const dataSlice = createSlice({
 // Extract the action creators object and the reducer
 const { actions, reducer } = dataSlice
 // Extract and export each action creator by name
-export const  {resetProgress, setProgress, switchNormalization, assignNormalizedRank, sortByRankAndPrice, setProcessingProgress, setLoadingProgress, assignRank, setOnlyOnSaleState, setCountOfAllAttribute3, convertInList, setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, addTokenInList3, setOpenseaData2, addTokenInList2, setCountOfAllAttribute2, setInitialCountOfAllAttribute2, sortByPrice, setOpenseaData, reSetSnipping, setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setRarityScoreToEachNFTAttribuValue, setRarityScoreToAttributeValue, setProjectRange, setProjectInfo, setInitalCountOfAllAttribute, setCountOfAllAttribute, addTokenInList, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
+export const  {resetProgress, setProgress, switchNormalization, assignNormalizedRank, sortByRankAndPrice, setProcessingProgress, setLoadingProgress, assignRank, setOnlyOnSaleState, setCountOfAllAttribute3,  setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, addTokenInList3,  sortByPrice, setOpenseaData, reSetSnipping, setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setProjectRange, setProjectInfo, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
 // Export the reducer, either as a default or named export
 export default reducer

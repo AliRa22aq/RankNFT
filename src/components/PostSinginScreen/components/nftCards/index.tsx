@@ -28,7 +28,7 @@ const NFTCards = () => {
   const [sortBy, setSortBy] = useState<number>(0);
   const [list_of_NFTs_for_currentPage, set_list_of_NFTs_for_currentPage] = useState<AttributesOfEachToekn[] | null>([])
 
-  const { onlyOnSale, normalization, rarityScoreOfAllValues2,list_of_all_tokens_normalized, list_of_all_tokens_remaining, list_of_all_tokens_top_20, countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
+  const { progress, onlyOnSale, normalization, countOfAllAttribute2, list_of_all_tokens2, isSnipping, projectInfo, list_of_all_tokens } = useSelector((state: any) => state);
   
   // console.log("rarityScoreOfAllValues2", rarityScoreOfAllValues2)
 
@@ -97,7 +97,7 @@ const NFTCards = () => {
     let count = 1
     const initialLink = `https://api.opensea.io/api/v1/assets?asset_contract_address=${projectInfo?.contractAddress}`;
 
-    // console.log(`Progersss Start - iteration: ${iteration} `)
+    console.log(`Progersss Start - iteration: ${iteration} `)
 
     if(list_of_all_tokens){
   
@@ -149,12 +149,15 @@ const NFTCards = () => {
   }
 
   const getTopRatedNFTs = async () => {
-    // console.log("getTopRatedNFTs Started")
+    console.log("getTopRatedNFTs Started")
+
     dispatch(setProgress({action: "openseaFetch", status: "started"}));
 
     const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
     await fetchOpenseaData(1, 0, 3300);
+    
+    dispatch(assignRank())
     dispatch(setProgress({action: "openseaFetch", status: "ended"}));
 
     // handleSort(0)
@@ -223,7 +226,7 @@ const NFTCards = () => {
       dispatch(setProgress({action: "raritiesAssign", status: "ended"}));
     }
     // dispatch(assignNormalizedRank())
-    dispatch(assignRank())
+    // dispatch(assignRank())
 
     dispatch(setIsSnipping({action: "startTop20"}))
 
@@ -246,10 +249,6 @@ const NFTCards = () => {
   }
 
 
-
-
-
-
   useEffect(()=> {
     if(isSnipping.completed === true){
       dispatch(setProgress({action: "raritiesAssign", status: "started"}));
@@ -270,10 +269,8 @@ const NFTCards = () => {
 
 
   useEffect(()=> {
-    if(isSnipping.showNFTs){
       handleInputLength()
-    }
-  }, [page, isSnipping.showNFTs])
+  }, [page])
 
 
 
@@ -300,17 +297,14 @@ const NFTCards = () => {
 }, [normalization])
 
 
+  useEffect(()=> {
+   if(progress.openseaFetch.ended ){
+      handlePage(0,1);
+      handleInputLength()
+      dispatch(setIsSnipping({ action: "showNFTs" }));
 
-
-
-
-
-  //   useEffect(()=> {
-//     if(list_of_all_tokens2){
-//       handlePage(0,1);
-//       handleInputLength()
-//     } 
-//   }, [sortBy])
+    } 
+  }, [progress.openseaFetch.ended])
 
 
 //   useEffect(()=> {

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import "./style.css";
 import { useDispatch, useSelector } from 'react-redux';
-import {AttributesOfEachToekn2, resetProgress, setProgress, setCountOfAllAttribute3, addTokenInList3, reSetSnipping, setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress } from '../../../store';
+import {AttributesOfEachToekn2, resetProgress, setProgress, setCountOfAllAttribute3, addTokenInList3, reSetSnipping, setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo } from '../../../store';
 import Grid from "@mui/material/Grid";
 import { Form, Formik, Field } from "formik";
 import { TextField} from 'formik-material-ui';
@@ -197,6 +197,10 @@ const NFTForm = () => {
 
       })
 
+      console.log(allTokens)
+      console.log(allAttributes)
+      // return;
+      
       dispatch(addTokenInList3(allTokens))
       dispatch(setCountOfAllAttribute3(allAttributes))          
 
