@@ -31,6 +31,7 @@ const NFTCards = () => {
   const { progress, onlyOnSale, normalization, countOfAllAttribute2, list_of_all_tokens2, isSnipping, projectInfo, list_of_all_tokens } = useSelector((state: any) => state);
   
   console.log("countOfAllAttribute2", countOfAllAttribute2)
+  console.log("list_of_all_tokens2 setRarityScore", list_of_all_tokens2)
 
   const handleSort = (e: number) => {
     // console.log(e)
@@ -171,7 +172,7 @@ const NFTCards = () => {
     
   const findRarityScore2 = async () => {
 
-    // console.log("findRarityScore2 Started")
+    console.log("findRarityScore2 Started")
 
 
     // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
@@ -187,7 +188,7 @@ const NFTCards = () => {
       let traits_count = 0;
       const attribute_count_in_categories = Object.keys(countOfAllAttribute2).length;
       
-      console.log("countOfAllAttribute2 ", countOfAllAttribute2)
+      // console.log("countOfAllAttribute2 ", countOfAllAttribute2)
       
       Object.values(countOfAllAttribute2).map((eachAttribute: any) => {
         // console.log("countOfAllAttribute2 ", eachAttribute)
@@ -220,11 +221,13 @@ const NFTCards = () => {
           }
 
           // console.log("countOfAllAttribute2 ", key, rarity_score_of_each_value)
-          dispatch(setRarityScoreToAttributeValue2(rarity_score_of_each_value))
+          // dispatch(setRarityScoreToAttributeValue2(rarity_score_of_each_value))
           dispatch(setRarityScoreToEachNFTAttribuValue2(rarity_score_of_each_value))
          })
       })
+
       dispatch(setProgress({action: "raritiesAssign", status: "ended"}));
+      // return;
     }
     // dispatch(assignNormalizedRank())
     // dispatch(assignRank())

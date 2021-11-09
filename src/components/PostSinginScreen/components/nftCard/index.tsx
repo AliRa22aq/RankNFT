@@ -64,8 +64,14 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   //   }
   // }
 
-  let sortedAttributes = [...Object.values(attributes)] 
-  sortedAttributes = sortedAttributes.sort((a:any, b:any) => {return b.trait_type.trait_value.value_rarity_score - a.b.trait_type.trait_value.value_rarity_score})
+  // let attributes2 = [...Object.values(attributes)] 
+  // console.log("attributes2", attributes2)
+  // // console.log("attributes2", attributes2[attributes2.trait_value])
+
+  // // let attributes3 = [...Object.values(attributes2)] 
+  
+  // let sortedAttributes = attributes2.sort((a:any, b:any) => {return b[b.trait_value].value_rarity_score - a[a.trait_value].value_rarity_score })
+  // console.log("sortedAttributes", sortedAttributes)
   
   return (
     <div>
@@ -132,7 +138,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
                 </span>
                 {token.opensea.price} 
 
-                </div>:
+                </div>: 
                 <div> Price: - </div>  
             }
             {
@@ -213,7 +219,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
           
           <div className="NFT-rarity-details-attributes-heading"> Attributes and Scores</div>
           <div className="NFT-rarity-details-attributes"> 
-            <NFTtable attributes={sortedAttributes} normalization={normalization}/>
+            <NFTtable attributes={[...Object.values(attributes)]} normalization={normalization}/>
           </div>
 
           <div className="NFT-rarity-details" > {token.description ? token.description : null} </div>

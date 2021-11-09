@@ -4,16 +4,25 @@ import web3 from 'web3';
 var _ = require('lodash');
 
 
+// export interface AttributeStats {
+//   [trait_value: string] : {
+//       trait_type :string, 
+//       value: string,
+//       value_rarity_score: number,
+//       value_normalized_rarity_score: number
+//   }
+// }
+
+// {
+//   trait_type :string,
+//   trait_value :string,
+//   attributeStats: AttributeStats
+// }
+
 export interface Attribute {
-  [trait_type :string] : {
-    [trait_value: string] : {
-        trait_type :string, 
-        value: string,
-        value_rarity_score: number,
-        value_normalized_rarity_score: number
-    }
-  }
+[trait_type: string] : any
 }
+
 
 export interface Attribute2 {
   [tokenID :string] : Attribute
@@ -642,6 +651,9 @@ const dataSlice = createSlice({
 
       // Object.values(state.list_of_all_tokens2).map((token) => {
 
+      
+        state.rarityScoreOfAllValues2[payload.value] = payload;
+
         payload.presenceInTokens.map((tokenID) => {
 
         // if ( attribute.trait_type === payload.trait_type && attribute.value === payload.value ) {
@@ -664,13 +676,23 @@ const dataSlice = createSlice({
           
           // })
 
-          if(state.list_of_all_tokens2[tokenID].attributes[payload.trait_type][payload.value]){
+          console.log("payload matched in setRarityScore outside => ", payload)
+
+          if(
+            state.list_of_all_tokens2[tokenID].attributes
+            &&
+            state.list_of_all_tokens2[tokenID].attributes[payload.trait_type]
+            &&
+            state.list_of_all_tokens2[tokenID].attributes[payload.trait_type][payload.value]
+            ){
+
+            console.log("payload matched in setRarityScore inside => ", payload)
 
             state.list_of_all_tokens2[tokenID].attributes[payload.trait_type][payload.value].value_rarity_score = payload.rarity_score
             state.list_of_all_tokens2[tokenID].attributes[payload.trait_type][payload.value].value_normalized_rarity_score = payload.normalized_rarity_score
             
-            state.list_of_all_tokens2[tokenID].rarity_score += payload.rarity_score;
-            state.list_of_all_tokens2[tokenID].normalized_rarity_score += payload.normalized_rarity_score;
+            state.list_of_all_tokens2[tokenID].rarity_score = state.list_of_all_tokens2[tokenID].rarity_score +  payload.rarity_score;
+            state.list_of_all_tokens2[tokenID].normalized_rarity_score = state.list_of_all_tokens2[tokenID].normalized_rarity_score + payload.normalized_rarity_score;
 
           }
           
@@ -798,41 +820,28 @@ const dataSlice = createSlice({
 
         console.log(tokenID, payload[tokenID])
 
-        // export interface Attribute {
-        //   [trait_type :string] : {
-        //     [trait_value: string] : {
-        //         trait_type :string, 
-        //         value: string,
-        //         value_rarity_score: number,
-        //         value_normalized_rarity_score: number
-        //     }
-        //   }
-        // }
-
-
-
         Object.values(payload[tokenID]).forEach((attribute) => {
 
-          if (!state.countOfAllAttribute2[attribute.trait_value.trait_type] )
+          if (!state.countOfAllAttribute2[attribute.trait_type] )
 
-            state.countOfAllAttribute2[attribute.trait_value.trait_type] = {
-              trait_type: attribute.trait_value.trait_type,
+            state.countOfAllAttribute2[attribute.trait_type] = {
+              trait_type: attribute.trait_type,
               trait_count: {},
               total_variations: 0,
             };
 
           if (
-            !state.countOfAllAttribute2[attribute.trait_value.trait_type].trait_count[attribute.trait_value.value]) {
+            !state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.trait_value]) {
 
-            state.countOfAllAttribute2[attribute.trait_value.trait_type].trait_count[attribute.trait_value.value] = { 
-              value: attribute.trait_value.value, count: 1 , presenceInTokens: [] };
+            state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.trait_value] = { 
+              value: attribute.trait_value, count: 1 , presenceInTokens: [] };
               // state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].presenceInTokens.push(tokenID)
 
-            state.countOfAllAttribute2[attribute.trait_value.trait_type].total_variations += 1;
+            state.countOfAllAttribute2[attribute.trait_type].total_variations += 1;
 
           } else
-            state.countOfAllAttribute2[attribute.trait_value.trait_type].trait_count[attribute.trait_value.value].count += 1;
-            state.countOfAllAttribute2[attribute.trait_value.trait_type].trait_count[attribute.trait_value.value].presenceInTokens.push(tokenID)
+            state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.trait_value].count += 1;
+            state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.trait_value].presenceInTokens.push(tokenID)
 
             // state.countOfAllAttribute2[attribute.trait_type].presenceInTokens.push(tokenID)
 

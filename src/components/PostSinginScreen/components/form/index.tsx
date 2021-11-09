@@ -160,15 +160,40 @@ const NFTForm = () => {
           //    trait_type : {trait_type: string, value: string} | {}
           // }
 
+          // export interface Attribute {
+          //   [trait_type :string] : {
+          //     [trait_value: string] : {
+          //         trait_type :string, 
+          //         value: string,
+          //         value_rarity_score: number,
+          //         value_normalized_rarity_score: number
+          //     }
+          //   }
+          // }
+
           let attributes:any = {}
+          let values:any = {}
 
           let rawAttributes = token.value.data.attributes ? token.value.data.attributes : [];
           let trait_count = token.value.data.attributes ? token.value.data.attributes.length : 0
           // console.log("attributes", attributes)
     
           rawAttributes?.forEach((attribute: any)=> {     
+
+            console.log(attribute)
             
-            attributes[attribute.trait_type][attribute.value] = {trait_type: attribute.trait_type, value: attribute.value}
+            if( attribute.trait_type && attribute.value ){
+
+              // attributes["trait_type"] = attribute.trait_type
+              values["trait_type"] = attribute.trait_type
+              values["trait_value"] = attribute.value
+              values[attribute.value] = {trait_type: attribute.trait_type, value: attribute.value}
+              attributes[attribute.trait_type] = values
+              values = {}
+              // attributes = {}
+              // attributes[attribute.trait_type][attribute.value] = {trait_type: attribute.trait_type, value: attribute.value}
+            }
+
 
             if(
               attribute.value 
@@ -181,7 +206,16 @@ const NFTForm = () => {
             }
           })
     
-          attributes["trait_count"][trait_count] = {trait_type: "trait_count", value: trait_count}
+
+          values["trait_value"] = trait_count
+          values["trait_type"] =  "trait_count"
+          values[trait_count] = {trait_type: "trait_count", value: trait_count}
+          attributes["trait_count"] = values
+          values = {}
+
+
+
+          // attributes["trait_count"][trait_count] = {trait_type: "trait_count", value: trait_count}
 
           // attributes?.push({trait_type: "trait_count", value: trait_count})
           // export interface Attribute {
@@ -213,6 +247,8 @@ const NFTForm = () => {
             allAttributes[newTokens.tokenID] = newTokens.attributes;       
             allTokens[newTokens.tokenID] = newTokens;
             // attributes= {}
+            // values = {}
+
 
         }
 
@@ -220,11 +256,11 @@ const NFTForm = () => {
 
       console.log(allAttributes)
       console.log(allTokens)
-      // return;
       
       dispatch(addTokenInList3(allTokens))
       dispatch(setCountOfAllAttribute3(allAttributes as Attribute2))
       
+      // return;
       // return;
 
       ////////////////////////////////////////////////
@@ -235,6 +271,9 @@ const NFTForm = () => {
   }
 
   const fetchData = async  ( contractAdrs : string, URl?:string, setFieldValue?: any ) => {
+
+    console.log("fetchData started")
+
     // console.log("fetchData Started")
 
       dispatch(setProjectInfo(null))
@@ -318,11 +357,19 @@ const NFTForm = () => {
         do{
           var tokenURIInput = prompt("Please enter Token URI with 'ID' string like in below format  \nhttps://api.lostboy.io/boy/ID \nIncluding token ID ");
           // console.log("tokenURIInput", tokenURIInput)
-        } while(!tokenURIInput || !tokenURIInput.includes("ID"))   
+        } while(tokenURIInput !== null && !tokenURIInput.includes("ID"))   
+  
+          console.log("tokenURIInput", tokenURIInput)
 
         if (tokenURIInput != null) {
-          // console.log(tokenURIInput)
+          console.log("tokenURIInput", tokenURIInput)
           tokenURI = tokenURIInput;
+          // 0x06012c8cf97bead5deae237070f9587f8e7a266d
+        }
+        else {
+          console.log("tokenURIInput", tokenURIInput)
+          setLoading(false)
+          throw("No URL found")
         }
       }
       
@@ -463,6 +510,8 @@ const NFTForm = () => {
 
 
     }
+
+
 
   const startSnipping = async (from: number, to: number) => {
     dispatch(resetProgress());
