@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import "./style.css";
 import { useDispatch, useSelector } from 'react-redux';
-import {AttributesOfEachToekn2, resetProgress, setProgress, setCountOfAllAttribute3, addTokenInList3, reSetSnipping, setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo } from '../../../store';
+import {Attribute2, AttributesOfEachToekn2, resetProgress, setProgress, setCountOfAllAttribute3, addTokenInList3, reSetSnipping, setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo } from '../../../store';
 import Grid from "@mui/material/Grid";
 import { Form, Formik, Field } from "formik";
 import { TextField} from 'formik-material-ui';
@@ -145,7 +145,7 @@ const NFTForm = () => {
 
 
       let allTokens: AttributesOfEachToekn2 = {};
-      let allAttributes: any = [];
+      let allAttributes: any = {};
 
 
       dispatch(setProgress({action: "dataProcess", status: "started"}));
@@ -156,12 +156,20 @@ const NFTForm = () => {
         if(token.status === 'fulfilled'){
 
           // console.log(token.value.data)
+          // interface Attr {
+          //    trait_type : {trait_type: string, value: string} | {}
+          // }
 
-          let attributes = token.value.data.attributes ? token.value.data.attributes : [];
+          let attributes:any = {}
+
+          let rawAttributes = token.value.data.attributes ? token.value.data.attributes : [];
           let trait_count = token.value.data.attributes ? token.value.data.attributes.length : 0
           // console.log("attributes", attributes)
     
-          token.value.data.attributes?.forEach((attribute: any)=> {            
+          rawAttributes?.forEach((attribute: any)=> {     
+            
+            attributes[attribute.trait_type][attribute.value] = {trait_type: attribute.trait_type, value: attribute.value}
+
             if(
               attribute.value 
               && (String(attribute.value).toLowerCase() === "none" || String(attribute.value).toLowerCase() === "nothing")
@@ -173,14 +181,25 @@ const NFTForm = () => {
             }
           })
     
-          attributes?.push({trait_type: "trait_count", value: trait_count})
-          allAttributes.push(attributes)            
-  
+          attributes["trait_count"][trait_count] = {trait_type: "trait_count", value: trait_count}
+
+          // attributes?.push({trait_type: "trait_count", value: trait_count})
+          // export interface Attribute {
+          //   [trait_type :string] : {
+          //     [trait_value: string] : {
+          //         trait_type :string, 
+          //         value: string,
+          //         value_rarity_score: number,
+          //         value_normalized_rarity_score: number
+          //     }
+          //   }
+          // }
+          
           const newTokens: any = {
-                rank: 0,
-                normalized_rank: 0,
-                tokenID: token.value.config.data,
-                attributes: attributes ? attributes : [],
+            rank: 0,
+            normalized_rank: 0,
+            tokenID: token.value.config.data,
+                attributes: attributes,
                 opensea: {price: 0, permalink: ""},
                 rarity_score: 0,
                 normalized_rarity_score: 0,
@@ -188,21 +207,25 @@ const NFTForm = () => {
                 title: token.value.data.title? token.value.data.title: "",
                 name: token.value.data.name? token.value.data.name: `#${String(token.value.config.data)}`
               }
-  
-          // console.log("newTokens", newTokens)
-
-          allTokens[newTokens.tokenID] = newTokens
+              
+              // console.log("newTokens", newTokens)
+              
+            allAttributes[newTokens.tokenID] = newTokens.attributes;       
+            allTokens[newTokens.tokenID] = newTokens;
+            // attributes= {}
 
         }
 
       })
 
-      console.log(allTokens)
       console.log(allAttributes)
+      console.log(allTokens)
       // return;
       
       dispatch(addTokenInList3(allTokens))
-      dispatch(setCountOfAllAttribute3(allAttributes))          
+      dispatch(setCountOfAllAttribute3(allAttributes as Attribute2))
+      
+      // return;
 
       ////////////////////////////////////////////////
 

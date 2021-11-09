@@ -32,6 +32,8 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   const [isVideo, setIsVideo] = useState(false);
   const {projectInfo, onlyOnSale} = useSelector((state: any) => state);
 
+  const {attributes} = token
+
 
   let imageOfNFT = token.image;
 
@@ -50,8 +52,20 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   const handleClose = () => setOpen(false);
   const onSale = token.opensea.saleType === "onSale" ? true:false; 
 
-  let sortedAttributes = [...token.attributes]
-  sortedAttributes = sortedAttributes.sort((a:any, b:any) => {return b.value_rarity_score - a.value_rarity_score})
+
+  // export interface Attribute {
+  //   [trait_type :string] : {
+  //     [trait_value: string] : {
+  //         trait_type :string, 
+  //         value: string,
+  //         value_rarity_score: number,
+  //         value_normalized_rarity_score: number
+  //     }
+  //   }
+  // }
+
+  let sortedAttributes = [...Object.values(attributes)] 
+  sortedAttributes = sortedAttributes.sort((a:any, b:any) => {return b.trait_type.trait_value.value_rarity_score - a.b.trait_type.trait_value.value_rarity_score})
   
   return (
     <div>

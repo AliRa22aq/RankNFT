@@ -24,7 +24,7 @@ const NFTtable: FC<TableProps> = ({attributes, normalization}) => {
       const att =  {  
           trait: attribute.trait_type,
           value: attribute.value, 
-          count: countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].count,
+          count: countOfAllAttribute2[attribute.trait_type.].trait_count[attribute.value].count,
           probability: countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].count / projectInfo.range.range * 100 ,
           score: attribute.value_rarity_score.toFixed(2),
           normalized_score: attribute.value_normalized_rarity_score.toFixed(2)

@@ -30,7 +30,7 @@ const NFTCards = () => {
 
   const { progress, onlyOnSale, normalization, countOfAllAttribute2, list_of_all_tokens2, isSnipping, projectInfo, list_of_all_tokens } = useSelector((state: any) => state);
   
-  // console.log("rarityScoreOfAllValues2", rarityScoreOfAllValues2)
+  console.log("countOfAllAttribute2", countOfAllAttribute2)
 
   const handleSort = (e: number) => {
     // console.log(e)
@@ -213,9 +213,10 @@ const NFTCards = () => {
 
           const rarity_score_of_each_value: RarityScoreOfValue = {
                 trait_type: eachAttribute.trait_type,
-                value: eachValue.value,  
+                value: eachValue.value as string,  
                 rarity_score: rarity_score , 
-                normalized_rarity_score:  final_normalized_score
+                normalized_rarity_score:  final_normalized_score,
+                presenceInTokens: eachValue.presenceInTokens
           }
 
           // console.log("countOfAllAttribute2 ", key, rarity_score_of_each_value)

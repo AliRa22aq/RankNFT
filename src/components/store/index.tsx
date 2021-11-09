@@ -1,23 +1,29 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RankNFT as RankNFTType } from '../../../types/web3-v1-contracts/RankNFT'
 import web3 from 'web3';
+var _ = require('lodash');
+
 
 export interface Attribute {
-  trait_type :string, 
-  value: string,
-  value_rarity_score: number,
-  value_normalized_rarity_score: number
+  [trait_type :string] : {
+    [trait_value: string] : {
+        trait_type :string, 
+        value: string,
+        value_rarity_score: number,
+        value_normalized_rarity_score: number
+    }
+  }
 }
 
 export interface Attribute2 {
-  [trait_type :string] : Attribute
+  [tokenID :string] : Attribute
 }
 
 export interface AttributesOfEachToekn {
   rank: number,
   normalized_rank: number,
   tokenID: number
-  attributes: Attribute[],
+  attributes: Attribute,
   opensea_data: any,
   opensea: {saleType: string, price: number, permalink: string},
   rarity_score: number, 
@@ -47,18 +53,20 @@ export interface CountOfEachAttribute {
 export interface CountOfEachAttribute2Values {
   trait_type: string,
   trait_count: any, 
-  total_variations: number
+  total_variations: number,
+  // presenceInTokens: string[] 
 }
 
 export interface CountOfEachAttribute2 {
-  [key: string]: CountOfEachAttribute2Values
+  [trait_type: string]: CountOfEachAttribute2Values
 }
 
 export interface RarityScoreOfValue {
   trait_type: string,
   value :string, 
   rarity_score: number ,
-  normalized_rarity_score: number ,
+  normalized_rarity_score: number,
+  presenceInTokens: string[] 
 }
 
 export interface RarityScoreOfValue2 {
@@ -537,23 +545,23 @@ const dataSlice = createSlice({
       state.sortType;
     },
 
-    setAvailableAttributes(
-      state,
-      { payload }: PayloadAction<CountOfEachAttribute | null>
-    ) {
-      if (payload === null) {
-        state.allAvailableAttributes = null;
-      } else {
-        if (state.allAvailableAttributes !== null) {
-          state.allAvailableAttributes = [
-            ...state.allAvailableAttributes,
-            payload,
-          ];
-        } else {
-          state.allAvailableAttributes = [payload];
-        }
-      }
-    },
+    // setAvailableAttributes(
+    //   state,
+    //   { payload }: PayloadAction<CountOfEachAttribute | null>
+    // ) {
+    //   if (payload === null) {
+    //     state.allAvailableAttributes = null;
+    //   } else {
+    //     if (state.allAvailableAttributes !== null) {
+    //       state.allAvailableAttributes = [
+    //         ...state.allAvailableAttributes,
+    //         payload,
+    //       ];
+    //     } else {
+    //       state.allAvailableAttributes = [payload];
+    //     }
+    //   }
+    // },
 
     // addTokenInList(
     //   state,
@@ -632,21 +640,43 @@ const dataSlice = createSlice({
 
     setRarityScoreToEachNFTAttribuValue2( state, { payload }: PayloadAction<RarityScoreOfValue> ) {
 
-      Object.values(state.list_of_all_tokens2).map((token) => {
+      // Object.values(state.list_of_all_tokens2).map((token) => {
 
-      token.attributes.map((attribute, key) => {
+        payload.presenceInTokens.map((tokenID) => {
 
-        if ( attribute.trait_type === payload.trait_type && attribute.value === payload.value ) {
+        // if ( attribute.trait_type === payload.trait_type && attribute.value === payload.value ) {
 
-          attribute.value_rarity_score = payload.rarity_score;
-          attribute.value_normalized_rarity_score = payload.normalized_rarity_score;
+          // attribute.value_rarity_score = payload.rarity_score;
+          // attribute.value_normalized_rarity_score = payload.normalized_rarity_score;
       
-          token.rarity_score = token.rarity_score + payload.rarity_score;
-          token.normalized_rarity_score = token.normalized_rarity_score + payload.normalized_rarity_score;
+          // token.rarity_score = token.rarity_score + payload.rarity_score;
+          // token.normalized_rarity_score = token.normalized_rarity_score + payload.normalized_rarity_score;
 
-        }
+          // state.list_of_all_tokens2[tokenID].attributes.map((attribute)=> {
+          //   if(attribute.trait_type === payload.trait_type && attribute.value === payload.value){
+              
+          //     attribute.value_rarity_score = payload.rarity_score;
+          //     attribute.value_normalized_rarity_score = payload.normalized_rarity_score;
+              
+          //     state.list_of_all_tokens2[tokenID].rarity_score += payload.rarity_score;
+          //     state.list_of_all_tokens2[tokenID].normalized_rarity_score += payload.normalized_rarity_score;              
+          //   }
+          
+          // })
+
+          if(state.list_of_all_tokens2[tokenID].attributes[payload.trait_type][payload.value]){
+
+            state.list_of_all_tokens2[tokenID].attributes[payload.trait_type][payload.value].value_rarity_score = payload.rarity_score
+            state.list_of_all_tokens2[tokenID].attributes[payload.trait_type][payload.value].value_normalized_rarity_score = payload.normalized_rarity_score
+            
+            state.list_of_all_tokens2[tokenID].rarity_score += payload.rarity_score;
+            state.list_of_all_tokens2[tokenID].normalized_rarity_score += payload.normalized_rarity_score;
+
+          }
+          
+
       });
-    });
+    // });
 
 
       // state.list_of_all_tokens2[payload.trait_type].attributes.forEach((attribute) => {
@@ -662,7 +692,6 @@ const dataSlice = createSlice({
       // })
 
       state.list_of_all_tokens = Object.values(state.list_of_all_tokens2);
-
 
 
     },
@@ -763,34 +792,52 @@ const dataSlice = createSlice({
     //   });
     // },
 
-    setCountOfAllAttribute3(state, { payload }: PayloadAction<Attribute[][]>) {
+    setCountOfAllAttribute3(state, { payload }: PayloadAction<Attribute2>) {
 
-      payload.forEach((attributes) => {
+      Object.keys(payload).forEach( (tokenID) => {
 
-        attributes.forEach((attribute) => {
-          
-          if (!state.countOfAllAttribute2[attribute.trait_type])
-            state.countOfAllAttribute2[attribute.trait_type] = {
-              trait_type: attribute.trait_type,
+        console.log(tokenID, payload[tokenID])
+
+        // export interface Attribute {
+        //   [trait_type :string] : {
+        //     [trait_value: string] : {
+        //         trait_type :string, 
+        //         value: string,
+        //         value_rarity_score: number,
+        //         value_normalized_rarity_score: number
+        //     }
+        //   }
+        // }
+
+
+
+        Object.values(payload[tokenID]).forEach((attribute) => {
+
+          if (!state.countOfAllAttribute2[attribute.trait_value.trait_type] )
+
+            state.countOfAllAttribute2[attribute.trait_value.trait_type] = {
+              trait_type: attribute.trait_value.trait_type,
               trait_count: {},
               total_variations: 0,
             };
 
           if (
-            !state.countOfAllAttribute2[attribute.trait_type].trait_count[
-              attribute.value
-            ]
-          ) {
-            state.countOfAllAttribute2[attribute.trait_type].trait_count[
-              attribute.value
-            ] = { value: attribute.value, count: 1 };
-            state.countOfAllAttribute2[
-              attribute.trait_type
-            ].total_variations += 1;
+            !state.countOfAllAttribute2[attribute.trait_value.trait_type].trait_count[attribute.trait_value.value]) {
+
+            state.countOfAllAttribute2[attribute.trait_value.trait_type].trait_count[attribute.trait_value.value] = { 
+              value: attribute.trait_value.value, count: 1 , presenceInTokens: [] };
+              // state.countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].presenceInTokens.push(tokenID)
+
+            state.countOfAllAttribute2[attribute.trait_value.trait_type].total_variations += 1;
+
           } else
-            state.countOfAllAttribute2[attribute.trait_type].trait_count[
-              attribute.value
-            ].count += 1;
+            state.countOfAllAttribute2[attribute.trait_value.trait_type].trait_count[attribute.trait_value.value].count += 1;
+            state.countOfAllAttribute2[attribute.trait_value.trait_type].trait_count[attribute.trait_value.value].presenceInTokens.push(tokenID)
+
+            // state.countOfAllAttribute2[attribute.trait_type].presenceInTokens.push(tokenID)
+
+
+
         });
       });
 
@@ -850,18 +897,9 @@ const dataSlice = createSlice({
               };
 
           });
-        // });
 
         state.list_of_all_tokens = Object.values(state.list_of_all_tokens2);
         
-        // state.isSnipping.showNFTs = true;
-      
-      // }
-        
-
-      // state.list_of_all_tokens = Object.values(state.list_of_all_tokens2).sort( (a, b) => {
-      //   return b.rarity_score - a.rarity_score;
-      // });
     },
 
     // setOpenseaData2(state, { payload }: PayloadAction<any>) {
@@ -1068,9 +1106,7 @@ const dataSlice = createSlice({
         (state.sortType = 0);
     },
 
-    // convertInList(state) {
-    //   state.list_of_all_tokens = Object.values(state.list_of_all_tokens2);
-    // },
+
 
     resetProgress(state) {
       state.progress = {
@@ -1148,6 +1184,6 @@ const dataSlice = createSlice({
 // Extract the action creators object and the reducer
 const { actions, reducer } = dataSlice
 // Extract and export each action creator by name
-export const  {resetProgress, setProgress, switchNormalization, assignNormalizedRank, sortByRankAndPrice, setProcessingProgress, setLoadingProgress, assignRank, setOnlyOnSaleState, setCountOfAllAttribute3,  setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, addTokenInList3,  sortByPrice, setOpenseaData, reSetSnipping, setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setProjectRange, setProjectInfo, setAvailableAttributes, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
+export const  {resetProgress, setProgress, switchNormalization, assignNormalizedRank, sortByRankAndPrice, setProcessingProgress, setLoadingProgress, assignRank, setOnlyOnSaleState, setCountOfAllAttribute3,  setRarityScoreToAttributeValue2, setRarityScoreToEachNFTAttribuValue2, addTokenInList3,  sortByPrice, setOpenseaData, reSetSnipping, setIsSnipping, setLoadingContractData, setLoadingNFTs, sortByTokenID, sortByRarityScore, setProjectRange, setProjectInfo, setUploadedContractAddress, setContractAddress, setDeveloper, setTransectionProgress, setLogout, setSignedIn, clearState, setOwner, setWhitelistPeriod, setSubscriptionPeriod, setContractData, setActiveUser, setSubscriber, setWhiteListed, userWalletconnected, setLoading } = actions
 // Export the reducer, either as a default or named export
 export default reducer
