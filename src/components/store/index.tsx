@@ -816,6 +816,9 @@ const dataSlice = createSlice({
 
     setCountOfAllAttribute3(state, { payload }: PayloadAction<Attribute2>) {
 
+      console.log("Counting of attribute starts")
+      console.log(new Date().getTime())
+
       Object.keys(payload).forEach( (tokenID) => {
 
         console.log(tokenID, payload[tokenID])
@@ -849,6 +852,9 @@ const dataSlice = createSlice({
 
         });
       });
+
+      console.log(new Date().getTime())
+      console.log("Counting of attribute Ends")
 
       // console.log("countOfAllAttribute2", state.countOfAllAttribute2)
     },

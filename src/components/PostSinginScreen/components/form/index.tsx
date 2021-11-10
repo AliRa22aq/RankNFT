@@ -233,15 +233,15 @@ const NFTForm = () => {
             rank: 0,
             normalized_rank: 0,
             tokenID: token.value.config.data,
-                attributes: attributes,
-                opensea: {price: 0, permalink: ""},
-                rarity_score: 0,
-                normalized_rarity_score: 0,
-                image: token.value.data.image,
-                title: token.value.data.title? token.value.data.title: "",
-                name: token.value.data.name? token.value.data.name: `#${String(token.value.config.data)}`
-              }
-              
+            attributes: attributes,
+            opensea: {price: 0, permalink: ""},
+            rarity_score: 0,
+            normalized_rarity_score: 0,
+            image: token.value.data.image,
+            title: token.value.data.title? token.value.data.title: "",
+            name: token.value.data.name? token.value.data.name: `#${String(token.value.config.data)}`
+          }
+          
               // console.log("newTokens", newTokens)
               
             allAttributes[newTokens.tokenID] = newTokens.attributes;       
@@ -510,8 +510,6 @@ const NFTForm = () => {
 
 
     }
-
-
 
   const startSnipping = async (from: number, to: number) => {
     dispatch(resetProgress());

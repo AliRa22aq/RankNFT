@@ -150,7 +150,10 @@ const NFTCards = () => {
   }
 
   const getTopRatedNFTs = async () => {
-    console.log("getTopRatedNFTs Started")
+    // console.log("getTopRatedNFTs Started")
+    console.log("Open sea data fetching Started - 0 to 3300")
+    console.log(new Date().getTime())
+
 
     dispatch(setProgress({action: "openseaFetch", status: "started"}));
 
@@ -160,6 +163,10 @@ const NFTCards = () => {
     
     dispatch(assignRank())
     dispatch(setProgress({action: "openseaFetch", status: "ended"}));
+
+    console.log(new Date().getTime())
+    console.log("Open sea data fetching Ended - 0 to 3300")
+
 
     // handleSort(0)
     await delayFn(20000)
@@ -172,8 +179,8 @@ const NFTCards = () => {
     
   const findRarityScore2 = async () => {
 
-    console.log("findRarityScore2 Started")
-
+    console.log("find Rarity Score Started")
+    console.log(new Date().getTime())
 
     // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
@@ -225,6 +232,10 @@ const NFTCards = () => {
           dispatch(setRarityScoreToEachNFTAttribuValue2(rarity_score_of_each_value))
          })
       })
+
+      console.log(new Date().getTime())
+      console.log("find Rarity Score ended")
+  
 
       dispatch(setProgress({action: "raritiesAssign", status: "ended"}));
       // return;
