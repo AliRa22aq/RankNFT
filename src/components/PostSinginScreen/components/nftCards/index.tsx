@@ -151,8 +151,8 @@ const NFTCards = () => {
 
   const getTopRatedNFTs = async () => {
     // console.log("getTopRatedNFTs Started")
-    console.log("Open sea data fetching Started - 0 to 3300")
-    console.log(new Date().getTime())
+    console.log("Test Open sea data fetching Started - 0 to 3300")
+    console.log("Test",new Date().getTime())
 
 
     dispatch(setProgress({action: "openseaFetch", status: "started"}));
@@ -164,8 +164,8 @@ const NFTCards = () => {
     dispatch(assignRank())
     dispatch(setProgress({action: "openseaFetch", status: "ended"}));
 
-    console.log(new Date().getTime())
-    console.log("Open sea data fetching Ended - 0 to 3300")
+    console.log("Test",new Date().getTime())
+    console.log("Test Open sea data fetching Ended - 0 to 3300")
 
 
     // handleSort(0)
@@ -179,8 +179,8 @@ const NFTCards = () => {
     
   const findRarityScore2 = async () => {
 
-    console.log("find Rarity Score Started")
-    console.log(new Date().getTime())
+    console.log("Test find Rarity Score Started")
+    console.log("Test", new Date().getTime())
 
     // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
@@ -233,8 +233,8 @@ const NFTCards = () => {
          })
       })
 
-      console.log(new Date().getTime())
-      console.log("find Rarity Score ended")
+      console.log("Test",new Date().getTime())
+      console.log("Test find Rarity Score ended")
   
 
       dispatch(setProgress({action: "raritiesAssign", status: "ended"}));
