@@ -4,21 +4,6 @@ import web3 from 'web3';
 var _ = require('lodash');
 
 
-// export interface AttributeStats {
-//   [trait_value: string] : {
-//       trait_type :string, 
-//       value: string,
-//       value_rarity_score: number,
-//       value_normalized_rarity_score: number
-//   }
-// }
-
-// {
-//   trait_type :string,
-//   trait_value :string,
-//   attributeStats: AttributeStats
-// }
-
 export interface Attribute {
 [trait_type: string] : any
 }
@@ -655,96 +640,16 @@ const dataSlice = createSlice({
 
           const attributeDetail = payload[attributes.trait_type][attributes.trait_value]
 
-            // console.log("Test =================================================" )
-
-            // console.log("Test Form token" )
-
-            // console.log("Test", attributes.trait_type , attributes.trait_value)
-
-
-            // console.log("Test Form payload" )
-
-            // console.log("Test", attributeDetail.trait_type, attributeDetail.value)
-
-            // console.log("Test attributes", attributes)
-            // console.log("Test payload data", attributeDetail)
-
             attributes[attributeDetail.value].value_rarity_score =  attributeDetail.rarity_score
             attributes[attributeDetail.value].value_normalized_rarity_score = attributeDetail.normalized_rarity_score
 
             token.rarity_score += attributeDetail.rarity_score;
             token.normalized_rarity_score += attributeDetail.normalized_rarity_score;              
 
-            // score: attribute[attribute.trait_value].value_rarity_score.toFixed(2),
-            // normalized_score: attribute[attribute.trait_value].value_normalized_rarity_score.toFixed(2)
-  
-
-            // rarity_score: rarity_score,
-            // normalized_rarity_score:  final_normalized_score,
-
-            // console.log("Test attributes", attributes)
-
-            // if(
-            //   attributes[attributeDetail.trait_type]
-            //   && 
-            //   attributes[attributeDetail.value]
-            // )
-            // console.log("Test", attributes[attributeDetail.trait_type][attributeDetail.value])
-
-            
-
-            
-            // trait_type":"Music","trait_value":"All I Want"
-
-            // console.log("Test", value.trait_type , value.trait_value )
-            // console.log("Test =================================================" )
-
-          // if(token.attributes[attribute.trait_type] && token.attributes[attribute.trait_type][attribute.value]){
-            // Object.keys(payload[attribute]).map((value:any) => {
-
-              //  console.log("Test payload" )
-
-          
-          // }
-
-            
-
-            // token.attributes[attribute.trait_type][attribute.value]
-
 
         })
 
-
-
-
-
-        ///////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////////
-
-      
-        // state.rarityScoreOfAllValues2[payload.value] = payload;
-
-        // payload.presenceInTokens.map((tokenID) => {
-
-        // if ( attribute.trait_type === payload.trait_type && attribute.value === payload.value ) {
-
-          // attribute.value_rarity_score = payload.rarity_score;
-          // attribute.value_normalized_rarity_score = payload.normalized_rarity_score;
-      
-          // token.rarity_score = token.rarity_score + payload.rarity_score;
-          // token.normalized_rarity_score = token.normalized_rarity_score + payload.normalized_rarity_score;
-
-          // state.list_of_all_tokens2[tokenID].attributes.map((attribute)=> {
-          //   if(attribute.trait_type === payload.trait_type && attribute.value === payload.value){
-              
-          //     attribute.value_rarity_score = payload.rarity_score;
-          //     attribute.value_normalized_rarity_score = payload.normalized_rarity_score;
-              
-          //     state.list_of_all_tokens2[tokenID].rarity_score += payload.rarity_score;
-          //     state.list_of_all_tokens2[tokenID].normalized_rarity_score += payload.normalized_rarity_score;              
-          //   }
-          
-          // })
+      });
 
 
           ///////////////////////////////////////////////////////////////////////////
@@ -775,7 +680,6 @@ const dataSlice = createSlice({
 
           
 
-      });
     // });
 
 
