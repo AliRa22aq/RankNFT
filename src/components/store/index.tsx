@@ -647,14 +647,84 @@ const dataSlice = createSlice({
     },
 
 
-    setRarityScoreToEachNFTAttribuValue2( state, { payload }: PayloadAction<RarityScoreOfValue> ) {
+    setRarityScoreToEachNFTAttribuValue2( state, { payload }: PayloadAction<Attribute> ) {
 
-      // Object.values(state.list_of_all_tokens2).map((token) => {
+      Object.values(state.list_of_all_tokens2).map((token) => {
+
+        Object.values(token.attributes).map((attributes) => {
+
+          const attributeDetail = payload[attributes.trait_type][attributes.trait_value]
+
+            // console.log("Test =================================================" )
+
+            // console.log("Test Form token" )
+
+            // console.log("Test", attributes.trait_type , attributes.trait_value)
+
+
+            // console.log("Test Form payload" )
+
+            // console.log("Test", attributeDetail.trait_type, attributeDetail.value)
+
+            // console.log("Test attributes", attributes)
+            // console.log("Test payload data", attributeDetail)
+
+            attributes[attributeDetail.value].value_rarity_score =  attributeDetail.rarity_score
+            attributes[attributeDetail.value].value_normalized_rarity_score = attributeDetail.normalized_rarity_score
+
+            token.rarity_score += attributeDetail.rarity_score;
+            token.normalized_rarity_score += attributeDetail.normalized_rarity_score;              
+
+            // score: attribute[attribute.trait_value].value_rarity_score.toFixed(2),
+            // normalized_score: attribute[attribute.trait_value].value_normalized_rarity_score.toFixed(2)
+  
+
+            // rarity_score: rarity_score,
+            // normalized_rarity_score:  final_normalized_score,
+
+            // console.log("Test attributes", attributes)
+
+            // if(
+            //   attributes[attributeDetail.trait_type]
+            //   && 
+            //   attributes[attributeDetail.value]
+            // )
+            // console.log("Test", attributes[attributeDetail.trait_type][attributeDetail.value])
+
+            
+
+            
+            // trait_type":"Music","trait_value":"All I Want"
+
+            // console.log("Test", value.trait_type , value.trait_value )
+            // console.log("Test =================================================" )
+
+          // if(token.attributes[attribute.trait_type] && token.attributes[attribute.trait_type][attribute.value]){
+            // Object.keys(payload[attribute]).map((value:any) => {
+
+              //  console.log("Test payload" )
+
+          
+          // }
+
+            
+
+            // token.attributes[attribute.trait_type][attribute.value]
+
+
+        })
+
+
+
+
+
+        ///////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////
 
       
-        state.rarityScoreOfAllValues2[payload.value] = payload;
+        // state.rarityScoreOfAllValues2[payload.value] = payload;
 
-        payload.presenceInTokens.map((tokenID) => {
+        // payload.presenceInTokens.map((tokenID) => {
 
         // if ( attribute.trait_type === payload.trait_type && attribute.value === payload.value ) {
 
@@ -676,25 +746,33 @@ const dataSlice = createSlice({
           
           // })
 
-          console.log("payload matched in setRarityScore outside => ", payload)
 
-          if(
-            state.list_of_all_tokens2[tokenID].attributes
-            &&
-            state.list_of_all_tokens2[tokenID].attributes[payload.trait_type]
-            &&
-            state.list_of_all_tokens2[tokenID].attributes[payload.trait_type][payload.value]
-            ){
+          ///////////////////////////////////////////////////////////////////////////
+          ///////////////////////////////////////////////////////////////////////////
 
-            console.log("payload matched in setRarityScore inside => ", payload)
+          // console.log("payload matched in setRarityScore outside => ", payload)
 
-            state.list_of_all_tokens2[tokenID].attributes[payload.trait_type][payload.value].value_rarity_score = payload.rarity_score
-            state.list_of_all_tokens2[tokenID].attributes[payload.trait_type][payload.value].value_normalized_rarity_score = payload.normalized_rarity_score
+          // if(
+          //   state.list_of_all_tokens2[tokenID].attributes
+          //   &&
+          //   state.list_of_all_tokens2[tokenID].attributes[payload.trait_type]
+          //   &&
+          //   state.list_of_all_tokens2[tokenID].attributes[payload.trait_type][payload.value]
+          //   ){
+
+          //   console.log("payload matched in setRarityScore inside => ", payload)
+
+          //   state.list_of_all_tokens2[tokenID].attributes[payload.trait_type][payload.value].value_rarity_score = payload.rarity_score
+          //   state.list_of_all_tokens2[tokenID].attributes[payload.trait_type][payload.value].value_normalized_rarity_score = payload.normalized_rarity_score
             
-            state.list_of_all_tokens2[tokenID].rarity_score = state.list_of_all_tokens2[tokenID].rarity_score +  payload.rarity_score;
-            state.list_of_all_tokens2[tokenID].normalized_rarity_score = state.list_of_all_tokens2[tokenID].normalized_rarity_score + payload.normalized_rarity_score;
+          //   state.list_of_all_tokens2[tokenID].rarity_score = state.list_of_all_tokens2[tokenID].rarity_score +  payload.rarity_score;
+          //   state.list_of_all_tokens2[tokenID].normalized_rarity_score = state.list_of_all_tokens2[tokenID].normalized_rarity_score + payload.normalized_rarity_score;
 
-          }
+          // }
+
+          ///////////////////////////////////////////////////////////////////////////
+          ///////////////////////////////////////////////////////////////////////////
+
           
 
       });
@@ -817,7 +895,7 @@ const dataSlice = createSlice({
     setCountOfAllAttribute3(state, { payload }: PayloadAction<Attribute2>) {
 
       console.log("Test Counting of attribute starts")
-      console.log("Test", new Date().getTime())
+      console.log("Test", new Date().getMinutes(), ":" , new Date().getSeconds())
 
       Object.keys(payload).forEach( (tokenID) => {
 
@@ -853,7 +931,7 @@ const dataSlice = createSlice({
         });
       });
 
-      console.log("Test", new Date().getTime())
+      console.log("Test", new Date().getMinutes(), ":" , new Date().getSeconds())
       console.log("Test Counting of attribute Ends")
 
       // console.log("countOfAllAttribute2", state.countOfAllAttribute2)

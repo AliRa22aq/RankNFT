@@ -53,7 +53,10 @@ const NFTtable: FC<TableProps> = ({attributes, normalization}) => {
           probability: countOfAllAttribute2[attribute.trait_type].trait_count[attribute.trait_value].count / projectInfo.range.range * 100 ,
           score: attribute[attribute.trait_value].value_rarity_score.toFixed(2),
           normalized_score: attribute[attribute.trait_value].value_normalized_rarity_score.toFixed(2)
-        }
+         }
+
+//          normalized_rarity_score: 9.952060931899641
+// rarity_score: 24.25
         return att;
     })
 
