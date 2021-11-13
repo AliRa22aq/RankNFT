@@ -322,6 +322,9 @@ const dataSlice = createSlice({
     },
 
     assignRank(state) {
+
+      state.list_of_all_tokens = Object.values(state.list_of_all_tokens2);
+
       if (state.list_of_all_tokens) {
         // console.log("normalized ranking started")
 
@@ -333,7 +336,7 @@ const dataSlice = createSlice({
           token.normalized_rank = index + 1;
         });
 
-        state.list_of_all_tokens_normalized = state.list_of_all_tokens;
+        // state.list_of_all_tokens_normalized = state.list_of_all_tokens;
 
         state.list_of_all_tokens = state.list_of_all_tokens?.sort((a, b) => {
           return b.rarity_score - a.rarity_score;
@@ -343,7 +346,7 @@ const dataSlice = createSlice({
           token.rank = index + 1;
         });
 
-        state.list_of_all_tokens_not_normalized = state.list_of_all_tokens;
+        // state.list_of_all_tokens_not_normalized = state.list_of_all_tokens;
       }
     },
 
