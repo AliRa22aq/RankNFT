@@ -17,7 +17,7 @@ import OpenSea from '../../../assets/OpenSea.svg'
 import CornerRibbon from "react-corner-ribbon";
 import undefined from '../../../assets/undefined.png'
 import NFTtable from './NFTtable';
-import { SSL_OP_PKCS1_CHECK_2 } from 'constants';
+// import { SSL_OP_PKCS1_CHECK_2 } from 'constants';
 
 
 
@@ -75,7 +75,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   
   return (
     <div>
-    <Card sx={{ height: 335, width: 200 }} >
+    <Card sx={{ height: 335, width: 210 }} >
       
         <div>Rank #  {normalization ? token.normalized_rank : token.rank}</div>
       

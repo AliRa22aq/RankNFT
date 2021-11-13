@@ -75,6 +75,8 @@ const NFTForm = () => {
       // console.log("fetchAPI res", fetchAPI)    
     } catch(e){
       alert("Unable to fetch information. Make sure you have installed and enabled Moesif CORS extention and refresh the page")
+      dispatch(resetProgress());
+      dispatch(reSetSnipping());
       throw("Aborting")
     }
     
@@ -99,7 +101,7 @@ const NFTForm = () => {
 
           for(var i = start;  i <= end;  i=i+1) {         
             let activeURL =  url.replace("extension" , String(i))
-            // console.log("Loop #",  i, activeURL )
+            console.log("Loop #",  i, activeURL )
             const request = axios.get( activeURL,  {data: i})
             requests.push(request)              
           }
@@ -160,6 +162,7 @@ const NFTForm = () => {
 
 
       let allRawTokens: any = allRequests.flat();
+      
       allRawTokens.forEach((token :any, key: number) => {
 
         if(token.status === 'fulfilled'){

@@ -399,17 +399,17 @@ const dataSlice = createSlice({
 
           state.list_of_all_tokens?.sort((a, b) => {
             if (state.normalization === true) {
-              return b.normalized_rank - a.normalized_rank;
+              return a.normalized_rarity_score - b.normalized_rarity_score;
             } else {
-              return b.rank - a.rank;
+              return a.rarity_score - b.rarity_score;
             }
           });
 
           state.list_of_all_tokensBackup?.sort((a, b) => {
                 if (state.normalization === true) {
-                  return b.normalized_rank - a.normalized_rank;
+                  return a.normalized_rarity_score - b.normalized_rarity_score;
                 } else {
-                  return b.rank - a.rank;
+                  return a.rarity_score - b.rarity_score;
                 }
               });
         } 
@@ -418,17 +418,17 @@ const dataSlice = createSlice({
 
           state.list_of_all_tokens?.sort((a, b) => {
             if (state.normalization === true) {
-                return a.normalized_rank - b.normalized_rank;
+                return b.normalized_rarity_score - a.normalized_rarity_score;
             } else {
-                return a.rank - b.rank;
+                return b.rarity_score - a.rarity_score;
             }
           });
 
           state.list_of_all_tokensBackup?.sort((a, b) => {
               if (state.normalization === true) {
-                  return a.normalized_rank - b.normalized_rank;
+                  return b.normalized_rarity_score - a.normalized_rarity_score;
               } else {
-                  return a.rank - b.rank;
+                  return b.rarity_score - a.rarity_score;
               }
               });
           }
