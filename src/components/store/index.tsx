@@ -1041,17 +1041,17 @@ const dataSlice = createSlice({
     },
 
     reSetSnipping(state) {
-      (state.allAvailableAttributes = null),
-        (state.countOfAllAttribute2 = {}),
-        (state.list_of_all_tokens = null),
-        (state.list_of_all_tokens2 = {}),
-        (state.list_of_all_tokens_top_20 = null),
-        (state.list_of_all_tokens_remaining = null),
-        (state.countOfAllAttribute = null),
-        // state.countOfAllAttribute2 = {},
-        (state.rarityScoreOfAllValues2 = {});
-      (state.rarityScoreOfAllValues = null),
-        (state.isSnipping = {
+      state.allAvailableAttributes = null,
+      state.countOfAllAttribute2 = {},
+      state.list_of_all_tokens = null,
+      state.list_of_all_tokens2 = {},
+      state.list_of_all_tokens_top_20 = null,
+      state.list_of_all_tokens_remaining = null,
+      state.countOfAllAttribute = null,
+      state.list_of_all_tokensBackup = null,
+      state.rarityScoreOfAllValues2 = {};
+      state.rarityScoreOfAllValues = null,
+      state.isSnipping = {
           requested: false,
           started: false,
           completed: false,
@@ -1059,10 +1059,10 @@ const dataSlice = createSlice({
           openSeaDataArrived: false,
           startTop20: false,
           startRemaining: false,
-        }),
-        (state.normalization = false),
-        (state.onlyOnSale = false),
-        (state.sortType = 0);
+      },
+      state.normalization = false,
+      state.onlyOnSale = false,
+      state.sortType = 0;
     },
 
 
