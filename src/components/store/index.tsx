@@ -634,6 +634,10 @@ const dataSlice = createSlice({
 
     setRarityScoreToEachNFTAttribuValue2( state, { payload }: PayloadAction<Attribute> ) {
 
+      console.log("Test Rarity Score assignment to each attribute value stats")
+      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+
+
       Object.values(state.list_of_all_tokens2).map((token) => {
 
         Object.values(token.attributes).map((attributes) => {
@@ -651,52 +655,10 @@ const dataSlice = createSlice({
 
       });
 
-
-          ///////////////////////////////////////////////////////////////////////////
-          ///////////////////////////////////////////////////////////////////////////
-
-          // console.log("payload matched in setRarityScore outside => ", payload)
-
-          // if(
-          //   state.list_of_all_tokens2[tokenID].attributes
-          //   &&
-          //   state.list_of_all_tokens2[tokenID].attributes[payload.trait_type]
-          //   &&
-          //   state.list_of_all_tokens2[tokenID].attributes[payload.trait_type][payload.value]
-          //   ){
-
-          //   console.log("payload matched in setRarityScore inside => ", payload)
-
-          //   state.list_of_all_tokens2[tokenID].attributes[payload.trait_type][payload.value].value_rarity_score = payload.rarity_score
-          //   state.list_of_all_tokens2[tokenID].attributes[payload.trait_type][payload.value].value_normalized_rarity_score = payload.normalized_rarity_score
-            
-          //   state.list_of_all_tokens2[tokenID].rarity_score = state.list_of_all_tokens2[tokenID].rarity_score +  payload.rarity_score;
-          //   state.list_of_all_tokens2[tokenID].normalized_rarity_score = state.list_of_all_tokens2[tokenID].normalized_rarity_score + payload.normalized_rarity_score;
-
-          // }
-
-          ///////////////////////////////////////////////////////////////////////////
-          ///////////////////////////////////////////////////////////////////////////
-
-          
-
-    // });
-
-
-      // state.list_of_all_tokens2[payload.trait_type].attributes.forEach((attribute) => {
-
-      //   console.log("Yes", state.list_of_all_tokens2[payload.trait_type])
-        
-      //   attribute.value_rarity_score = payload.rarity_score;
-      //   attribute.value_normalized_rarity_score = payload.normalized_rarity_score;
-
-      //   state.list_of_all_tokens2[payload.trait_type].rarity_score = state.list_of_all_tokens2[payload.trait_type].rarity_score + payload.rarity_score;
-      //   state.list_of_all_tokens2[payload.trait_type].normalized_rarity_score = state.list_of_all_tokens2[payload.trait_type].normalized_rarity_score +  payload.normalized_rarity_score;
-
-      // })
+      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+      console.log("Test Rarity Score assignment to each attribute value ends")
 
       state.list_of_all_tokens = Object.values(state.list_of_all_tokens2);
-
 
     },
 
@@ -799,7 +761,7 @@ const dataSlice = createSlice({
     setCountOfAllAttribute3(state, { payload }: PayloadAction<Attribute2>) {
 
       console.log("Test Counting of attribute starts")
-      console.log("Test", new Date().getMinutes(), ":" , new Date().getSeconds())
+      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
 
       Object.keys(payload).forEach( (tokenID) => {
 
@@ -835,7 +797,7 @@ const dataSlice = createSlice({
         });
       });
 
-      console.log("Test", new Date().getMinutes(), ":" , new Date().getSeconds())
+      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
       console.log("Test Counting of attribute Ends")
 
       // console.log("countOfAllAttribute2", state.countOfAllAttribute2)

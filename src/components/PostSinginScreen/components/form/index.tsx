@@ -129,6 +129,9 @@ const NFTForm = () => {
       dispatch(setProgress({action: "dataFetch", status: "started"}));
       // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
+      console.log("Test token data fetching starts")
+      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+
 
       await requestingAllAPIs(1, url, 0, 1000, from, to)
       await requestingAllAPIs(2, url, 1001, 2000, from, to)
@@ -141,65 +144,45 @@ const NFTForm = () => {
       await requestingAllAPIs(9, url, 8001, 9000, from, to)
       await requestingAllAPIs(10, url, 9001, 10000, from, to)
 
+      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+      console.log("Test token data fetching ends")
+
       dispatch(setProgress({action: "dataFetch", status: "ended"}));
 
 
       let allTokens: AttributesOfEachToekn2 = {};
       let allAttributes: any = {};
 
-
       dispatch(setProgress({action: "dataProcess", status: "started"}));
+
+      console.log("Test loop over all tokens starts")
+      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+
 
       let allRawTokens: any = allRequests.flat();
       allRawTokens.forEach((token :any, key: number) => {
 
         if(token.status === 'fulfilled'){
 
-          // console.log(token.value.data)
-          // interface Attr {
-          //    trait_type : {trait_type: string, value: string} | {}
-          // }
-
-          // export interface Attribute {
-          //   [trait_type :string] : {
-          //     [trait_value: string] : {
-          //         trait_type :string, 
-          //         value: string,
-          //         value_rarity_score: number,
-          //         value_normalized_rarity_score: number
-          //     }
-          //   }
-          // }
-
           let attributes:any = {}
           let values:any = {}
 
           let rawAttributes = token.value.data.attributes ? token.value.data.attributes : [];
           let trait_count = token.value.data.attributes ? token.value.data.attributes.length : 0
-          // console.log("attributes", attributes)
     
           rawAttributes?.forEach((attribute: any)=> {     
 
-            console.log(attribute)
+            // console.log(attribute)
             
             if( attribute.trait_type && attribute.value ){
-
-              // attributes["trait_type"] = attribute.trait_type
               values["trait_type"] = attribute.trait_type
               values["trait_value"] = attribute.value
               values[attribute.value] = {trait_type: attribute.trait_type, value: attribute.value}
               attributes[attribute.trait_type] = values
               values = {}
-              // attributes = {}
-              // attributes[attribute.trait_type][attribute.value] = {trait_type: attribute.trait_type, value: attribute.value}
             }
 
-
-            if(
-              attribute.value 
-              && (String(attribute.value).toLowerCase() === "none" || String(attribute.value).toLowerCase() === "nothing")
-              ){
-              // console.log("attribute.value matched", attribute.value)
+            if( attribute.value && (String(attribute.value).toLowerCase() === "none" || String(attribute.value).toLowerCase() === "nothing")){
               if(trait_count > 0){
                 trait_count--
               }
@@ -213,22 +196,6 @@ const NFTForm = () => {
           attributes["trait_count"] = values
           values = {}
 
-
-
-          // attributes["trait_count"][trait_count] = {trait_type: "trait_count", value: trait_count}
-
-          // attributes?.push({trait_type: "trait_count", value: trait_count})
-          // export interface Attribute {
-          //   [trait_type :string] : {
-          //     [trait_value: string] : {
-          //         trait_type :string, 
-          //         value: string,
-          //         value_rarity_score: number,
-          //         value_normalized_rarity_score: number
-          //     }
-          //   }
-          // }
-          
           const newTokens: any = {
             rank: 0,
             normalized_rank: 0,
@@ -241,21 +208,20 @@ const NFTForm = () => {
             title: token.value.data.title? token.value.data.title: "",
             name: token.value.data.name? token.value.data.name: `#${String(token.value.config.data)}`
           }
-          
-              // console.log("newTokens", newTokens)
-              
+                        
             allAttributes[newTokens.tokenID] = newTokens.attributes;       
             allTokens[newTokens.tokenID] = newTokens;
-            // attributes= {}
-            // values = {}
 
 
         }
 
       })
 
-      console.log(allAttributes)
-      console.log(allTokens)
+      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+      console.log("Test loop over all tokens ends")
+
+      // console.log(allAttributes)
+      // console.log(allTokens)
       
       dispatch(addTokenInList3(allTokens))
       dispatch(setCountOfAllAttribute3(allAttributes as Attribute2))

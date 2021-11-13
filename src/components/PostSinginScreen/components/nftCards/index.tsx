@@ -152,7 +152,8 @@ const NFTCards = () => {
   const getTopRatedNFTs = async () => {
     // console.log("getTopRatedNFTs Started")
     console.log("Test Open sea data fetching Started - 0 to 3300")
-    console.log("Test", new Date().getMinutes(), ":" , new Date().getSeconds())
+    console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+
 
 
     dispatch(setProgress({action: "openseaFetch", status: "started"}));
@@ -161,11 +162,12 @@ const NFTCards = () => {
 
     await fetchOpenseaData(1, 0, 3300);
     
+    console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+    console.log("Test Open sea data fetching Ended - 0 to 3300")
+
     dispatch(assignRank())
     dispatch(setProgress({action: "openseaFetch", status: "ended"}));
 
-    console.log("Test", new Date().getMinutes(), ":" , new Date().getSeconds())
-    console.log("Test Open sea data fetching Ended - 0 to 3300")
 
 
     // handleSort(0)
@@ -180,7 +182,7 @@ const NFTCards = () => {
   const findRarityScore2 = async () => {
 
     console.log("Test find Rarity Score Started")
-    console.log("Test", new Date().getMinutes(), ":" , new Date().getSeconds())
+    console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
 
     // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
@@ -239,30 +241,16 @@ const NFTCards = () => {
             allValues[eachAttribute.trait_type] = {}
           }
           allValues[eachAttribute.trait_type][rarity_score_of_each_value.value] = rarity_score_of_each_value
-          // allValues[rarity_score_of_each_value.value] = eachValues
-          // allValues[eachAttribute.trait_type]["trait_type"] = eachAttribute.trait_type
-          // eachValues = {};
 
-          
-          
-          // allTraits[eachAttribute.trait_type] = eachAttribute.trait_type
-          // allValues[rarity_score_of_each_value.value] = rarity_score_of_each_value
-          
-          
-          // console.log("countOfAllAttribute2 ", key, rarity_score_of_each_value)
-          // dispatch(setRarityScoreToAttributeValue2(rarity_score_of_each_value))
-          // dispatch(setRarityScoreToEachNFTAttribuValue2(rarity_score_of_each_value))
         })
-          // allTraits["trait_type"] = eachAttribute.trait_type
-          // allValues = {}
-        // allValues["trait_type"] = eachAttribute.trait_type
       })
+
+      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+      console.log("Test find Rarity Score ended")
 
       console.log("Test allTraits", allValues)
       dispatch(setRarityScoreToEachNFTAttribuValue2(allValues))
 
-      console.log("Test", new Date().getMinutes(), ":" , new Date().getSeconds())
-      console.log("Test find Rarity Score ended")
   
 
       dispatch(setProgress({action: "raritiesAssign", status: "ended"}));
