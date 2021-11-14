@@ -56,6 +56,8 @@ const NFTForm = () => {
 
   
   const fetchAllTokenData = async (URI: string, from: number, to: number) => {
+
+    console.log("fetchAllTokenData started")
     
     
     
@@ -133,6 +135,7 @@ const NFTForm = () => {
 
       console.log("Test token data fetching starts")
       console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+      console.log("fetchAllTokenData url", url)
 
 
       await requestingAllAPIs(1, url, 0, 1000, from, to)
@@ -484,7 +487,8 @@ const NFTForm = () => {
     dispatch(resetProgress());
     dispatch(reSetSnipping())
 
-    // console.log("startSnipping Started")
+    console.log("startSnipping Started", data)
+
     dispatch(setProgress({action: "snip", status: "started"}));
 
 
@@ -503,10 +507,15 @@ const NFTForm = () => {
       let url = data?.baseTokenURI?.replace("https://gateway.pinata.cloud/ipfs/", "https://ipfs.io/ipfs/");
       fetchAllTokenData(url, from, to)
     }
+    else if(data?.baseTokenURI && data?.baseTokenURI?.includes("http://")){
+      let url = data?.baseTokenURI?.replace("http://", "https://")
+      fetchAllTokenData(url, from, to)
+    }      
     else if(data?.baseTokenURI && data?.baseTokenURI?.includes("https://")){
       let url = data?.baseTokenURI
       fetchAllTokenData(url, from, to)
     }      
+
 
   }
 
