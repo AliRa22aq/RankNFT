@@ -3,7 +3,8 @@ import "./styles.css"
 import { useSelector } from 'react-redux';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+// import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 
@@ -25,7 +26,7 @@ const LoadingProgress = () => {
                         !progress.dataFetch.started && !progress.dataFetch.ended ? 
                         <div className="progress"> <HourglassEmptyIcon color="action" /> <span className="progress-text">Waiting to start data fetching.</span> </div> : 
                         progress.dataFetch.started && !progress.dataFetch.ended ? 
-                        <div className="progress"> <CheckBoxOutlineBlankIcon color="action"/> <span className="progress-text">Tokens data fetching started.</span> </div> : 
+                        <div className="progress"> <CircularProgress color="primary" size={20}/> <span className="progress-text">Tokens data fetching started.</span> </div> : 
                         progress.dataFetch.started && progress.dataFetch.ended ? 
                         <div className="progress"> <CheckBoxIcon color="primary" />  <span className="progress-text"> Successfully fetched the data of all the tokens. </span></div> :
                         null
@@ -35,7 +36,7 @@ const LoadingProgress = () => {
                         !progress.dataProcess.started && !progress.dataProcess.ended ? 
                         <div className="progress"> <HourglassEmptyIcon color="action" /> <span className="progress-text">Waiting to start data processing. </span></div> :                         
                         progress.dataProcess.started && !progress.dataProcess.ended ? 
-                        <div className="progress"> <CheckBoxOutlineBlankIcon color="action"/> <span className="progress-text">Data processing started.</span> </div> : 
+                        <div className="progress"> <CircularProgress color="primary" size={20}/> <span className="progress-text">Data processing started.</span> </div> : 
                         progress.dataProcess.started && progress.dataProcess.ended ? 
                         <div className="progress"> <CheckBoxIcon color="primary" /> <span className="progress-text">Successfully Processed the data of all the tokens. </span></div> :
                         null
@@ -45,7 +46,7 @@ const LoadingProgress = () => {
                         !progress.raritiesAssign.started && !progress.raritiesAssign.ended ? 
                         <div className="progress"> <HourglassEmptyIcon color="action" /> <span className="progress-text">Waiting to start Rarity assingment. </span> </div> :                                                 
                         progress.raritiesAssign.started && !progress.raritiesAssign.ended ? 
-                        <div className="progress"> <CheckBoxOutlineBlankIcon color="action"/> <span className="progress-text">Rarity assingment started. </span> </div> : 
+                        <div className="progress"> <CircularProgress color="primary" size={20}/> <span className="progress-text">Rarity assingment started. </span> </div> : 
                         progress.raritiesAssign.started && progress.raritiesAssign.ended ? 
                         <div className="progress"> <CheckBoxIcon color="primary" /> <span className="progress-text"> Successfully assinged rarities to all the tokens. </span> </div> :
                         null
@@ -55,7 +56,7 @@ const LoadingProgress = () => {
                         !progress.openseaFetch.started && !progress.openseaFetch.ended ? 
                         <div className="progress"> <HourglassEmptyIcon color="action" /> <span className="progress-text"> Waiting to start Opensea data fetching.</span> </div> :                                                                         
                         progress.openseaFetch.started && !progress.openseaFetch.ended ? 
-                        <div className="progress"> <CheckBoxOutlineBlankIcon color="action"/> <span className="progress-text"> Opensea data fetching started.</span> </div> : 
+                        <div className="progress"> <CircularProgress color="primary" size={20}/> <span className="progress-text"> Opensea data fetching started.</span> </div> : 
                         progress.openseaFetch.started && progress.openseaFetch.ended ? 
                         <div className="progress"> <CheckBoxIcon color="primary" /> <span className="progress-text"> Successfully fetched the Opensea data of all the tokens.</span> </div> :
                         null

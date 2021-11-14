@@ -26,9 +26,10 @@ const NFTCards = () => {
   const [sortBy, setSortBy] = useState<number>(0);
   const [list_of_NFTs_for_currentPage, set_list_of_NFTs_for_currentPage] = useState<AttributesOfEachToekn[] | null>([])
 
-  const { onlyOnSale, normalization, rarityScoreOfAllValues2,list_of_all_tokens_normalized, list_of_all_tokens_remaining, list_of_all_tokens_top_20, countOfAllAttribute2, list_of_all_tokens2, isSnipping, countOfAllAttribute, projectInfo, list_of_all_tokens, rarityScoreOfAllValues } = useSelector((state: any) => state);
+  const { progress, onlyOnSale, normalization, countOfAllAttribute2, list_of_all_tokens2, isSnipping, projectInfo, list_of_all_tokens } = useSelector((state: any) => state);
   
-  // console.log("rarityScoreOfAllValues2", rarityScoreOfAllValues2)
+  console.log("countOfAllAttribute2", countOfAllAttribute2)
+  console.log("list_of_all_tokens2 setRarityScore", list_of_all_tokens2)
 
   const handleSort = (e: number) => {
     // console.log(e)
@@ -95,7 +96,7 @@ const NFTCards = () => {
     let count = 1
     const initialLink = `https://api.opensea.io/api/v1/assets?asset_contract_address=${projectInfo?.contractAddress}`;
 
-    // console.log(`Progersss Start - iteration: ${iteration} `)
+    console.log(`Progersss Start - iteration: ${iteration} `)
 
     if(list_of_all_tokens){
   
@@ -148,12 +149,24 @@ const NFTCards = () => {
 
   const getTopRatedNFTs = async () => {
     // console.log("getTopRatedNFTs Started")
+    console.log("Test Open sea data fetching Started - 0 to 3300")
+    console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+
+
+
     dispatch(setProgress({action: "openseaFetch", status: "started"}));
 
     const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
     await fetchOpenseaData(1, 0, 3300);
+    
+    console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+    console.log("Test Open sea data fetching Ended - 0 to 3300")
+
+    dispatch(assignRank())
     dispatch(setProgress({action: "openseaFetch", status: "ended"}));
+
+
 
     // handleSort(0)
     await delayFn(20000)
@@ -166,8 +179,8 @@ const NFTCards = () => {
     
   const findRarityScore2 = async () => {
 
-    // console.log("findRarityScore2 Started")
-
+    console.log("Test find Rarity Score Started")
+    console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
 
     // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
@@ -194,11 +207,13 @@ const NFTCards = () => {
         
         // console.log("countOfAllAttribute2 attribute_count_in_categories",attribute_count_in_categories )
         // console.log("countOfAllAttribute2 average_trait_count",average_trait_count )
-        
+
+        let allValues: any = {};
+        let eachValues: any = {};
+        let allTraits: any = {};
+
           Object.values(countOfAllAttribute2).map((eachAttribute: any, key: number) => {
-            
-            // dispatch(setProcessingProgress(key+1))
-          
+                      
               Object.values(eachAttribute.trait_count).map((eachValue: any) => {
                 
                 const chance_of_occuring = eachValue.count/totalSupply;
@@ -207,31 +222,40 @@ const NFTCards = () => {
                 const normalized_score = (rarity_score * average_trait_count) / eachAttribute.total_variations;
                 const final_normalized_score = normalized_score / 2;
                 
-                // console.log("test name", eachValue.value)
-                // console.log("test rarity_score", rarity_score)
-                // console.log("test totalSupply", average_trait_count)
-                // console.log("test eachValue.count", eachValue.count)
-                // console.log("test normalized_score", normalized_score)
-                // console.log("test final_normalized_score", final_normalized_score)
-                // return 
-
 
           const rarity_score_of_each_value: RarityScoreOfValue = {
                 trait_type: eachAttribute.trait_type,
-                value: eachValue.value,  
-                rarity_score: rarity_score , 
-                normalized_rarity_score:  final_normalized_score
+                value: eachValue.value as string,
+                rarity_score: rarity_score,
+                normalized_rarity_score:  final_normalized_score,
+                presenceInTokens: eachValue.presenceInTokens
           }
 
-          // console.log("countOfAllAttribute2 ", key, rarity_score_of_each_value)
-          dispatch(setRarityScoreToAttributeValue2(rarity_score_of_each_value))
-          dispatch(setRarityScoreToEachNFTAttribuValue2(rarity_score_of_each_value))
-         })
+          // eachValues["trait_value"] = rarity_score_of_each_value.value
+          // eachValues["trait_type"] = eachAttribute.trait_type
+          // eachValues[rarity_score_of_each_value.value] = rarity_score_of_each_value
+
+          if(!allValues[eachAttribute.trait_type]){
+            allValues[eachAttribute.trait_type] = {}
+          }
+          allValues[eachAttribute.trait_type][rarity_score_of_each_value.value] = rarity_score_of_each_value
+
+        })
       })
+
+      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+      console.log("Test find Rarity Score ended")
+
+      console.log("Test allTraits", allValues)
+      dispatch(setRarityScoreToEachNFTAttribuValue2(allValues))
+
+  
+
       dispatch(setProgress({action: "raritiesAssign", status: "ended"}));
+      // return;
     }
     // dispatch(assignNormalizedRank())
-    dispatch(assignRank())
+    // dispatch(assignRank())
 
     dispatch(setIsSnipping({action: "startTop20"}))
 
@@ -254,10 +278,6 @@ const NFTCards = () => {
   }
 
 
-
-
-
-
   useEffect(()=> {
     if(isSnipping.completed === true){
       dispatch(setProgress({action: "raritiesAssign", status: "started"}));
@@ -278,10 +298,8 @@ const NFTCards = () => {
 
 
   useEffect(()=> {
-    if(isSnipping.showNFTs){
       handleInputLength()
-    }
-  }, [page, isSnipping.showNFTs])
+  }, [page])
 
 
 
@@ -308,17 +326,14 @@ const NFTCards = () => {
 }, [normalization])
 
 
+  useEffect(()=> {
+   if(progress.openseaFetch.ended ){
+      handlePage(0,1);
+      handleInputLength()
+      dispatch(setIsSnipping({ action: "showNFTs" }));
 
-
-
-
-
-  //   useEffect(()=> {
-//     if(list_of_all_tokens2){
-//       handlePage(0,1);
-//       handleInputLength()
-//     } 
-//   }, [sortBy])
+    } 
+  }, [progress.openseaFetch.ended])
 
 
 //   useEffect(()=> {

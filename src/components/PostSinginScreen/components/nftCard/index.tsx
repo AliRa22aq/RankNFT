@@ -17,7 +17,7 @@ import OpenSea from '../../../assets/OpenSea.svg'
 import CornerRibbon from "react-corner-ribbon";
 import undefined from '../../../assets/undefined.png'
 import NFTtable from './NFTtable';
-import { SSL_OP_PKCS1_CHECK_2 } from 'constants';
+// import { SSL_OP_PKCS1_CHECK_2 } from 'constants';
 
 
 
@@ -31,6 +31,8 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   const web3 = new Web3(window.ethereum);  
   const [isVideo, setIsVideo] = useState(false);
   const {projectInfo, onlyOnSale} = useSelector((state: any) => state);
+
+  const {attributes} = token
 
 
   let imageOfNFT = token.image;
@@ -50,12 +52,30 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   const handleClose = () => setOpen(false);
   const onSale = token.opensea.saleType === "onSale" ? true:false; 
 
-  let sortedAttributes = [...token.attributes]
-  sortedAttributes = sortedAttributes.sort((a:any, b:any) => {return b.value_rarity_score - a.value_rarity_score})
+
+  // export interface Attribute {
+  //   [trait_type :string] : {
+  //     [trait_value: string] : {
+  //         trait_type :string, 
+  //         value: string,
+  //         value_rarity_score: number,
+  //         value_normalized_rarity_score: number
+  //     }
+  //   }
+  // }
+
+  // let attributes2 = [...Object.values(attributes)] 
+  // console.log("attributes2", attributes2)
+  // // console.log("attributes2", attributes2[attributes2.trait_value])
+
+  // // let attributes3 = [...Object.values(attributes2)] 
+  
+  // let sortedAttributes = attributes2.sort((a:any, b:any) => {return b[b.trait_value].value_rarity_score - a[a.trait_value].value_rarity_score })
+  // console.log("sortedAttributes", sortedAttributes)
   
   return (
     <div>
-    <Card sx={{ height: 335, width: 200 }} >
+    <Card sx={{ height: 335, width: 210 }} >
       
         <div>Rank #  {normalization ? token.normalized_rank : token.rank}</div>
       
@@ -118,7 +138,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
                 </span>
                 {token.opensea.price} 
 
-                </div>:
+                </div>: 
                 <div> Price: - </div>  
             }
             {
@@ -199,7 +219,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
           
           <div className="NFT-rarity-details-attributes-heading"> Attributes and Scores</div>
           <div className="NFT-rarity-details-attributes"> 
-            <NFTtable attributes={sortedAttributes} normalization={normalization}/>
+            <NFTtable attributes={[...Object.values(attributes)]} normalization={normalization}/>
           </div>
 
           <div className="NFT-rarity-details" > {token.description ? token.description : null} </div>

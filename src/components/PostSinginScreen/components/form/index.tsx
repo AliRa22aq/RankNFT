@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import "./style.css";
 import { useDispatch, useSelector } from 'react-redux';
-import {resetProgress, setProgress, setCountOfAllAttribute3, addTokenInList3, reSetSnipping, setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo, ProjectInfo, Attribute, setInitalCountOfAllAttribute, setCountOfAllAttribute, setUploadedContractAddress } from '../../../store';
+import {Attribute2, AttributesOfEachToekn2, resetProgress, setProgress, setCountOfAllAttribute3, addTokenInList3, reSetSnipping, setIsSnipping, setLoadingNFTs, setProjectRange, setProjectInfo } from '../../../store';
 import Grid from "@mui/material/Grid";
 import { Form, Formik, Field } from "formik";
 import { TextField} from 'formik-material-ui';
@@ -78,7 +78,7 @@ const NFTForm = () => {
     } catch(e){
       alert("Unable to fetch information. Make sure you have installed and enabled Moesif CORS extention and refresh the page")
       dispatch(resetProgress());
-      dispatch(reSetSnipping())  
+      dispatch(reSetSnipping());
       throw("Aborting")
     }
     
@@ -133,7 +133,9 @@ const NFTForm = () => {
       dispatch(setProgress({action: "dataFetch", status: "started"}));
       // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
-    console.log("fetchAllTokenData url", url)
+      console.log("Test token data fetching starts")
+      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+      console.log("fetchAllTokenData url", url)
 
 
       await requestingAllAPIs(1, url, 0, 1000, from, to)
@@ -147,69 +149,95 @@ const NFTForm = () => {
       await requestingAllAPIs(9, url, 8001, 9000, from, to)
       await requestingAllAPIs(10, url, 9001, 10000, from, to)
 
+      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+      console.log("Test token data fetching ends")
+
       dispatch(setProgress({action: "dataFetch", status: "ended"}));
 
 
-      let allTokens: any = [];
-      let allAttributes: any = [];
-
+      let allTokens: AttributesOfEachToekn2 = {};
+      let allAttributes: any = {};
 
       dispatch(setProgress({action: "dataProcess", status: "started"}));
 
+      console.log("Test loop over all tokens starts")
+      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+
+
       let allRawTokens: any = allRequests.flat();
+      
       allRawTokens.forEach((token :any, key: number) => {
 
         if(token.status === 'fulfilled'){
 
-          // console.log(token.value.data)
+          let attributes:any = {}
+          let values:any = {}
 
-          let attributes = token.value.data.attributes ? token.value.data.attributes : [];
+          let rawAttributes = token.value.data.attributes ? token.value.data.attributes : [];
           let trait_count = token.value.data.attributes ? token.value.data.attributes.length : 0
-          // console.log("attributes", attributes)
     
-          token.value.data.attributes?.forEach((attribute: any)=> {            
-            if(
-              attribute.value 
-              && (String(attribute.value).toLowerCase() === "none" || String(attribute.value).toLowerCase() === "nothing")
-              ){
-              // console.log("attribute.value matched", attribute.value)
+          rawAttributes?.forEach((attribute: any)=> {     
+
+            // console.log(attribute)
+            
+            if( attribute.trait_type && attribute.value ){
+              values["trait_type"] = attribute.trait_type
+              values["trait_value"] = attribute.value
+              values[attribute.value] = {trait_type: attribute.trait_type, value: attribute.value}
+              attributes[attribute.trait_type] = values
+              values = {}
+            }
+
+            if( attribute.value && (String(attribute.value).toLowerCase() === "none" || String(attribute.value).toLowerCase() === "nothing")){
               if(trait_count > 0){
                 trait_count--
               }
             }
           })
     
-          attributes?.push({trait_type: "trait_count", value: trait_count})
-          allAttributes.push(attributes)            
-  
-          const newTokens: any = {
-                rank: 0,
-                normalized_rank: 0,
-                tokenID: token.value.config.data,
-                attributes: attributes ? attributes : [],
-                opensea: {price: 0, permalink: ""},
-                rarity_score: 0,
-                normalized_rarity_score: 0,
-                image: token.value.data.image,
-                title: token.value.data.title? token.value.data.title: "",
-                name: token.value.data.name? token.value.data.name: `#${String(token.value.config.data)}`
-              }
-  
-          // console.log("newTokens", newTokens)
 
-          allTokens.push(newTokens)
+          values["trait_value"] = trait_count
+          values["trait_type"] =  "trait_count"
+          values[trait_count] = {trait_type: "trait_count", value: trait_count}
+          attributes["trait_count"] = values
+          values = {}
+
+          const newTokens: any = {
+            rank: 0,
+            normalized_rank: 0,
+            tokenID: token.value.config.data,
+            attributes: attributes,
+            opensea: {price: 0, permalink: ""},
+            rarity_score: 0,
+            normalized_rarity_score: 0,
+            image: token.value.data.image,
+            title: token.value.data.title? token.value.data.title: "",
+            name: token.value.data.name? token.value.data.name: `#${String(token.value.config.data)}`
+          }
+                        
+            allAttributes[newTokens.tokenID] = newTokens.attributes;       
+            allTokens[newTokens.tokenID] = newTokens;
+
 
         }
 
       })
 
-      // console.log("allTokens", allTokens)
+      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+      console.log("Test loop over all tokens ends")
+
+      // console.log(allAttributes)
+      // console.log(allTokens)
+      
       dispatch(addTokenInList3(allTokens))
-      dispatch(setCountOfAllAttribute3(allAttributes))          
+      dispatch(setCountOfAllAttribute3(allAttributes as Attribute2))
+      
+      // return;
+      // return;
 
       ////////////////////////////////////////////////
-      dispatch(setProgress({action: "dataProcess", status: "ended"}));
 
+      dispatch(setProgress({action: "dataProcess", status: "ended"}));
       dispatch(setIsSnipping({action: "completed"}))
 
   }

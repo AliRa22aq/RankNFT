@@ -15,20 +15,48 @@ interface TableProps {
     normalization: boolean,
 }
 
+  // export interface Attribute {
+  //   [trait_type :string] : {
+  //     [trait_value: string] : {
+  //         trait_type :string, 
+  //         value: string,
+  //         value_rarity_score: number,
+  //         value_normalized_rarity_score: number
+  //     }
+  //   }
+  // }
+
+  // export interface CountOfEachAttribute2Values {
+  //   trait_type: string,
+  //   trait_count: any, 
+  //   total_variations: number,
+  //   // presenceInTokens: string[] 
+  // }
+  
+  // export interface CountOfEachAttribute2 {
+  //   [trait_type: string]: CountOfEachAttribute2Values
+  // }
 
 const NFTtable: FC<TableProps> = ({attributes, normalization}) => {
+
+  console.log("attributes in NFT TAble", attributes)
+
+  // return  <div> Hello</div>
 
     const {projectInfo, countOfAllAttribute2} = useSelector((state: any) => state);
     
     const newAttributes = attributes.map((attribute) => {
       const att =  {  
           trait: attribute.trait_type,
-          value: attribute.value, 
-          count: countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].count,
-          probability: countOfAllAttribute2[attribute.trait_type].trait_count[attribute.value].count / projectInfo.range.range * 100 ,
-          score: attribute.value_rarity_score.toFixed(2),
-          normalized_score: attribute.value_normalized_rarity_score.toFixed(2)
-        }
+          value: attribute.trait_value, 
+          count: countOfAllAttribute2[attribute.trait_type].trait_count[attribute.trait_value].count,
+          probability: countOfAllAttribute2[attribute.trait_type].trait_count[attribute.trait_value].count / projectInfo.range.range * 100 ,
+          score: attribute[attribute.trait_value].value_rarity_score.toFixed(2),
+          normalized_score: attribute[attribute.trait_value].value_normalized_rarity_score.toFixed(2)
+         }
+
+//          normalized_rarity_score: 9.952060931899641
+// rarity_score: 24.25
         return att;
     })
 
