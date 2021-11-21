@@ -55,192 +55,7 @@ const NFTForm = () => {
   });
 
   
-  const fetchAllTokenData = async (URI: string, from: number, to: number) => {
 
-    console.log("fetchAllTokenData started")
-    
-    
-    
-    let tokenURI = URI
-
-    if(tokenURI.includes("ID")){
-      if(projectInfo.totalSupply === "Undifined"){
-        tokenURI = tokenURI.replace("ID", "123")
-      }
-      else{
-        tokenURI = tokenURI.replace("ID", String(Number(projectInfo.totalSupply) - 1))
-      }
-     }
-    
-    try{
-      let fetchAPI =  await axios.get( tokenURI ) as any
-      // console.log("fetchAPI res", fetchAPI)    
-    } catch(e){
-      alert("Unable to fetch information. Make sure you have installed and enabled Moesif CORS extention and refresh the page")
-      dispatch(resetProgress());
-      dispatch(reSetSnipping());
-      throw("Aborting")
-    }
-    
-                
-      let allRequests:any = [];
-
-      const requestingAllAPIs = async (iteration: number, url: string, 
-                                      _from: number, _to: number, from: number, to: number) => {
-
-        dispatch(setIsSnipping({action: "started"}))         
-
-        const need = to >= _from;
-        if(need){
-        
-          // console.log("==========================================================")
-          // console.log("iteration ",  iteration)
-          // console.log("==========================================================")
-
-          const start = iteration === 1 ? from : _from;
-          const end = to < _to ? to : _to;
-          let requests:any = [];
-
-          for(var i = start;  i <= end;  i=i+1) {         
-            let activeURL =  url.replace("extension" , String(i))
-            console.log("Loop #",  i, activeURL )
-            const request = axios.get( activeURL,  {data: i})
-            requests.push(request)              
-          }
-
-          const responses:any = await Promise.allSettled(requests);
-          // console.log("Combined responses of opensea ", responses)
-          allRequests.push(responses)
-
-        }
-
-      }
-                  
-      let url = tokenURI;    
-      
-
-      
-      if(projectInfo?.totalSupply){
-        if(projectInfo.totalSupply === "Undifined"){
-          url = tokenURI.replace( "123", "extension");
-        } 
-        else {
-          url = tokenURI.replace( String(Number(projectInfo.totalSupply) - 1), "extension");
-        }
-      }
-
-      // console.log("step 1: Snipping started with URL ", url)
-      dispatch(setProgress({action: "dataFetch", status: "started"}));
-      // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
-
-      console.log("Test token data fetching starts")
-      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
-      console.log("fetchAllTokenData url", url)
-
-
-      await requestingAllAPIs(1, url, 0, 1000, from, to)
-      await requestingAllAPIs(2, url, 1001, 2000, from, to)
-      await requestingAllAPIs(3, url, 2001, 3000, from, to)
-      await requestingAllAPIs(4, url, 3001, 4000, from, to)
-      await requestingAllAPIs(5, url, 4001, 5000, from, to)
-      await requestingAllAPIs(6, url, 5001, 6000, from, to)
-      await requestingAllAPIs(7, url, 6001, 7000, from, to)
-      await requestingAllAPIs(8, url, 7001, 8000, from, to)
-      await requestingAllAPIs(9, url, 8001, 9000, from, to)
-      await requestingAllAPIs(10, url, 9001, 10000, from, to)
-
-      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
-      console.log("Test token data fetching ends")
-
-      dispatch(setProgress({action: "dataFetch", status: "ended"}));
-
-
-      let allTokens: AttributesOfEachToekn2 = {};
-      let allAttributes: any = {};
-
-      dispatch(setProgress({action: "dataProcess", status: "started"}));
-
-      console.log("Test loop over all tokens starts")
-      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
-
-
-      let allRawTokens: any = allRequests.flat();
-      
-      allRawTokens.forEach((token :any, key: number) => {
-
-        if(token.status === 'fulfilled'){
-
-          let attributes:any = {}
-          let values:any = {}
-
-          let rawAttributes = token.value.data.attributes ? token.value.data.attributes : [];
-          let trait_count = token.value.data.attributes ? token.value.data.attributes.length : 0
-    
-          rawAttributes?.forEach((attribute: any)=> {     
-
-            // console.log(attribute)
-            
-            if( attribute.trait_type && attribute.value ){
-              values["trait_type"] = attribute.trait_type
-              values["trait_value"] = attribute.value
-              values[attribute.value] = {trait_type: attribute.trait_type, value: attribute.value}
-              attributes[attribute.trait_type] = values
-              values = {}
-            }
-
-            if( attribute.value && (String(attribute.value).toLowerCase() === "none" || String(attribute.value).toLowerCase() === "nothing")){
-              if(trait_count > 0){
-                trait_count--
-              }
-            }
-          })
-    
-
-          values["trait_value"] = trait_count
-          values["trait_type"] =  "trait_count"
-          values[trait_count] = {trait_type: "trait_count", value: trait_count}
-          attributes["trait_count"] = values
-          values = {}
-
-          const newTokens: any = {
-            rank: 0,
-            normalized_rank: 0,
-            tokenID: token.value.config.data,
-            attributes: attributes,
-            opensea: {price: 0, permalink: ""},
-            rarity_score: 0,
-            normalized_rarity_score: 0,
-            image: token.value.data.image,
-            title: token.value.data.title? token.value.data.title: "",
-            name: token.value.data.name? token.value.data.name: `#${String(token.value.config.data)}`
-          }
-                        
-            allAttributes[newTokens.tokenID] = newTokens.attributes;       
-            allTokens[newTokens.tokenID] = newTokens;
-
-
-        }
-
-      })
-
-      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
-      console.log("Test loop over all tokens ends")
-
-      // console.log(allAttributes)
-      // console.log(allTokens)
-      
-      dispatch(addTokenInList3(allTokens))
-      dispatch(setCountOfAllAttribute3(allAttributes as Attribute2))
-      
-      // return;
-      // return;
-
-      ////////////////////////////////////////////////
-
-      dispatch(setProgress({action: "dataProcess", status: "ended"}));
-      dispatch(setIsSnipping({action: "completed"}))
-
-  }
 
   const fetchData = async  ( contractAdrs : string, URl?:string, setFieldValue?: any ) => {
 
@@ -321,7 +136,9 @@ const NFTForm = () => {
           tokenURI = await MyContract.methods.tokenURI("123").call();
         } 
         else {
+          console.log("tokenURI", String(Number(totalSupply) - 1))
           tokenURI = await MyContract.methods.tokenURI(String(Number(totalSupply) - 1)).call();
+          console.log("tokenURI", tokenURI)
         }
 
       } catch(e){
@@ -345,7 +162,7 @@ const NFTForm = () => {
         }
       }
       
-      
+      // return;
       // console.log("name ", name)
       // console.log("totalSupply ", totalSupply)
       // console.log("minToken ", minToken)
@@ -481,7 +298,7 @@ const NFTForm = () => {
       // }
 
 
-    }
+  }
 
   const startSnipping = async (from: number, to: number) => {
     dispatch(resetProgress());
@@ -518,6 +335,200 @@ const NFTForm = () => {
 
 
   }
+
+  const fetchAllTokenData = async (URI: string, from: number, to: number) => {
+
+    console.log("fetchAllTokenData started")
+    
+    
+    
+    let tokenURI = URI
+
+    if(tokenURI.includes("ID")){
+      if(projectInfo.totalSupply === "Undifined"){
+        tokenURI = tokenURI.replace("ID", "123")
+      }
+      else{
+        console.log("tokenURI", String(Number(projectInfo.totalSupply) - 1));
+        tokenURI = tokenURI.replace("ID", String(Number(projectInfo.totalSupply) - 1))
+      }
+     }
+    
+    try{
+      let fetchAPI =  await axios.get( tokenURI ) as any
+      // console.log("fetchAPI res", fetchAPI)    
+    } catch(e){
+      alert("Unable to fetch information. Make sure you have installed and enabled Moesif CORS extention and refresh the page")
+      dispatch(resetProgress());
+      dispatch(reSetSnipping());
+      throw("Aborting")
+    }
+    
+                
+      let allRequests:any = [];
+
+      const requestingAllAPIs = async (iteration: number, url: string, 
+                                      _from: number, _to: number, from: number, to: number) => {
+
+        dispatch(setIsSnipping({action: "started"}))         
+
+        const need = to >= _from;
+        if(need){
+        
+          // console.log("==========================================================")
+          // console.log("iteration ",  iteration)
+          // console.log("==========================================================")
+
+          const start = iteration === 1 ? from : _from;
+          const end = to < _to ? to : _to;
+          let requests:any = [];
+
+          for(var i = start;  i <= end;  i=i+1) {         
+            let activeURL =  url.replace("extension" , String(i))
+            console.log("Loop #",  i, activeURL )
+            const request = axios.get( activeURL,  {data: i})
+            requests.push(request)              
+          }
+
+          const responses:any = await Promise.allSettled(requests);
+          // console.log("Combined responses of opensea ", responses)
+          allRequests.push(responses)
+
+        }
+
+      }
+                  
+      let url = tokenURI;    
+      
+
+      
+      if(projectInfo?.totalSupply){
+        if(projectInfo.totalSupply === "Undifined"){
+          url = tokenURI.replace( "123", "extension");
+        } 
+        else {
+          url = tokenURI.replace( String(Number(projectInfo.totalSupply) - 1), "extension");
+        }
+      }
+
+      // console.log("step 1: Snipping started with URL ", url)
+      dispatch(setProgress({action: "dataFetch", status: "started"}));
+      // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
+
+      console.log("Test token data fetching starts")
+      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+      console.log("fetchAllTokenData url", url)
+
+
+      await requestingAllAPIs(1, url, 0, 1000, from, to)
+      await requestingAllAPIs(2, url, 1001, 2000, from, to)
+      await requestingAllAPIs(3, url, 2001, 3000, from, to)
+      await requestingAllAPIs(4, url, 3001, 4000, from, to)
+      await requestingAllAPIs(5, url, 4001, 5000, from, to)
+      await requestingAllAPIs(6, url, 5001, 6000, from, to)
+      await requestingAllAPIs(7, url, 6001, 7000, from, to)
+      await requestingAllAPIs(8, url, 7001, 8000, from, to)
+      await requestingAllAPIs(9, url, 8001, 9000, from, to)
+      await requestingAllAPIs(10, url, 9001, 10000, from, to)
+      await requestingAllAPIs(11, url, 10001, 11000, from, to)
+      await requestingAllAPIs(12, url, 11001, 12000, from, to)
+      await requestingAllAPIs(13, url, 12001, 13000, from, to)
+      await requestingAllAPIs(14, url, 13001, 14000, from, to)
+      await requestingAllAPIs(15, url, 14001, 15000, from, to)
+
+      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+      console.log("Test token data fetching ends")
+
+      dispatch(setProgress({action: "dataFetch", status: "ended"}));
+
+
+      let allTokens: AttributesOfEachToekn2 = {};
+      let allAttributes: any = {};
+
+      dispatch(setProgress({action: "dataProcess", status: "started"}));
+
+      console.log("Test loop over all tokens starts")
+      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+
+
+      let allRawTokens: any = allRequests.flat();
+      
+      allRawTokens.forEach((token :any, key: number) => {
+
+        if(token.status === 'fulfilled'){
+
+          let attributes:any = {}
+          let values:any = {}
+
+          let rawAttributes = token.value.data.attributes ? token.value.data.attributes : [];
+          let trait_count = token.value.data.attributes ? token.value.data.attributes.length : 0
+    
+          rawAttributes?.forEach((attribute: any)=> {     
+
+            // console.log(attribute)
+            
+            if( attribute.trait_type && attribute.value ){
+              values["trait_type"] = attribute.trait_type
+              values["trait_value"] = attribute.value
+              values[attribute.value] = {trait_type: attribute.trait_type, value: attribute.value}
+              attributes[attribute.trait_type] = values
+              values = {}
+            }
+
+            if( attribute.value && (String(attribute.value).toLowerCase() === "none" || String(attribute.value).toLowerCase() === "nothing")){
+              if(trait_count > 0){
+                trait_count--
+              }
+            }
+          })
+    
+
+          values["trait_value"] = trait_count
+          values["trait_type"] =  "trait_count"
+          values[trait_count] = {trait_type: "trait_count", value: trait_count}
+          attributes["trait_count"] = values
+          values = {}
+
+          const newTokens: any = {
+            rank: 0,
+            normalized_rank: 0,
+            tokenID: token.value.config.data,
+            attributes: attributes,
+            opensea: {price: 0, permalink: ""},
+            rarity_score: 0,
+            normalized_rarity_score: 0,
+            image: token.value.data.image,
+            title: token.value.data.title? token.value.data.title: "",
+            name: token.value.data.name? token.value.data.name: `#${String(token.value.config.data)}`
+          }
+                        
+            allAttributes[newTokens.tokenID] = newTokens.attributes;       
+            allTokens[newTokens.tokenID] = newTokens;
+
+
+        }
+
+      })
+
+      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+      console.log("Test loop over all tokens ends")
+
+      // console.log(allAttributes)
+      // console.log(allTokens)
+      
+      dispatch(addTokenInList3(allTokens))
+      dispatch(setCountOfAllAttribute3(allAttributes as Attribute2))
+      
+      // return;
+      // return;
+
+      ////////////////////////////////////////////////
+
+      dispatch(setProgress({action: "dataProcess", status: "ended"}));
+      dispatch(setIsSnipping({action: "completed"}))
+
+  }
+
 
   const haltProgram = () => {
     // window.stop();
