@@ -497,7 +497,10 @@ const NFTForm = () => {
 
               console.log("terminate outsite => ", terminate)
 
+              const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
+
               while(!terminate){
+                await delayFn(500);
 
                 console.log("retrying")
 
@@ -517,8 +520,8 @@ const NFTForm = () => {
                   dispatch(resetProgress());
                   dispatch(reSetSnipping());
                   // throw("Aborting!!!!!")
-                  // return;
-                  break;
+                  return;
+                  // break;
 
                 }
 
