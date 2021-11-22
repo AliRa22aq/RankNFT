@@ -56,7 +56,7 @@ const NFTForm = () => {
   // }
   
   // if(progress.retryingToCheckRevealing.ended){
-    console.log("outside progress.retryingToCheckRevealing.ended", progress.retryingToCheckRevealing.ended);
+    // console.log("outside progress.retryingToCheckRevealing.ended", progress.retryingToCheckRevealing.ended);
   // }
 
 
@@ -395,7 +395,7 @@ const NFTForm = () => {
       }
     }
 
-    function arrayEquals(a: any, b:any) {
+    const arrayEquals = (a: any, b:any) => {
       return Array.isArray(a) &&
         Array.isArray(b) &&
         a.length === b.length &&
@@ -430,29 +430,6 @@ const NFTForm = () => {
     }
     
 
-    const checkAgian = async () => {
-    // console.log("terminate inside check ===========================>", terminate)
-
-    let revv = await isRevealed();
-
-    console.log("isRevealed => ", revv)
-    console.log("terminate => ", terminate)
-
-      if(!revv){
-        if (terminate){ 
-          dispatch(resetProgress());
-          dispatch(reSetSnipping());
-          return; 
-        }
-    
-        console.log("retrying")
-        setTimeout(checkAgian, 1000);
-      } else {
-
-        dispatch(setProgress({action: "retrying", status: "ended"}));
-
-      }
-    }
 
 
     const rev = await isRevealed();
@@ -466,10 +443,44 @@ const NFTForm = () => {
 
               dispatch(setProgress({action: "retrying", status: "started"}));
 
+              const checkAgian = async () => {
+                // console.log("terminate inside check ===========================>", terminate)
+            
+                let revv = await isRevealed();
+            
+                console.log("isRevealed => ", revv)
+                console.log("terminate => ", terminate)
+            
+                  if(!revv){
+                    if (terminate){ 
+                      dispatch(resetProgress());
+                      dispatch(reSetSnipping());
+                      // return;
+                      throw("Aborting!!!!1") 
+                    }
+                
+                    console.log("retrying")
+                    setTimeout(checkAgian, 5000);
+                  } else {
+            
+                    dispatch(setProgress({action: "retrying", status: "ended"}));
+            
+                  }
+              }
+
               await checkAgian();
 
+            } 
+            else {
+              dispatch(resetProgress());
+              dispatch(reSetSnipping());
+              return;     
             }
         }
+
+
+        console.log("trying to go ahead")
+
 
     return;
 
@@ -632,7 +643,7 @@ const NFTForm = () => {
   $(document).on('click','#end', () => {
     console.log("calling stopFunction  ===========================>")
     terminate=true;
-  });                   
+  });
 
   // $('#end').on('click', () => {
   //     console.log("calling stopFunction  ===========================>")
@@ -812,6 +823,21 @@ const NFTForm = () => {
 
                   </div>
         
+              {
+                progress.retryingToCheckRevealing.started ?
+                <div className="form-button-container">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        type="submit"
+                        className="form-button"
+                        id="end"
+                        >
+                                  <div > Stop retrying </div>
+                      </Button> 
+                </div>: null
+              }
+
                 </Grid>  
                 
               </Form>
@@ -820,31 +846,6 @@ const NFTForm = () => {
         null
 
     }
-
-
-
-              <div className="retrying-button-container">
-              {
-                  progress.retryingToCheckRevealing.started ?
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      type="submit"
-                      className="form-button"
-                      id="end"
-                      >
-                                <div > Stop retrying </div>
-                    </Button> : null
-              }
-
-              </div>
-
-      {
-
-        // progress.retryingToCheckRevealing.started && (
-        //   <button id="end" > Stop retrying </button> 
-        // )
-      }
 
       </div>
     </div>

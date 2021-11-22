@@ -5,10 +5,10 @@ export declare global {
     }
   }
 
-module.exports = config({
-    entry: {
-      vendor: [ 
-        'jquery'
-      ]
-    }
-})
+// module.exports = config({
+//     entry: {
+//       vendor: [ 
+//         'jquery'
+//       ]
+//     }
+// })

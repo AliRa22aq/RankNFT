@@ -1,5 +1,5 @@
-module: {
-    rules: [ 
-      {test: require.resolve('jquery'), loader: 'expose-loader?$!expose-loader?jQuery'}
-    ]
-  }
+// module: {
+//     rules: [ 
+//       {test: require.resolve('jquery'), loader: 'expose-loader?$!expose-loader?jQuery'}
+//     ]
+//   }
