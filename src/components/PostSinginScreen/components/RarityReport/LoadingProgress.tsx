@@ -1,17 +1,27 @@
 import React, {useEffect} from "react"
 import "./styles.css"
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setProgress, resetProgress, reSetSnipping } from '../../../store';
+
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import Button from "@mui/material/Button";
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
-// import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CircularProgress from '@mui/material/CircularProgress';
+// import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 
 
 
 
 const LoadingProgress = () => {
     const { progress } = useSelector((state: any) => state);
-    // console.log("progress => ", progress)
+    const dispatch = useDispatch();
+
+    
+    // const stopRetrying = () => {
+    //     console.log("Trying to stop");
+    //     // dispatch(setProgress({action: "retrying", status: "ended"}));
+
+    // }
 
     return(
         <div className="Loading-NFTs-Data-container">
@@ -23,6 +33,17 @@ const LoadingProgress = () => {
                     }
 
                     {
+                        progress.retryingToCheckRevealing.started  && !progress.retryingToCheckRevealing.ended ? 
+                        <>
+                            <div className="progress"> <CircularProgress color="primary" size={20}/> <span className="progress-text">Retrying to check if project is revealed or not.</span> </div>  
+                            {/* <Button id="end" variant="contained" color="primary" onClick={stopRetrying} > Stop </Button> */}
+                        </> :                        
+                        progress.retryingToCheckRevealing.started  && progress.retryingToCheckRevealing.ended ? 
+                            <div className="progress"> <CheckBoxIcon color="primary" />  <span className="progress-text"> Project is revealed. </span></div> :
+                            null
+                    }
+
+                    {
                         !progress.dataFetch.started && !progress.dataFetch.ended ? 
                         <div className="progress"> <HourglassEmptyIcon color="action" /> <span className="progress-text">Waiting to start data fetching.</span> </div> : 
                         progress.dataFetch.started && !progress.dataFetch.ended ? 
@@ -31,6 +52,8 @@ const LoadingProgress = () => {
                         <div className="progress"> <CheckBoxIcon color="primary" />  <span className="progress-text"> Successfully fetched the data of all the tokens. </span></div> :
                         null
                     }
+
+
 
                     {
                         !progress.dataProcess.started && !progress.dataProcess.ended ? 

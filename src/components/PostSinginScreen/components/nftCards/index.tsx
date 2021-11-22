@@ -173,6 +173,10 @@ const NFTCards = () => {
     await fetchOpenseaData(2, 3301, 6600);
     await delayFn(20000)
     await fetchOpenseaData(2, 6601, 10000);
+    await delayFn(20000)
+    await fetchOpenseaData(3, 10001, 13300);
+    await delayFn(20000)
+    await fetchOpenseaData(4, 13301, 15000);
 
 
   }

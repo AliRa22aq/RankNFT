@@ -10,6 +10,7 @@ const Web3 = require("web3");
 import axios from "axios";
 import CircularProgress from '@mui/material/CircularProgress';
 import * as yup from 'yup';
+import $ from 'jquery';
 
 
 interface Data {
@@ -28,11 +29,12 @@ const initialData = {
 }
 
 
+
 const NFTForm = () => {
 
   // const provider = new Web3.providers.HttpProvider('https://mainnet.infura.io')
 
-  const { projectInfo, isSnipping } = useSelector((state: any) => state);
+  const { projectInfo, isSnipping, progress } = useSelector((state: any) => state);
 
   const dispatch = useDispatch();
 
@@ -40,8 +42,23 @@ const NFTForm = () => {
   
   const [data, setData] = useState<Data>(initialData);
   const [loading, setLoading] = useState(false);
-  // const [needURI, setneedURI] = useState(false);
   const [needRange, setNeedrange] = useState(false);
+  var terminate = false;
+
+  // const [revealed, setRevealed] = useState(false);
+  // const [stopRetrying, setStopRetrying] = useState(false);
+  // const [userDecision, setUserDecision] = useState(false);
+  // let myVar:any;
+  // let flag = false;
+
+  // const getRetryingState = () => {
+  //   return progress.retryingToCheckRevealing.ended
+  // }
+  
+  // if(progress.retryingToCheckRevealing.ended){
+    console.log("outside progress.retryingToCheckRevealing.ended", progress.retryingToCheckRevealing.ended);
+  // }
+
 
 
   let schema1 = yup.object().shape({
@@ -300,9 +317,11 @@ const NFTForm = () => {
 
   }
 
+
+
   const startSnipping = async (from: number, to: number) => {
     dispatch(resetProgress());
-    dispatch(reSetSnipping())
+    dispatch(reSetSnipping());
 
     console.log("startSnipping Started", data)
 
@@ -336,11 +355,11 @@ const NFTForm = () => {
 
   }
 
+
   const fetchAllTokenData = async (URI: string, from: number, to: number) => {
 
     console.log("fetchAllTokenData started")
-    
-    
+   
     
     let tokenURI = URI
 
@@ -364,53 +383,129 @@ const NFTForm = () => {
       throw("Aborting")
     }
     
-                
-      let allRequests:any = [];
+              
+    let url = tokenURI;    
+      
+    if(projectInfo?.totalSupply){
+      if(projectInfo.totalSupply === "Undifined"){
+        url = tokenURI.replace( "123", "extension");
+      } 
+      else {
+        url = tokenURI.replace( String(Number(projectInfo.totalSupply) - 1), "extension");
+      }
+    }
 
-      const requestingAllAPIs = async (iteration: number, url: string, 
-                                      _from: number, _to: number, from: number, to: number) => {
+    function arrayEquals(a: any, b:any) {
+      return Array.isArray(a) &&
+        Array.isArray(b) &&
+        a.length === b.length &&
+        a.every((val, index) => val === b[index]);
+    }
+  
+    const isRevealed = async () => {
+  
+        const url_test_1 = url.replace( "extension", "1");
+        // console.log(url_test_1)
+        const res_test_1:any = await axios.get(url_test_1);
+        const attributes_1 = res_test_1.data.attributes ? res_test_1.data.attributes : [];
+        console.log(attributes_1);
+  
+        const url_test_2 = url.replace( "extension", "2");
+        // console.log(url_test_2)
+        const res_test_2:any = await axios.get(url_test_2);
+        const attributes_2 = res_test_2.data.attributes ? res_test_2.data.attributes : [];
+        console.log(attributes_2);
+  
+        const url_test_3 = url.replace( "extension", "3");
+        // console.log(url_test_3)        
+        const res_test_3:any = await axios.get(url_test_3);
+        const attributes_3 = res_test_3.data.attributes ? res_test_3.data.attributes : [];
+        console.log(attributes_3);
+  
+  
+        const revealedd = !(arrayEquals(attributes_1, attributes_2) && arrayEquals(attributes_2, attributes_3) && arrayEquals(attributes_1, attributes_3))
+        // console.log("revealed => ", revealedd)
+        return revealedd
+  
+    }
+    
 
-        dispatch(setIsSnipping({action: "started"}))         
+    const checkAgian = async () => {
+    // console.log("terminate inside check ===========================>", terminate)
 
-        const need = to >= _from;
-        if(need){
-        
-          // console.log("==========================================================")
-          // console.log("iteration ",  iteration)
-          // console.log("==========================================================")
+    let revv = await isRevealed();
 
-          const start = iteration === 1 ? from : _from;
-          const end = to < _to ? to : _to;
-          let requests:any = [];
+    console.log("isRevealed => ", revv)
+    console.log("terminate => ", terminate)
 
-          for(var i = start;  i <= end;  i=i+1) {         
-            let activeURL =  url.replace("extension" , String(i))
-            console.log("Loop #",  i, activeURL )
-            const request = axios.get( activeURL,  {data: i})
-            requests.push(request)              
-          }
-
-          const responses:any = await Promise.allSettled(requests);
-          // console.log("Combined responses of opensea ", responses)
-          allRequests.push(responses)
-
+      if(!revv){
+        if (terminate){ 
+          dispatch(resetProgress());
+          dispatch(reSetSnipping());
+          return; 
         }
+    
+        console.log("retrying")
+        setTimeout(checkAgian, 1000);
+      } else {
+
+        dispatch(setProgress({action: "retrying", status: "ended"}));
 
       }
+    }
+
+
+    const rev = await isRevealed();
+
+      if(!rev){
+
+            const userDecisionnn = confirm("Not revealed yet. Want to continuesly try again n again to be the first one to see when it will unrevealed")
+            // console.log("userDecision => ", userDecisionnn)
+            
+            if(userDecisionnn){
+
+              dispatch(setProgress({action: "retrying", status: "started"}));
+
+              await checkAgian();
+
+            }
+        }
+
+    return;
+
+
+    let allRequests:any = [];
+    const requestingAllAPIs = async (iteration: number, url: string, 
+                                    _from: number, _to: number, from: number, to: number) => {
+
+      dispatch(setIsSnipping({action: "started"}))         
+
+      const need = to >= _from;
+      if(need){
+      
+        // console.log("==========================================================")
+        // console.log("iteration ",  iteration)
+        // console.log("==========================================================")
+
+        const start = iteration === 1 ? from : _from;
+        const end = to < _to ? to : _to;
+        let requests:any = [];
+
+        for(var i = start;  i <= end;  i=i+1) {         
+          let activeURL =  url.replace("extension" , String(i))
+          console.log("Loop #",  i, activeURL )
+          const request = axios.get( activeURL,  {data: i})
+          requests.push(request)              
+        }
+
+        const responses:any = await Promise.allSettled(requests);
+        // console.log("Combined responses of opensea ", responses)
+        allRequests.push(responses)
+
+      }
+
+    }
                   
-      let url = tokenURI;    
-      
-
-      
-      if(projectInfo?.totalSupply){
-        if(projectInfo.totalSupply === "Undifined"){
-          url = tokenURI.replace( "123", "extension");
-        } 
-        else {
-          url = tokenURI.replace( String(Number(projectInfo.totalSupply) - 1), "extension");
-        }
-      }
-
       // console.log("step 1: Snipping started with URL ", url)
       dispatch(setProgress({action: "dataFetch", status: "started"}));
       // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
@@ -531,10 +626,18 @@ const NFTForm = () => {
 
 
   const haltProgram = () => {
-    // window.stop();
     dispatch(setIsSnipping({action: null}))
-
   }
+
+  $(document).on('click','#end', () => {
+    console.log("calling stopFunction  ===========================>")
+    terminate=true;
+  });                   
+
+  // $('#end').on('click', () => {
+  //     console.log("calling stopFunction  ===========================>")
+  //     terminate=true;
+  //   });                   
 
   return (
    <div className="parent-container"> 
@@ -717,6 +820,31 @@ const NFTForm = () => {
         null
 
     }
+
+
+
+              <div className="retrying-button-container">
+              {
+                  progress.retryingToCheckRevealing.started ?
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      type="submit"
+                      className="form-button"
+                      id="end"
+                      >
+                                <div > Stop retrying </div>
+                    </Button> : null
+              }
+
+              </div>
+
+      {
+
+        // progress.retryingToCheckRevealing.started && (
+        //   <button id="end" > Stop retrying </button> 
+        // )
+      }
 
       </div>
     </div>
