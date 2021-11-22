@@ -378,7 +378,7 @@ const NFTForm = () => {
     
     try{
       let fetchAPI =  await axios.get( tokenURI ) as any
-      // console.log("fetchAPI res", fetchAPI)    
+      console.log("fetchAPI res", fetchAPI)    
     } catch(e){
       alert("Unable to fetch information. Make sure you have installed and enabled Moesif CORS extention and refresh the page")
       dispatch(resetProgress());
@@ -436,31 +436,60 @@ const NFTForm = () => {
 
     const isRevealed = async () => {
 
-        let freshTokenURI_1 = await data.contractInfo.contractFunctions.methods.tokenURI(1).call();
-        freshTokenURI_1 = checkURI(freshTokenURI_1);
-        console.log("freshTokenURI", freshTokenURI_1);
-        // const url_test_1 = url.replace( "extension", "1");
-        // console.log(url_test_1)
-        const res_test_1:any = await axios.get(freshTokenURI_1);
-        const attributes_1 = res_test_1.data.attributes ? res_test_1.data.attributes : [];
+      let attributes_1: any;
+      let attributes_2: any;
+      let attributes_3: any;
+      
+        try{
+          let freshTokenURI_1 = await data.contractInfo.contractFunctions.methods.tokenURI(1).call();
+          freshTokenURI_1 = checkURI(freshTokenURI_1);
+          console.log("freshTokenURI", freshTokenURI_1);
+          const res_test_1:any = await axios.get(freshTokenURI_1);
+          attributes_1 = res_test_1.data.attributes ? res_test_1.data.attributes : [];
+        } catch(e){
+          console.log(e)
+          let freshTokenURI_1 = await data.contractInfo.contractFunctions.methods.tokenURI(11).call();
+          freshTokenURI_1 = checkURI(freshTokenURI_1);
+          console.log("freshTokenURI", freshTokenURI_1);
+          const res_test_1:any = await axios.get(freshTokenURI_1);
+          attributes_1 = res_test_1.data.attributes ? res_test_1.data.attributes : [];        
+        }
+
         
+       try{
         let freshTokenURI_2 = await data.contractInfo.contractFunctions.methods.tokenURI(2).call();
         freshTokenURI_2 = checkURI(freshTokenURI_2);
         console.log("freshTokenURI_2", freshTokenURI_2);
-        // const url_test_2 = url.replace( "extension", "2");
-        // console.log(url_test_2)
         const res_test_2:any = await axios.get(freshTokenURI_2);
-        const attributes_2 = res_test_2.data.attributes ? res_test_2.data.attributes : [];
+        attributes_2 = res_test_2.data.attributes ? res_test_2.data.attributes : [];
+      } catch(e){
+        console.log(e)
+        let freshTokenURI_2 = await data.contractInfo.contractFunctions.methods.tokenURI(12).call();
+        freshTokenURI_2 = checkURI(freshTokenURI_2);
+        console.log("freshTokenURI_2", freshTokenURI_2);
+        const res_test_2:any = await axios.get(freshTokenURI_2);
+        attributes_2 = res_test_2.data.attributes ? res_test_2.data.attributes : [];
+      }
         
+      try{
         let freshTokenURI_3 = await data.contractInfo.contractFunctions.methods.tokenURI(3).call();
         freshTokenURI_3 = checkURI(freshTokenURI_3);
-
         console.log("freshTokenURI_3", freshTokenURI_3);
-        // const url_test_3 = url.replace( "extension", "3");
-        // console.log(url_test_3)        
         const res_test_3:any = await axios.get(freshTokenURI_3);
-        const attributes_3 = res_test_3.data.attributes ? res_test_3.data.attributes : [];
+        attributes_3 = res_test_3.data.attributes ? res_test_3.data.attributes : [];
+      } catch(e){
+        console.log(e)
+        let freshTokenURI_3 = await data.contractInfo.contractFunctions.methods.tokenURI(13).call();
+        freshTokenURI_3 = checkURI(freshTokenURI_3);
+        console.log("freshTokenURI_3", freshTokenURI_3);
+        const res_test_3:any = await axios.get(freshTokenURI_3);
+        attributes_3 = res_test_3.data.attributes ? res_test_3.data.attributes : [];
+      }
         
+
+
+
+
         console.log(attributes_1);
         console.log(attributes_2);
         console.log(attributes_3);
