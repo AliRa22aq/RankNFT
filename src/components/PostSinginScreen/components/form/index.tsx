@@ -11,6 +11,7 @@ import axios from "axios";
 import CircularProgress from '@mui/material/CircularProgress';
 import * as yup from 'yup';
 import $ from 'jquery';
+import _ from 'underscore';
 
 
 interface Data {
@@ -46,7 +47,7 @@ const NFTForm = () => {
   // const [terminate, setTerminate] = useState(false);
 
   let terminate:boolean = false;
-  let myVar:any;
+  // let myVar:any;
 
   // const [revealed, setRevealed] = useState(false);
   // const [stopRetrying, setStopRetrying] = useState(false);
@@ -398,7 +399,8 @@ const NFTForm = () => {
     }
 
     const arrayEquals = (a: any, b:any) => {
-      return JSON.stringify(a) == JSON.stringify(b)
+      // return JSON.stringify(a) == JSON.stringify(b)
+      return _.isEqual(a, b);
     // if (a == null || b == null) return false;
     // if (a.length !== b.length) return false;
     // if (a === b) return true;
@@ -473,8 +475,7 @@ const NFTForm = () => {
         return revealedd
         
       }
-      
-      
+            
       let rev:any;
       
       if(!terminate){
@@ -516,7 +517,9 @@ const NFTForm = () => {
                   dispatch(resetProgress());
                   dispatch(reSetSnipping());
                   // throw("Aborting!!!!!")
-                  return;
+                  // return;
+                  break;
+
                 }
 
               }
