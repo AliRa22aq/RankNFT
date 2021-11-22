@@ -43,12 +43,14 @@ const NFTForm = () => {
   const [data, setData] = useState<Data>(initialData);
   const [loading, setLoading] = useState(false);
   const [needRange, setNeedrange] = useState(false);
-  var terminate = false;
+  // const [terminate, setTerminate] = useState(false);
+
+  let terminate:boolean = false;
+  let myVar:any;
 
   // const [revealed, setRevealed] = useState(false);
   // const [stopRetrying, setStopRetrying] = useState(false);
   // const [userDecision, setUserDecision] = useState(false);
-  // let myVar:any;
   // let flag = false;
 
   // const getRetryingState = () => {
@@ -396,43 +398,92 @@ const NFTForm = () => {
     }
 
     const arrayEquals = (a: any, b:any) => {
-      return Array.isArray(a) &&
-        Array.isArray(b) &&
-        a.length === b.length &&
-        a.every((val, index) => val === b[index]);
+      return JSON.stringify(a) == JSON.stringify(b)
+    // if (a == null || b == null) return false;
+    // if (a.length !== b.length) return false;
+    // if (a === b) return true;
+  
+
+        // Array.isArray(a) &&
+        // Array.isArray(b) &&
+        // a.length === b.length &&
+        // a.every((val, index) => val === b[index]);
     }
   
+    const checkURI = (rawURI: string) => {
+      if(rawURI.includes("ipfs://")) {
+        let url = rawURI.replace("ipfs://", "https://ipfs.io/ipfs/");
+        return url;
+      }
+      else if(rawURI.includes("https://gateway.pinata.cloud/ipfs/")){
+        let url = rawURI.replace("https://gateway.pinata.cloud/ipfs/", "https://ipfs.io/ipfs/");
+        return url;
+      }
+      else if(rawURI.includes("http://")){
+        let url = rawURI.replace("http://", "https://")
+        return url;
+      }      
+      else if(rawURI.includes("https://")){
+        // let url = data?.baseTokenURI
+        return rawURI;
+      }
+      else {
+        return rawURI;
+      }
+    }
+
     const isRevealed = async () => {
-  
-        const url_test_1 = url.replace( "extension", "1");
+
+        let freshTokenURI_1 = await data.contractInfo.contractFunctions.methods.tokenURI(1).call();
+        freshTokenURI_1 = checkURI(freshTokenURI_1);
+        console.log("freshTokenURI", freshTokenURI_1);
+        // const url_test_1 = url.replace( "extension", "1");
         // console.log(url_test_1)
-        const res_test_1:any = await axios.get(url_test_1);
+        const res_test_1:any = await axios.get(freshTokenURI_1);
         const attributes_1 = res_test_1.data.attributes ? res_test_1.data.attributes : [];
-        console.log(attributes_1);
-  
-        const url_test_2 = url.replace( "extension", "2");
+        
+        let freshTokenURI_2 = await data.contractInfo.contractFunctions.methods.tokenURI(2).call();
+        freshTokenURI_2 = checkURI(freshTokenURI_2);
+        console.log("freshTokenURI_2", freshTokenURI_2);
+        // const url_test_2 = url.replace( "extension", "2");
         // console.log(url_test_2)
-        const res_test_2:any = await axios.get(url_test_2);
+        const res_test_2:any = await axios.get(freshTokenURI_2);
         const attributes_2 = res_test_2.data.attributes ? res_test_2.data.attributes : [];
-        console.log(attributes_2);
-  
-        const url_test_3 = url.replace( "extension", "3");
+        
+        let freshTokenURI_3 = await data.contractInfo.contractFunctions.methods.tokenURI(3).call();
+        freshTokenURI_3 = checkURI(freshTokenURI_3);
+
+        console.log("freshTokenURI_3", freshTokenURI_3);
+        // const url_test_3 = url.replace( "extension", "3");
         // console.log(url_test_3)        
-        const res_test_3:any = await axios.get(url_test_3);
+        const res_test_3:any = await axios.get(freshTokenURI_3);
         const attributes_3 = res_test_3.data.attributes ? res_test_3.data.attributes : [];
+        
+        console.log(attributes_1);
+        console.log(attributes_2);
         console.log(attributes_3);
+
+        console.log("test 1", arrayEquals(attributes_1, attributes_2));
+        console.log("test 2", arrayEquals(attributes_2, attributes_3));
+        console.log("test 3", arrayEquals(attributes_1, attributes_3));
+        
   
   
         const revealedd = !(arrayEquals(attributes_1, attributes_2) && arrayEquals(attributes_2, attributes_3) && arrayEquals(attributes_1, attributes_3))
-        // console.log("revealed => ", revealedd)
         return revealedd
-  
-    }
+        
+      }
+      
+      
+      let rev:any;
+      
+      if(!terminate){
+        
+        rev = await isRevealed();
+        console.log("=================================> ")
+        console.log("Project revealed status => ", rev)
+        console.log("=================================> ")
     
-
-
-
-    const rev = await isRevealed();
 
       if(!rev){
 
@@ -443,46 +494,63 @@ const NFTForm = () => {
 
               dispatch(setProgress({action: "retrying", status: "started"}));
 
-              const checkAgian = async () => {
-                // console.log("terminate inside check ===========================>", terminate)
-            
+              console.log("terminate outsite => ", terminate)
+
+              while(!terminate){
+
+                console.log("retrying")
+
                 let revv = await isRevealed();
-            
+
                 console.log("isRevealed => ", revv)
                 console.log("terminate => ", terminate)
             
-                  if(!revv){
-                    if (terminate){ 
-                      dispatch(resetProgress());
-                      dispatch(reSetSnipping());
-                      // return;
-                      throw("Aborting!!!!1") 
-                    }
                 
-                    console.log("retrying")
-                    setTimeout(checkAgian, 5000);
-                  } else {
-            
-                    dispatch(setProgress({action: "retrying", status: "ended"}));
-            
-                  }
+                  
+                if(revv){
+                  dispatch(setProgress({action: "retrying", status: "ended"}));
+                  break;
+                }
+
+                if(terminate){
+                  dispatch(resetProgress());
+                  dispatch(reSetSnipping());
+                  // throw("Aborting!!!!!")
+                  return;
+                }
+
               }
 
-              await checkAgian();
+              // if(terminate){
+              //     dispatch(resetProgress());
+              //     dispatch(reSetSnipping());
+              //     return;
+              //         // throw("Aborting!!!!1") 
+              // }
 
-            } 
+
+            }
             else {
               dispatch(resetProgress());
               dispatch(reSetSnipping());
-              return;     
+              throw("Aborting!!!!!")
             }
-        }
+       }
+      } 
+      else {
+        return;
+      }
+
+    console.log("trying to go ahead")
+
+    // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
+
+    // await delayFn(5000);
+    // console.log("trying to go ahead")
+    // await delayFn(5000);
 
 
-        console.log("trying to go ahead")
-
-
-    return;
+    // return;
 
 
     let allRequests:any = [];
@@ -642,7 +710,7 @@ const NFTForm = () => {
 
   $(document).on('click','#end', () => {
     console.log("calling stopFunction  ===========================>")
-    terminate=true;
+    terminate = true;
   });
 
   // $('#end').on('click', () => {
