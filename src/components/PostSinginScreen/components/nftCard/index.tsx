@@ -17,7 +17,7 @@ import OpenSea from '../../../assets/OpenSea.svg'
 import CornerRibbon from "react-corner-ribbon";
 import undefined from '../../../assets/undefined.png'
 import NFTtable from './NFTtable';
-// import { SSL_OP_PKCS1_CHECK_2 } from 'constants';
+import Skeleton from '@mui/material/Skeleton';
 
 
 
@@ -29,7 +29,7 @@ interface Props {
 const NFTCard: FC<Props> = ({token, normalization}) => {
 
   const web3 = new Web3(window.ethereum);  
-  const [isVideo, setIsVideo] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const {projectInfo, onlyOnSale} = useSelector((state: any) => state);
 
   const {attributes} = token
@@ -52,26 +52,10 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   const handleClose = () => setOpen(false);
   const onSale = token.opensea.saleType === "onSale" ? true:false; 
 
-
-  // export interface Attribute {
-  //   [trait_type :string] : {
-  //     [trait_value: string] : {
-  //         trait_type :string, 
-  //         value: string,
-  //         value_rarity_score: number,
-  //         value_normalized_rarity_score: number
-  //     }
-  //   }
-  // }
-
-  // let attributes2 = [...Object.values(attributes)] 
-  // console.log("attributes2", attributes2)
-  // // console.log("attributes2", attributes2[attributes2.trait_value])
-
-  // // let attributes3 = [...Object.values(attributes2)] 
-  
-  // let sortedAttributes = attributes2.sort((a:any, b:any) => {return b[b.trait_value].value_rarity_score - a[a.trait_value].value_rarity_score })
-  // console.log("sortedAttributes", sortedAttributes)
+  const imageLoading = () => {
+      console.log("Image loaded", token.name)
+      setImageLoaded(true)
+  }
   
   return (
     <div>
@@ -102,23 +86,29 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
             null
         }
 
-        {
-          // isVideo ?
+              {
+                // !imageLoaded  ?
+                  <Skeleton variant="rectangular" width={210} height={200} animation="wave" /> 
+                //   :
+                  // <CardMedia
+                  //   onLoad ={ () =>console.log("Image loaded", token.name)}
+                  //   onError ={ () =>console.log("Erorr Image loaded", token.name)}
+                  //   // onLoad={() => imageLoading()}
+                  //   component="img"
+                  //   height="200"
+                  //   // component = {<Skeleton variant="rectangular" width={210} height={200} animation="wave" />}
+                  //   image={imageOfNFT}
+                  //   alt={undefined}
+                  //   onClick={handleOpen}
+                  // /> 
+               
+              }
+           
+        
 
-          // <video id="video" >
-          //       <source src={imageOfNFT} />
-          // </video> 
+        
 
-          // :
 
-          <CardMedia
-            component="img"
-            height="200"
-            image={imageOfNFT}
-            alt={undefined}
-            onClick={handleOpen}
-          />
-        }
       </CardActionArea>
 
         <CardContent>
