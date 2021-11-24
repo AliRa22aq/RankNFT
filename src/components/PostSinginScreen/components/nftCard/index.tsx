@@ -87,20 +87,20 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
         }
 
               {
-                // !imageLoaded  ?
-                  <Skeleton variant="rectangular" width={210} height={200} animation="wave" /> 
-                //   :
-                  // <CardMedia
-                  //   onLoad ={ () =>console.log("Image loaded", token.name)}
-                  //   onError ={ () =>console.log("Erorr Image loaded", token.name)}
-                  //   // onLoad={() => imageLoading()}
-                  //   component="img"
-                  //   height="200"
-                  //   // component = {<Skeleton variant="rectangular" width={210} height={200} animation="wave" />}
-                  //   image={imageOfNFT}
-                  //   alt={undefined}
-                  //   onClick={handleOpen}
-                  // /> 
+                !imageLoaded  ?
+                <>
+                  <Skeleton variant="rectangular" width={210} height={180} animation="wave" /> 
+                  <img src={imageOfNFT} height="0"
+                      onLoad ={ () => imageLoading()}
+                      onError ={ () =>console.log("Erorr Image loaded", token.name)} />
+                </>  :
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={imageOfNFT}
+                    alt={undefined}
+                    onClick={handleOpen}
+                  /> 
                
               }
            
@@ -168,7 +168,9 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
         <div className="NFT-image"> 
             <div>
 
-              <img src={imageOfNFT} alt={token.name} height="400" width="400" /> 
+              <img src={imageOfNFT} alt={token.name} height="400" width="400" 
+              
+              /> 
             </div>
             <div className="NFT-Opensea-Container">
             <div> {onSale ? "Open to sale": "Not open to sale"} </div>
