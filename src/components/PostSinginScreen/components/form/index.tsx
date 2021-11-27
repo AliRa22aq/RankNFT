@@ -38,6 +38,9 @@ const NFTForm = () => {
   const { projectInfo, isSnipping, progress } = useSelector((state: any) => state);
 
   const dispatch = useDispatch();
+  // const gateway = "https://Ipfs.raritysniffer.com/ipfs/";
+  const gateway = "https://ipfs.io/ipfs/";
+
 
 
   
@@ -338,12 +341,15 @@ const NFTForm = () => {
 
     dispatch(setProjectRange({from: from, to: to, range: to - from + 1}))
 
+    // const gateway = "https://ipfs.io/ipfs/";
+    // const gateway = "https://Ipfs.raritysniffer.com/ipfs/";
+
     if(data?.baseTokenURI && data?.baseTokenURI?.includes("ipfs://")) {
-      let url = data?.baseTokenURI?.replace("ipfs://", "https://ipfs.io/ipfs/");
+      let url = data?.baseTokenURI?.replace("ipfs://", gateway );
       fetchAllTokenData(url, from, to)
     }
     else if(data?.baseTokenURI && data?.baseTokenURI?.includes("https://gateway.pinata.cloud/ipfs/")){
-      let url = data?.baseTokenURI?.replace("https://gateway.pinata.cloud/ipfs/", "https://ipfs.io/ipfs/");
+      let url = data?.baseTokenURI?.replace("https://gateway.pinata.cloud/ipfs/", gateway);
       fetchAllTokenData(url, from, to)
     }
     else if(data?.baseTokenURI && data?.baseTokenURI?.includes("http://")){
@@ -399,26 +405,19 @@ const NFTForm = () => {
     }
 
     const arrayEquals = (a: any, b:any) => {
-      // return JSON.stringify(a) == JSON.stringify(b)
       return _.isEqual(a, b);
-    // if (a == null || b == null) return false;
-    // if (a.length !== b.length) return false;
-    // if (a === b) return true;
-  
-
-        // Array.isArray(a) &&
-        // Array.isArray(b) &&
-        // a.length === b.length &&
-        // a.every((val, index) => val === b[index]);
     }
   
     const checkURI = (rawURI: string) => {
+      // const gateway = "https://ipfs.io/ipfs/";
+      // const gateway = "https://Ipfs.raritysniffer.com/ipfs/";
+
       if(rawURI.includes("ipfs://")) {
-        let url = rawURI.replace("ipfs://", "https://ipfs.io/ipfs/");
+        let url = rawURI.replace("ipfs://", gateway);
         return url;
       }
       else if(rawURI.includes("https://gateway.pinata.cloud/ipfs/")){
-        let url = rawURI.replace("https://gateway.pinata.cloud/ipfs/", "https://ipfs.io/ipfs/");
+        let url = rawURI.replace("https://gateway.pinata.cloud/ipfs/", gateway);
         return url;
       }
       else if(rawURI.includes("http://")){

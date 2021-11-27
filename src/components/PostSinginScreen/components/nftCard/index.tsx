@@ -18,7 +18,7 @@ import CornerRibbon from "react-corner-ribbon";
 import undefined from '../../../assets/undefined.png'
 import NFTtable from './NFTtable';
 import Skeleton from '@mui/material/Skeleton';
-
+import axios from 'axios';
 
 
 interface Props {
@@ -31,17 +31,17 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   const web3 = new Web3(window.ethereum);  
   const [imageLoaded, setImageLoaded] = useState(false);
   const {projectInfo, onlyOnSale} = useSelector((state: any) => state);
-
-  const {attributes} = token
-
-
+  const {attributes} = token;
   let imageOfNFT = token.image;
+  const gateway = "https://ipfs.io/ipfs/";
+  // const gateway = "https://Ipfs.raritysniffer.com/ipfs/";
+
 
   if(token.image.includes("ipfs://")){
-    imageOfNFT = token.image.replace("ipfs://", "https://ipfs.io/ipfs/")
+    imageOfNFT = token.image.replace("ipfs://", gateway)
   }
   else if(token.image.includes("https://gateway.pinata.cloud/ipfs/")){
-    imageOfNFT = token.image.replace("https://gateway.pinata.cloud/ipfs/", "https://ipfs.io/ipfs/")
+    imageOfNFT = token.image.replace("https://gateway.pinata.cloud/ipfs/", gateway)
   }
 
 
@@ -56,6 +56,16 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
       console.log("Image loaded", token.name)
       setImageLoaded(true)
   }
+
+  // useEffect(() => {
+  //   const fetchImage = async () => {
+  //     const image = require(imageOfNFT)
+  //     // console.log("image", image.data);
+  //     setImageLoaded(image);
+  //   }
+  //   fetchImage();
+
+  // }, [imageOfNFT])
   
   return (
     <div>
@@ -87,33 +97,40 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
         }
 
               {
-                !imageLoaded  ?
-                <>
-                  <Skeleton variant="rectangular" width={210} height={180} animation="wave" /> 
-                  <img src={imageOfNFT} height="0"
-                      onLoad ={ () => imageLoading()}
-                      onError ={ () =>console.log("Erorr Image loaded", token.name)} />
-                </>  :
+                imageLoaded ? 
                   <CardMedia
                     component="img"
                     height="200"
                     image={imageOfNFT}
                     alt={undefined}
                     onClick={handleOpen}
-                  /> 
-               
+                  /> :
+                  <>
+                  <Skeleton variant="rectangular" 
+                    width={210} 
+                    height={180}
+                    animation="wave" 
+                    onClick={handleOpen}
+                  />
+                  <CardMedia
+                    onLoad ={ () => imageLoading()}
+                    onError ={ () =>console.log("Erorr Image loaded", token.name)} 
+                    component="img"
+                    height="0"
+                    image={imageOfNFT}
+                    alt={undefined}
+                  />
+                </>
+              
               }
-           
-        
-
-        
+                
 
 
       </CardActionArea>
 
         <CardContent>
           <Typography gutterBottom variant="caption" component="div">
-            {token.name? token.name.slice(0,25): "Name unavailable"}
+            {token.name ? String(token.name).slice(0,25): "Name unavailable"}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             Rarity Score: { normalization ? token.normalized_rarity_score.toFixed(2) : token.rarity_score.toFixed(2)}
@@ -168,9 +185,20 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
         <div className="NFT-image"> 
             <div>
 
-              <img src={imageOfNFT} alt={token.name} height="400" width="400" 
-              
-              /> 
+              {
+                imageLoaded ?
+                  <img src={imageOfNFT} alt={token.name} height="400" width="400" /> :
+                  <>
+                    <Skeleton variant="rectangular" width={400} height={400} animation="wave" />
+                    <img src={imageOfNFT} 
+                          onLoad ={ () => imageLoading()}
+                          onError ={ () =>console.log("Erorr Image loaded", token.name)} 
+                          alt={token.name} 
+                          height="0" 
+                          />
+                  </> 
+              }                              
+
             </div>
             <div className="NFT-Opensea-Container">
             <div> {onSale ? "Open to sale": "Not open to sale"} </div>
