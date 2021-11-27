@@ -44,7 +44,6 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
     imageOfNFT = token.image.replace("https://gateway.pinata.cloud/ipfs/", gateway)
   }
 
-
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
     setOpen(true)
@@ -56,16 +55,6 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
       console.log("Image loaded", token.name)
       setImageLoaded(true)
   }
-
-  // useEffect(() => {
-  //   const fetchImage = async () => {
-  //     const image = require(imageOfNFT)
-  //     // console.log("image", image.data);
-  //     setImageLoaded(image);
-  //   }
-  //   fetchImage();
-
-  // }, [imageOfNFT])
   
   return (
     <div>
