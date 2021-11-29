@@ -35,8 +35,11 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   const {projectInfo, onlyOnSale} = useSelector((state: any) => state);
   const {attributes} = token;
   let imageOfNFT = token.image;
-  const gateway = "https://ipfs.io/ipfs/";
+  // const gateway = "https://ipfs.io/ipfs/";
   // const gateway = "https://Ipfs.raritysniffer.com/ipfs/";
+  const gateway = "https://ipfs.infura.io/";
+
+  
 
 
   if(token.image.includes("ipfs://")){

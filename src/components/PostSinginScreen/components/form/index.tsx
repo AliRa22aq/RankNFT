@@ -39,7 +39,8 @@ const NFTForm = () => {
 
   const dispatch = useDispatch();
   // const gateway = "https://Ipfs.raritysniffer.com/ipfs/";
-  const gateway = "https://ipfs.io/ipfs/";
+  // const gateway = "https://ipfs.io/ipfs/";
+  const gateway = "https://ipfs.infura.io/";
 
 
 
