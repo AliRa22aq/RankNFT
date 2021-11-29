@@ -18,7 +18,8 @@ import CornerRibbon from "react-corner-ribbon";
 import undefined from '../../../assets/undefined.png'
 import NFTtable from './NFTtable';
 import Skeleton from '@mui/material/Skeleton';
-import axios from 'axios';
+import error from '../../../assets/error.png';
+
 
 
 interface Props {
@@ -30,6 +31,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
 
   const web3 = new Web3(window.ethereum);  
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [showErrorImag, setShowErrorImag] = useState(false);
   const {projectInfo, onlyOnSale} = useSelector((state: any) => state);
   const {attributes} = token;
   let imageOfNFT = token.image;
@@ -86,6 +88,13 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
         }
 
               {
+              showErrorImag ?
+                <img 
+                  src={error}
+                  alt="error"
+                  height="200"
+                  />
+                  :
                 imageLoaded ? 
                   <CardMedia
                     component="img"
@@ -102,8 +111,8 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
                     onClick={handleOpen}
                   />
                   <CardMedia
-                    onLoad ={ () => imageLoading()}
-                    onError ={ () =>console.log("Erorr Image loaded", token.name)} 
+                    onLoad ={ () => setImageLoaded(true)}
+                    onError ={ () => setShowErrorImag(true)} 
                     component="img"
                     height="0"
                     image={imageOfNFT}
