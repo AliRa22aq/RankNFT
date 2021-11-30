@@ -60,6 +60,10 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
       console.log("Image loaded", token.name)
       setImageLoaded(true)
   }
+
+  useEffect(() => {
+    setImageLoaded(false)
+  }, [token.image])
   
   return (
     <div>

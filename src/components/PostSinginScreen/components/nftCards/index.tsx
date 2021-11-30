@@ -333,23 +333,6 @@ const NFTCards = () => {
   }, [progress.openseaFetch.ended])
 
 
-//   useEffect(()=> {
-//     handleInputLength()
-//   }, [page])
-
-//   useEffect(()=> {
-//     handleSort(sortBy)
-//     handlePage(0,1);
-//     handleInputLength()
-//   },[onlyOnSale])
-
-// useEffect(()=> {
-//   handleSort(sortBy)
-//   handlePage(0,1);
-//   handleInputLength()
-// },[normalization])
-
-
 
   return (
     <div className="cards-container">
@@ -364,19 +347,6 @@ const NFTCards = () => {
                         Welcome to NFT Sniper. < br /> < br />
                         Enter an NFT contract address and load it to snip
                   </div>
-
-                  {/* <div className="before-NFT-welcome-Secreen-rules-header">
-                      Rules of snipping
-                  </div>
-
-                  <div className="before-NFT-welcome-Secreen-rules">
-                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-                  </div> */}
 
                  </div> :
                   !isSnipping.showNFTs? 
@@ -415,9 +385,6 @@ const NFTCards = () => {
                                   <MenuItem value={4}> {`Price (low -> high)`} </MenuItem>
                                   <MenuItem value={5}> {`Token ID (high -> low)`} </MenuItem>
                                   <MenuItem value={6}> {`Token ID (low -> high)`} </MenuItem>
-
-                                  
-
 
                                 </Select>
                               </FormControl>
