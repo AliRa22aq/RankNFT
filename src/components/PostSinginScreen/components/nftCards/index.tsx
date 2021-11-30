@@ -61,32 +61,19 @@ const NFTCards = () => {
       
   const handleNormalization = () => {
     if(normalization === true){
-      // setNormalization(!normalization)
       dispatch(switchNormalization())
-      // setSortBy(sortBy);
-      // handlePage(0,1)
-
     }
     else if(normalization === false){
-      // setNormalization(!normalization)
       dispatch(switchNormalization())
-      // setSortBy(sortBy);
-      // handlePage(0,1)
-
     }
   }
 
   const handleOnSale = () => {
-
     if(onlyOnSale === false){
       dispatch(setOnlyOnSaleState())
-      // handleSort(sortBy)
-      // handlePage(0,1)
     }
     else if(onlyOnSale === true){
       dispatch(setOnlyOnSaleState())
-      // handleSort(sortBy)
-      // handlePage(0,1)      
     }
   }
 
@@ -158,25 +145,31 @@ const NFTCards = () => {
 
     const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
-    await fetchOpenseaData(1, 0, 3300);
+    await fetchOpenseaData(1, 0, 2000);
     
     console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
     console.log("Test Open sea data fetching Ended - 0 to 3300")
-
+    
     dispatch(assignRank())
     dispatch(setProgress({action: "openseaFetch", status: "ended"}));
-
-
-
+    
+    
+    
     // handleSort(0)
     await delayFn(20000)
-    await fetchOpenseaData(2, 3301, 6600);
+    await fetchOpenseaData(2, 2001, 4000);
     await delayFn(20000)
-    await fetchOpenseaData(2, 6601, 10000);
+    await fetchOpenseaData(2, 4001, 6000);
     await delayFn(20000)
-    await fetchOpenseaData(3, 10001, 13300);
+    await fetchOpenseaData(2, 6001, 8000);
     await delayFn(20000)
-    await fetchOpenseaData(4, 13301, 15000);
+    await fetchOpenseaData(2, 8001, 10000);
+    await delayFn(20000)
+    await fetchOpenseaData(4, 10001, 12000);
+    await delayFn(20000)
+    await fetchOpenseaData(4, 12001, 14000);
+    await delayFn(20000)
+    await fetchOpenseaData(4, 14001, 16000);
 
 
   }

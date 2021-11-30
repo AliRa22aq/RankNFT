@@ -21,7 +21,6 @@ import Skeleton from '@mui/material/Skeleton';
 import error from '../../../assets/error.png';
 
 
-
 interface Props {
   token : AttributesOfEachToekn,
   normalization: boolean,
@@ -40,9 +39,10 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   const gateway = "https://ipfs.infura.io/";
 
   
-
-
-  if(token.image.includes("ipfs://")){
+  if(token.image.includes("https://ipfs.io/ipfs/")) {
+      imageOfNFT = token.image.replace("https://ipfs.io/ipfs/", gateway );
+  }
+  else if(token.image.includes("ipfs://")){
     imageOfNFT = token.image.replace("ipfs://", gateway)
   }
   else if(token.image.includes("https://gateway.pinata.cloud/ipfs/")){

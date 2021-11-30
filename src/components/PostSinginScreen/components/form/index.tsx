@@ -13,6 +13,8 @@ import * as yup from 'yup';
 import $ from 'jquery';
 import _ from 'underscore';
 
+//@ts-ignore
+import IPFSGatewayTools from '@pinata/ipfs-gateway-tools/dist/browser';
 
 interface Data {
   contractInfo: {contractFunctions: any, contractAddrs: string},
@@ -30,7 +32,6 @@ const initialData = {
 }
 
 
-
 const NFTForm = () => {
 
   // const provider = new Web3.providers.HttpProvider('https://mainnet.infura.io')
@@ -38,11 +39,13 @@ const NFTForm = () => {
   const { projectInfo, isSnipping, progress } = useSelector((state: any) => state);
 
   const dispatch = useDispatch();
-  // const gateway = "https://Ipfs.raritysniffer.com/ipfs/";
-  // const gateway = "https://ipfs.io/ipfs/";
-  const gateway = "https://ipfs.infura.io/";
 
 
+
+const ipfsGatewayTools = new IPFSGatewayTools();
+const sourceUrl = 'https://exampleGateway.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m';
+const desiredGatewayPrefix = 'https://mygateway.mypinata.cloud'
+const convertedGatewayUrl = ipfsGatewayTools.convertToDesiredGateway(sourceUrl, desiredGatewayPrefix);
 
   
   const [data, setData] = useState<Data>(initialData);
@@ -51,22 +54,6 @@ const NFTForm = () => {
   // const [terminate, setTerminate] = useState(false);
 
   let terminate:boolean = false;
-  // let myVar:any;
-
-  // const [revealed, setRevealed] = useState(false);
-  // const [stopRetrying, setStopRetrying] = useState(false);
-  // const [userDecision, setUserDecision] = useState(false);
-  // let flag = false;
-
-  // const getRetryingState = () => {
-  //   return progress.retryingToCheckRevealing.ended
-  // }
-  
-  // if(progress.retryingToCheckRevealing.ended){
-    // console.log("outside progress.retryingToCheckRevealing.ended", progress.retryingToCheckRevealing.ended);
-  // }
-
-
 
   let schema1 = yup.object().shape({
     address: yup.string().length(42, "not a contract address").required(),
@@ -78,7 +65,39 @@ const NFTForm = () => {
     to: yup.number().positive().moreThan(yup.ref("from"), "not a valid range ").moreThan(1, "should be more than 1").required()
   });
 
+
+
+// const gateway = "https://Ipfs.raritysniffer.com/ipfs/";
+// const gateway = "https://ipfs.io/ipfs/";
+const gateway = "https://ipfs.infura.io/";
+
+const checkURI = (rawURI: string) => {
+
+  if(data?.baseTokenURI && data?.baseTokenURI?.includes("https://ipfs.io/ipfs/")) {
+    let url = rawURI.replace("https://ipfs.io/ipfs/", gateway);
+    return url;
+  }
+  else if(rawURI.includes("ipfs://")) {
+    let url = rawURI.replace("ipfs://", gateway);
+    return url;
+  }
+  else if(rawURI.includes("https://gateway.pinata.cloud/ipfs/")){
+    let url = rawURI.replace("https://gateway.pinata.cloud/ipfs/", gateway);
+    return url;
+  }
+  else if(rawURI.includes("http://")){
+    let url = rawURI.replace("http://", "https://")
+    return url;
+  }      
+  else if(rawURI.includes("https://")){
+    return rawURI;
+  }
+  else {
+    return rawURI;
+  }
   
+}
+
 
 
   const fetchData = async  ( contractAdrs : string, URl?:string, setFieldValue?: any ) => {
@@ -345,25 +364,41 @@ const NFTForm = () => {
     // const gateway = "https://ipfs.io/ipfs/";
     // const gateway = "https://Ipfs.raritysniffer.com/ipfs/";
 
-    if(data?.baseTokenURI && data?.baseTokenURI?.includes("ipfs://")) {
-      let url = data?.baseTokenURI?.replace("ipfs://", gateway );
-      fetchAllTokenData(url, from, to)
-    }
-    else if(data?.baseTokenURI && data?.baseTokenURI?.includes("https://gateway.pinata.cloud/ipfs/")){
-      let url = data?.baseTokenURI?.replace("https://gateway.pinata.cloud/ipfs/", gateway);
-      fetchAllTokenData(url, from, to)
-    }
-    else if(data?.baseTokenURI && data?.baseTokenURI?.includes("http://")){
-      let url = data?.baseTokenURI?.replace("http://", "https://")
-      fetchAllTokenData(url, from, to)
-    }      
-    else if(data?.baseTokenURI && data?.baseTokenURI?.includes("https://")){
-      let url = data?.baseTokenURI
-      fetchAllTokenData(url, from, to)
-    }      
+    // const desiredGatewayPrefix = 'https://mygateway.mypinata.cloud'
+    // console.log("TEsts URL before", data?.baseTokenURI);
+    // const convertedGatewayUrl = ipfsGatewayTools.convertToDesiredGateway(data?.baseTokenURI, desiredGatewayPrefix);
+    // console.log("TEsts URL aftre", convertedGatewayUrl);
 
+
+    // checkURI(data?.baseTokenURI);
+    if (data && data.baseTokenURI){
+      let url = checkURI(data?.baseTokenURI);
+      fetchAllTokenData(url, from, to)
+    }
+
+    // if(data?.baseTokenURI && data?.baseTokenURI?.includes("https://ipfs.io/ipfs/")) {
+    //   let url = data?.baseTokenURI?.replace("https://ipfs.io/ipfs/", gateway );
+    //   fetchAllTokenData(url, from, to)
+    // }    
+    // else if(data?.baseTokenURI && data?.baseTokenURI?.includes("ipfs://")) {
+    //   let url = data?.baseTokenURI?.replace("ipfs://", gateway );
+    //   fetchAllTokenData(url, from, to)
+    // }
+    // else if(data?.baseTokenURI && data?.baseTokenURI?.includes("https://gateway.pinata.cloud/ipfs/")){
+    //   let url = data?.baseTokenURI?.replace("https://gateway.pinata.cloud/ipfs/", gateway);
+    //   fetchAllTokenData(url, from, to)
+    // }
+    // else if(data?.baseTokenURI && data?.baseTokenURI?.includes("http://")){
+    //   let url = data?.baseTokenURI?.replace("http://", "https://")
+    //   fetchAllTokenData(url, from, to)
+    // }      
+    // else if(data?.baseTokenURI && data?.baseTokenURI?.includes("https://")){
+    //   let url = data?.baseTokenURI
+    //   fetchAllTokenData(url, from, to)
+    // }      
 
   }
+
 
 
   const fetchAllTokenData = async (URI: string, from: number, to: number) => {
@@ -409,30 +444,28 @@ const NFTForm = () => {
       return _.isEqual(a, b);
     }
   
-    const checkURI = (rawURI: string) => {
-      // const gateway = "https://ipfs.io/ipfs/";
-      // const gateway = "https://Ipfs.raritysniffer.com/ipfs/";
+    // const checkURI = (rawURI: string) => {
 
-      if(rawURI.includes("ipfs://")) {
-        let url = rawURI.replace("ipfs://", gateway);
-        return url;
-      }
-      else if(rawURI.includes("https://gateway.pinata.cloud/ipfs/")){
-        let url = rawURI.replace("https://gateway.pinata.cloud/ipfs/", gateway);
-        return url;
-      }
-      else if(rawURI.includes("http://")){
-        let url = rawURI.replace("http://", "https://")
-        return url;
-      }      
-      else if(rawURI.includes("https://")){
-        // let url = data?.baseTokenURI
-        return rawURI;
-      }
-      else {
-        return rawURI;
-      }
-    }
+    //   if(rawURI.includes("ipfs://")) {
+    //     let url = rawURI.replace("ipfs://", gateway);
+    //     return url;
+    //   }
+    //   else if(rawURI.includes("https://gateway.pinata.cloud/ipfs/")){
+    //     let url = rawURI.replace("https://gateway.pinata.cloud/ipfs/", gateway);
+    //     return url;
+    //   }
+    //   else if(rawURI.includes("http://")){
+    //     let url = rawURI.replace("http://", "https://")
+    //     return url;
+    //   }      
+    //   else if(rawURI.includes("https://")){
+    //     return rawURI;
+    //   }
+    //   else {
+    //     return rawURI;
+    //   }
+
+    // }
 
     const isRevealed = async () => {
 
