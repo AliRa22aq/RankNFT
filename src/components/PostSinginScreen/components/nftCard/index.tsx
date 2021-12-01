@@ -36,14 +36,14 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   let imageOfNFT = token.image;
   // const gateway = "https://ipfs.io/ipfs/";
   // const gateway = "https://Ipfs.raritysniffer.com/ipfs/";
-  const gateway = "https://ipfs.infura.io/";
-
+  const gateway = "https://ipfs.infura.io/ipfs/";
+  const regex = ".*ipfs\/";
   
-  if(token.image.includes("https://ipfs.io/ipfs/")) {
-      imageOfNFT = token.image.replace("https://ipfs.io/ipfs/", gateway );
-  }
-  else if(token.image.includes("ipfs://")){
+  if(token.image.includes("ipfs://")){
     imageOfNFT = token.image.replace("ipfs://", gateway)
+  }
+  else if(token.image.includes("ipfs")) {
+      imageOfNFT = token.image.replace(regex, gateway);
   }
   else if(token.image.includes("https://gateway.pinata.cloud/ipfs/")){
     imageOfNFT = token.image.replace("https://gateway.pinata.cloud/ipfs/", gateway)
@@ -113,7 +113,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
                   <>
                   <Skeleton variant="rectangular" 
                     width={210} 
-                    height={180}
+                    height={200}
                     animation="wave" 
                     onClick={handleOpen}
                   />

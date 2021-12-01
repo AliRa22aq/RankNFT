@@ -13,8 +13,6 @@ import * as yup from 'yup';
 import $ from 'jquery';
 import _ from 'underscore';
 
-//@ts-ignore
-import IPFSGatewayTools from '@pinata/ipfs-gateway-tools/dist/browser';
 
 interface Data {
   contractInfo: {contractFunctions: any, contractAddrs: string},
@@ -40,14 +38,6 @@ const NFTForm = () => {
 
   const dispatch = useDispatch();
 
-
-
-const ipfsGatewayTools = new IPFSGatewayTools();
-const sourceUrl = 'https://exampleGateway.com/ipfs/bafybeifx7yeb55armcsxwwitkymga5xf53dxiarykms3ygqic223w5sk3m';
-const desiredGatewayPrefix = 'https://mygateway.mypinata.cloud'
-const convertedGatewayUrl = ipfsGatewayTools.convertToDesiredGateway(sourceUrl, desiredGatewayPrefix);
-
-  
   const [data, setData] = useState<Data>(initialData);
   const [loading, setLoading] = useState(false);
   const [needRange, setNeedrange] = useState(false);
@@ -69,17 +59,21 @@ const convertedGatewayUrl = ipfsGatewayTools.convertToDesiredGateway(sourceUrl, 
 
 // const gateway = "https://Ipfs.raritysniffer.com/ipfs/";
 // const gateway = "https://ipfs.io/ipfs/";
-const gateway = "https://ipfs.infura.io/";
+const gateway = "https://ipfs.infura.io/ipfs/";
+const regex = ".*ipfs\/";
+
+
 
 const checkURI = (rawURI: string) => {
 
-  if(data?.baseTokenURI && data?.baseTokenURI?.includes("https://ipfs.io/ipfs/")) {
-    let url = rawURI.replace("https://ipfs.io/ipfs/", gateway);
-    return url;
-  }
-  else if(rawURI.includes("ipfs://")) {
+  if(rawURI.includes("ipfs://")) {
     let url = rawURI.replace("ipfs://", gateway);
     return url;
+  }
+  else if(rawURI.includes("ipfs")) {
+    let url = rawURI.replace(regex, gateway);
+    return url;
+
   }
   else if(rawURI.includes("https://gateway.pinata.cloud/ipfs/")){
     let url = rawURI.replace("https://gateway.pinata.cloud/ipfs/", gateway);
