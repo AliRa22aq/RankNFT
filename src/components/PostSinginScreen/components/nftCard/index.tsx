@@ -37,7 +37,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   // const gateway = "https://ipfs.io/ipfs/";
   // const gateway = "https://Ipfs.raritysniffer.com/ipfs/";
   const gateway = "https://ipfs.infura.io/ipfs/";
-  const regex = ".*ipfs\/";
+  const regex = /.*ipfs\//;
   
   if(token.image.includes("ipfs://")){
     imageOfNFT = token.image.replace("ipfs://", gateway)

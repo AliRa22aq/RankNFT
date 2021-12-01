@@ -60,7 +60,7 @@ const NFTForm = () => {
 // const gateway = "https://Ipfs.raritysniffer.com/ipfs/";
 // const gateway = "https://ipfs.io/ipfs/";
 const gateway = "https://ipfs.infura.io/ipfs/";
-const regex = ".*ipfs\/";
+const regex = /.*ipfs\//;
 
 
 
@@ -72,6 +72,7 @@ const checkURI = (rawURI: string) => {
   }
   else if(rawURI.includes("ipfs")) {
     let url = rawURI.replace(regex, gateway);
+    console.log("test url " + rawURI.replace(regex, gateway))
     return url;
 
   }
