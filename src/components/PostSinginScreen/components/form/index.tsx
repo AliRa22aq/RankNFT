@@ -174,7 +174,7 @@ const checkURI = (rawURI: string) => {
           tokenURI = await MyContract.methods.tokenURI("123").call();
         } 
         else {
-          console.log("tokenURI", String(Number(totalSupply) - 1))
+          console.log("tokenURI", String(Number(totalSupply) - 1));
           tokenURI = await MyContract.methods.tokenURI(String(Number(totalSupply) - 1)).call();
           console.log("tokenURI", tokenURI)
         }
@@ -438,29 +438,6 @@ const checkURI = (rawURI: string) => {
     const arrayEquals = (a: any, b:any) => {
       return _.isEqual(a, b);
     }
-  
-    // const checkURI = (rawURI: string) => {
-
-    //   if(rawURI.includes("ipfs://")) {
-    //     let url = rawURI.replace("ipfs://", gateway);
-    //     return url;
-    //   }
-    //   else if(rawURI.includes("https://gateway.pinata.cloud/ipfs/")){
-    //     let url = rawURI.replace("https://gateway.pinata.cloud/ipfs/", gateway);
-    //     return url;
-    //   }
-    //   else if(rawURI.includes("http://")){
-    //     let url = rawURI.replace("http://", "https://")
-    //     return url;
-    //   }      
-    //   else if(rawURI.includes("https://")){
-    //     return rawURI;
-    //   }
-    //   else {
-    //     return rawURI;
-    //   }
-
-    // }
 
     const isRevealed = async () => {
 
@@ -569,6 +546,8 @@ const checkURI = (rawURI: string) => {
                 
                   
                 if(revv){
+                  let freshTokenURI = await data.contractInfo.contractFunctions.methods.tokenURI(String(Number(projectInfo.totalSupply) - 1)).call();
+                  url = freshTokenURI.replace( String(Number(projectInfo.totalSupply) - 1), "extension");
                   dispatch(setProgress({action: "retrying", status: "ended"}));
                   break;
                 }
@@ -583,14 +562,6 @@ const checkURI = (rawURI: string) => {
                 }
 
               }
-
-              // if(terminate){
-              //     dispatch(resetProgress());
-              //     dispatch(reSetSnipping());
-              //     return;
-              //         // throw("Aborting!!!!1") 
-              // }
-
 
             }
             else {
