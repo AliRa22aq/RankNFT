@@ -74,7 +74,6 @@ const checkURI = (rawURI: string) => {
     let url = rawURI.replace(regex, gateway);
     console.log("test url " + rawURI.replace(regex, gateway))
     return url;
-
   }
   else if(rawURI.includes("https://gateway.pinata.cloud/ipfs/")){
     let url = rawURI.replace("https://gateway.pinata.cloud/ipfs/", gateway);
@@ -99,31 +98,23 @@ const checkURI = (rawURI: string) => {
 
     console.log("fetchData started")
 
-    // console.log("fetchData Started")
-
       dispatch(setProjectInfo(null))
       setData(initialData)
       setNeedrange(false)
       setLoading(true)
 
-      
 
+      const contractAdd = data.contractInfo.contractAddrs
+      const directData = axios.get(
+        `https://v2.raritysniffer.com/api/index.php?query=fetch&collection=${contractAdd}&taskId=any&norm=true&partial=false&traitCount=false&sortByLook=false`
+      )
+
+      console.log(directData);
+
+        return;
+        
       // TODO: Ask ben to provide Infure API Kye
        var web3 = new Web3(new Web3.providers.HttpProvider(`https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`)) 
-       
-
-      // let uri: string;
-      // let abi: any;
-      // let abiJSON: any;
-      // try{
-      //   uri = `https://api.etherscan.io/api?module=contract&action=getabi&address=${contractAdrs}&apikey=*******************`
-      //   abi = await fetch(uri)
-      //   abiJSON = await abi.json()   
-      // } catch(e){
-      //   alert("Unabel to find this contract address");
-      //   setLoading(false);
-      //   throw("Unabel to find this contract address");
-      // }
 
       const uri = `https://api.etherscan.io/api?module=contract&action=getabi&address=${contractAdrs}&apikey=${process.env.REACT_APP_ETHERSCAN_KEY}`
       const abii = await fetch(uri)
@@ -230,112 +221,6 @@ const checkURI = (rawURI: string) => {
       setLoading(false)
 
 
-
-      // if(URl === ""){
-      //   try{
-      //     console.log("asset ", "trying 1")
-      //     const tokenURI1 = await MyContract.methods.tokenURI(String(Number(totalSupply) - 1)).call();
-
-      //     setData(pre => {return {...pre, baseTokenURI: tokenURI1}}) 
-
-      //     dispatch(setProjectInfo({
-      //             contractAddress: contractAdrs,
-      //             totalSupply:  Number(totalSupply), 
-      //             name:  name, 
-      //             baseTokenURI: tokenURI1,
-      //             range: null,
-      //             firstTokenIndex: minToken,
-      //             loadingProgree: 0,
-      //             processingProgress: 0
-      //           }))
-            
-      //     setneedURI(false)
-      //     setNeedrange(true)
-      //     setLoading(false)
-
-          
-      //   }  catch(error){    
-      //         console.log("asset ", "Error fetching URI from useNFT hook too")
-      //         alert("Please provide NFT URI")
-      //         setData(pre => {return {...pre,  baseTokenURI: null}}) 
-      //         dispatch(setProjectInfo({
-      //             contractAddress: contractAdrs, 
-      //             totalSupply:  Number(totalSupply), 
-      //             name:  name, 
-      //             baseTokenURI: null, 
-      //             range: null,
-      //             firstTokenIndex: minToken,
-      //             loadingProgree: 0,
-      //             processingProgress: 0
-
-
-      //           }))
-      //         setneedURI(true)
-      //         setLoading(false)
-      //   }
-      // }
-
-      // else {
-      //   try{
-
-      //     console.log("URi to chck", URl)
-      //     let fetchAPI =  await axios.get(URl) as any          
-      //     console.log("new", fetchAPI.data.attributes)
-      //     console.log("step 2: Fetched attributes from URL ", fetchAPI.data.attributes)
-  
-      //     if(fetchAPI  && fetchAPI.data.attributes){
-      //       setData(pre => {return {...pre, baseTokenURI: URl}}) 
-  
-      //       dispatch(setProjectInfo({
-      //               contractAddress: contractAdrs,
-      //               totalSupply:  Number(totalSupply), 
-      //               name:  name, 
-      //               baseTokenURI: URl,
-      //               range: null,
-      //               firstTokenIndex: minToken,
-      //               loadingProgree: 0,
-      //               processingProgress: 0
-
-      //             }))
-
-      //       setneedURI(false)
-      //       setNeedrange(true)
-      //       setLoading(false)
-      //       setFieldValue("uri","")
-
-
-      //     }
-      //     else {
-      //       setLoading(false)
-
-      //       alert("Please provide a valid NFT URI and make sure you have installed and enabled Moesif CORS extention ")
-      //       setData(pre => {return {...pre,  baseTokenURI: null}}) 
-      //       dispatch(setProjectInfo({
-      //           contractAddress: contractAdrs, 
-      //           totalSupply:  Number(totalSupply), 
-      //           name:  name, 
-      //           baseTokenURI: null, 
-      //           range: null,
-      //           firstTokenIndex: minToken,
-      //           loadingProgree: 0,
-      //           processingProgress: 0
-
-
-      //         }))
-      //       setneedURI(true)
-            
-      //       throw("Not a NFT URL")
-      //     }
-
-      //   }  catch(error){
-      //         console.error(error)    
-      //         alert("Please provide a valid NFT URI")
-      //         setneedURI(true)
-      //         setLoading(false)
-      //   }
-      // }
-
-
   }
 
 
@@ -350,47 +235,15 @@ const checkURI = (rawURI: string) => {
 
 
     dispatch(setLoadingNFTs(false))
-    // dispatch(setIsSnipping({action: null}))
     dispatch(setIsSnipping({action: "requested"}))
 
 
     dispatch(setProjectRange({from: from, to: to, range: to - from + 1}))
 
-    // const gateway = "https://ipfs.io/ipfs/";
-    // const gateway = "https://Ipfs.raritysniffer.com/ipfs/";
-
-    // const desiredGatewayPrefix = 'https://mygateway.mypinata.cloud'
-    // console.log("TEsts URL before", data?.baseTokenURI);
-    // const convertedGatewayUrl = ipfsGatewayTools.convertToDesiredGateway(data?.baseTokenURI, desiredGatewayPrefix);
-    // console.log("TEsts URL aftre", convertedGatewayUrl);
-
-
-    // checkURI(data?.baseTokenURI);
     if (data && data.baseTokenURI){
       let url = checkURI(data?.baseTokenURI);
       fetchAllTokenData(url, from, to)
-    }
-
-    // if(data?.baseTokenURI && data?.baseTokenURI?.includes("https://ipfs.io/ipfs/")) {
-    //   let url = data?.baseTokenURI?.replace("https://ipfs.io/ipfs/", gateway );
-    //   fetchAllTokenData(url, from, to)
-    // }    
-    // else if(data?.baseTokenURI && data?.baseTokenURI?.includes("ipfs://")) {
-    //   let url = data?.baseTokenURI?.replace("ipfs://", gateway );
-    //   fetchAllTokenData(url, from, to)
-    // }
-    // else if(data?.baseTokenURI && data?.baseTokenURI?.includes("https://gateway.pinata.cloud/ipfs/")){
-    //   let url = data?.baseTokenURI?.replace("https://gateway.pinata.cloud/ipfs/", gateway);
-    //   fetchAllTokenData(url, from, to)
-    // }
-    // else if(data?.baseTokenURI && data?.baseTokenURI?.includes("http://")){
-    //   let url = data?.baseTokenURI?.replace("http://", "https://")
-    //   fetchAllTokenData(url, from, to)
-    // }      
-    // else if(data?.baseTokenURI && data?.baseTokenURI?.includes("https://")){
-    //   let url = data?.baseTokenURI
-    //   fetchAllTokenData(url, from, to)
-    // }      
+    }   
 
   }
 
