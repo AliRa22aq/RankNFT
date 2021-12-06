@@ -104,15 +104,12 @@ const checkURI = (rawURI: string) => {
       setLoading(true)
 
 
-      const contractAdd = data.contractInfo.contractAddrs
-      const directData = axios.get(
-        `https://v2.raritysniffer.com/api/index.php?query=fetch&collection=${contractAdd}&taskId=any&norm=true&partial=false&traitCount=false&sortByLook=false`
-      )
 
-      console.log(directData);
 
-        return;
-        
+        // return;
+
+
+
       // TODO: Ask ben to provide Infure API Kye
        var web3 = new Web3(new Web3.providers.HttpProvider(`https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`)) 
 
@@ -253,7 +250,119 @@ const checkURI = (rawURI: string) => {
 
     console.log("fetchAllTokenData started")
    
+    const contractAdd = data.contractInfo.contractAddrs
+
+    console.log("=> ", contractAdd.toLowerCase());
+
+    let directData: any;
+
+    try{
+      directData = await axios.get(
+        `https://v2.raritysniffer.com/api/index.php?query=fetch&collection=${contractAdd.toLowerCase()}&taskId=any&norm=true&partial=false&traitCount=false&sortByLook=false`
+      )
+      // console.log("=> ", directData.data);
+    }
+    catch(e){
+      console.log(e)
+    }
+
     
+    if(directData?.data?.data && Array.isArray(directData?.data?.data)){
+
+      const fullData = directData.data.data;
+      console.log(fullData)
+
+      let allTokens: AttributesOfEachToekn2 = {};
+      let allAttributes: any = {};
+
+      dispatch(setProgress({action: "dataFetch", status: "started"}));
+      dispatch(setProgress({action: "dataFetch", status: "ended"}));
+
+
+      dispatch(setProgress({action: "dataProcess", status: "started"}));
+
+
+      fullData.forEach((token :any, key: number) => {
+
+      let attributes:any = {}
+      let values:any = {}
+
+      // console.log(token)
+
+      let rawAttributes: any = [];
+
+      token.traits.map((trait: any) => {
+        rawAttributes.push({
+          "trait_type": trait.c,
+          "value": trait.n
+        })
+      })
+      
+      console.log(rawAttributes)
+      
+      // rawAttributes = token.value.data.attributes ? token.value.data.attributes : [];
+      let trait_count = rawAttributes.length
+  
+      rawAttributes?.forEach((attribute: any)=> {     
+  
+        // console.log(attribute)
+      
+          if( attribute.trait_type && attribute.value ){
+            values["trait_type"] = attribute.trait_type
+            values["trait_value"] = attribute.value
+            values[attribute.value] = {trait_type: attribute.trait_type, value: attribute.value}
+            attributes[attribute.trait_type] = values
+            values = {}
+          }
+    
+          if( attribute.value && (String(attribute.value).toLowerCase() === "none" || String(attribute.value).toLowerCase() === "nothing")){
+            if(trait_count > 0){
+              trait_count--
+            }
+          }
+        })
+    
+    
+        values["trait_value"] = trait_count
+        values["trait_type"] =  "trait_count"
+        values[trait_count] = {trait_type: "trait_count", value: trait_count}
+        attributes["trait_count"] = values
+        values = {}
+    
+        // return;
+
+        const newTokens: any = {
+          rank: 0,
+          normalized_rank: 0,
+          tokenID: token.id,
+          attributes: attributes,
+          opensea: {price: 0, permalink: ""},
+          rarity_score: 0,
+          normalized_rarity_score: 0,
+          image: token.imageUrl,
+          title: token.title? token.title: "",
+          name: token.name? token.name: `#${String(token.id)}`
+        }
+                      
+          allAttributes[newTokens.tokenID] = newTokens.attributes;       
+          allTokens[newTokens.tokenID] = newTokens;
+
+
+    })
+
+        
+
+    console.log(allAttributes)
+    console.log(allTokens)
+    
+    dispatch(addTokenInList3(allTokens))
+    dispatch(setCountOfAllAttribute3(allAttributes as Attribute2))
+
+
+      
+    } else {
+      console.log("data doesn't exists")
+
     let tokenURI = URI
 
     if(tokenURI.includes("ID")){
@@ -344,10 +453,6 @@ const checkURI = (rawURI: string) => {
         attributes_3 = res_test_3.data.attributes ? res_test_3.data.attributes : [];
       }
         
-
-
-
-
         console.log(attributes_1);
         console.log(attributes_2);
         console.log(attributes_3);
@@ -503,6 +608,7 @@ const checkURI = (rawURI: string) => {
       dispatch(setProgress({action: "dataFetch", status: "ended"}));
 
 
+
       let allTokens: AttributesOfEachToekn2 = {};
       let allAttributes: any = {};
 
@@ -574,14 +680,13 @@ const checkURI = (rawURI: string) => {
       console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
       console.log("Test loop over all tokens ends")
 
-      // console.log(allAttributes)
-      // console.log(allTokens)
+      console.log(allAttributes)
+      console.log(allTokens)
       
       dispatch(addTokenInList3(allTokens))
       dispatch(setCountOfAllAttribute3(allAttributes as Attribute2))
       
-      // return;
-      // return;
+    }
 
       ////////////////////////////////////////////////
 
