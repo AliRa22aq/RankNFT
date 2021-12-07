@@ -100,6 +100,7 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
                   src={error}
                   alt="error"
                   height="200"
+                  onClick={handleOpen}
                   />
                   :
                 imageLoaded ? 

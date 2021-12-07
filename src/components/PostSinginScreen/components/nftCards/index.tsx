@@ -115,7 +115,11 @@ const NFTCards = () => {
         let opensea_responses: any = [];
 
         for(var i = 0;  i < arrayOfLinks.length;  i=i+1) {
-          const request = axios.get(arrayOfLinks[i])
+          const request = axios.get(arrayOfLinks[i], {
+            headers: {
+              'X-API-KEY': 'ca6bb07f094744abb235defe478761f3'
+            }
+          })
           opensea_requests.push(request)
         }
 

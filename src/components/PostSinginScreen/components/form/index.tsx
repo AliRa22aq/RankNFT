@@ -361,6 +361,11 @@ const checkURI = (rawURI: string) => {
 
       
     } else {
+      
+      
+      // return;
+
+
       console.log("data doesn't exists")
 
     let tokenURI = URI
