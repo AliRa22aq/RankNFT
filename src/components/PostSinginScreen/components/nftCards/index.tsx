@@ -116,9 +116,9 @@ const NFTCards = () => {
 
         for(var i = 0;  i < arrayOfLinks.length;  i=i+1) {
           const request = axios.get(arrayOfLinks[i], {
-            headers: {
-              'X-API-KEY': 'ca6bb07f094744abb235defe478761f3'
-            }
+            // headers: {
+            //   'X-API-KEY': 'ca6bb07f094744abb235defe478761f3'
+            // }
           })
           opensea_requests.push(request)
         }
@@ -149,7 +149,7 @@ const NFTCards = () => {
 
     const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
-    await fetchOpenseaData(1, 0, 2000);
+    await fetchOpenseaData(1, 0, 1000);
     
     console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
     console.log("Test Open sea data fetching Ended - 0 to 3300")
@@ -157,23 +157,35 @@ const NFTCards = () => {
     dispatch(assignRank())
     dispatch(setProgress({action: "openseaFetch", status: "ended"}));
     
-    
-    
     // handleSort(0)
     await delayFn(20000)
-    await fetchOpenseaData(2, 2001, 4000);
+    await fetchOpenseaData(2, 1001, 2000);
     await delayFn(20000)
-    await fetchOpenseaData(2, 4001, 6000);
+    await fetchOpenseaData(3, 2001, 3000);
     await delayFn(20000)
-    await fetchOpenseaData(2, 6001, 8000);
+    await fetchOpenseaData(4, 3001, 4000);
     await delayFn(20000)
-    await fetchOpenseaData(2, 8001, 10000);
+    await fetchOpenseaData(5, 4001, 5000);
     await delayFn(20000)
-    await fetchOpenseaData(4, 10001, 12000);
+    await fetchOpenseaData(6, 50001, 6000);
     await delayFn(20000)
-    await fetchOpenseaData(4, 12001, 14000);
+    await fetchOpenseaData(7, 60001, 7000);
     await delayFn(20000)
-    await fetchOpenseaData(4, 14001, 16000);
+    await fetchOpenseaData(8, 70001, 8000);
+    await delayFn(20000)
+    await fetchOpenseaData(9, 8001, 9000);
+    await delayFn(20000)
+    await fetchOpenseaData(10, 9001, 10000);
+    await delayFn(20000)
+    await fetchOpenseaData(11, 10001, 11000);
+    await delayFn(20000)
+    await fetchOpenseaData(12, 11001, 12000);
+    await delayFn(20000)
+    await fetchOpenseaData(13, 12001, 13000);
+    await delayFn(20000)
+    await fetchOpenseaData(14, 13001, 14000);
+    await delayFn(20000)
+    await fetchOpenseaData(15, 14001, 15000);
 
 
   }

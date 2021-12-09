@@ -41,7 +41,6 @@ const NFTForm = () => {
   const [data, setData] = useState<Data>(initialData);
   const [loading, setLoading] = useState(false);
   const [needRange, setNeedrange] = useState(false);
-  // const [terminate, setTerminate] = useState(false);
 
   let terminate:boolean = false;
 
@@ -362,10 +361,6 @@ const checkURI = (rawURI: string) => {
       
     } else {
       
-      
-      // return;
-
-
       console.log("data doesn't exists")
 
     let tokenURI = URI
@@ -741,21 +736,6 @@ const checkURI = (rawURI: string) => {
             />
           </Grid>
 
-       {
-        //  needURI ? 
-        //   <Grid item xs={12}>
-        //       <Field
-        //         component={TextField}
-        //         type="text"
-        //         name="uri"
-        //         label={`NFT URI ${(needURI ? "(Needed)" : "(Optional)")}`}
-        //         fullWidth
-        //       />
-        //   </Grid> 
-        //   : 
-        //   null
-       } 
-
         <div className="form-button-container">
           <Button
             variant="contained"
@@ -765,11 +745,6 @@ const checkURI = (rawURI: string) => {
           >
                   <div >Load Contract</div>
 
-            {
-              // needURI ?
-              //     <div >Enter URI </div> :    
-              //     <div >Load Contract</div>
-            }
           </Button>
          </div>
 

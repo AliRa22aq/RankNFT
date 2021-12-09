@@ -16,13 +16,6 @@ const LoadingProgress = () => {
     const { progress } = useSelector((state: any) => state);
     const dispatch = useDispatch();
 
-    
-    // const stopRetrying = () => {
-    //     console.log("Trying to stop");
-    //     // dispatch(setProgress({action: "retrying", status: "ended"}));
-
-    // }
-
     return(
         <div className="Loading-NFTs-Data-container">
 
@@ -36,7 +29,6 @@ const LoadingProgress = () => {
                         progress.retryingToCheckRevealing.started  && !progress.retryingToCheckRevealing.ended ? 
                         <>
                             <div className="progress"> <CircularProgress color="primary" size={20}/> <span className="progress-text">Retrying to check if project is revealed or not.</span> </div>  
-                            {/* <Button id="end" variant="contained" color="primary" onClick={stopRetrying} > Stop </Button> */}
                         </> :                        
                         progress.retryingToCheckRevealing.started  && progress.retryingToCheckRevealing.ended ? 
                             <div className="progress"> <CheckBoxIcon color="primary" />  <span className="progress-text"> Project is revealed. </span></div> :
