@@ -14,6 +14,10 @@ import $ from 'jquery';
 import _ from 'underscore';
 
 
+import { wrapper } from 'axios-cookiejar-support';
+import { CookieJar } from 'tough-cookie';
+
+
 interface Data {
   contractInfo: {contractFunctions: any, contractAddrs: string},
   totalSupply: string | null, 
@@ -101,12 +105,6 @@ const checkURI = (rawURI: string) => {
       setData(initialData)
       setNeedrange(false)
       setLoading(true)
-
-
-
-
-        // return;
-
 
 
       // TODO: Ask ben to provide Infure API Kye
@@ -256,16 +254,24 @@ const checkURI = (rawURI: string) => {
     let directData: any;
 
     try{
-      directData = await axios.get(
-        `https://v2.raritysniffer.com/api/index.php?query=fetch&collection=${contractAdd.toLowerCase()}&taskId=any&norm=true&partial=false&traitCount=false&sortByLook=false`
-      )
-      // console.log("=> ", directData.data);
+      const fancyURL = `https://v2.raritysniffer.com/api/index.php?query=fetch&collection=${contractAdd.toLowerCase()}&taskId=any&norm=true&partial=false&traitCount=false&sortByLook=false`
+
+      // const jar = new CookieJar();
+      // const client = wrapper(axios.create({ jar }));
+      // directData = await client.get(fancyURL);
+      
+      directData = await axios.get(fancyURL)
     }
     catch(e){
       console.log(e)
     }
-
     
+    console.log("=> ", directData);
+
+// /    return;
+    
+
+
     if(directData?.data?.data && Array.isArray(directData?.data?.data)){
 
       const fullData = directData.data.data;
