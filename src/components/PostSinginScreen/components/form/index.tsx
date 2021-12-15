@@ -258,7 +258,7 @@ const checkURI = (rawURI: string) => {
     try{
       // const fancyURL = `https://v2.raritysniffer.com/api/index.php?query=fetch&collection=${contractAdd.toLowerCase()}&taskId=any&norm=true&partial=false&traitCount=false&sortByLook=false`
 
-      const fancyURL = `https://dev.nftninja.app/projects/tokens/${contractAdd.toLowerCase()}?limit=10000`
+      const fancyURL = `https://dev.nftninja.app/projects/tokens/${contractAdd.toLowerCase()}?limit=${to}`
       directData = await axios.get(fancyURL)
 
       console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
@@ -282,11 +282,12 @@ const checkURI = (rawURI: string) => {
       console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
 
 
-      let attributes:any = {}
-      let values:any = {}
-
+      
       directData?.data?.data.map((token:any) => {
 
+        let attributes:any = {}
+        let values:any = {}
+        
         let rawAttributes = token.attributes ? token.attributes : [];
         let trait_count = token.attributes ? token.attributes.length : 0
         

@@ -96,7 +96,7 @@ const NFTCards = () => {
       let link = initialLink;
   
       activeTokens.forEach((token: any, key: number) => {
-        // console.log(`${key+1} ---> ${token.tokenID} ->  ${token.rarity_score}`)
+        console.log(`${key+1} ---> ${token.tokenID} ->  ${token.rarity_score}`)
         link = link.concat(`&token_ids=${token.tokenID}`);
         if(count%30==0 || count === activeTokens.length){
           arrayOfLinks.push(link.concat("&limit=30"))
@@ -113,13 +113,13 @@ const NFTCards = () => {
       
         let opensea_requests: any = [];
         let opensea_responses: any = [];
-
+        
+        // headers: {
+        //   'X-API-KEY': 'ca6bb07f094744abb235defe478761f3'
+        // }
+        
         for(var i = 0;  i < arrayOfLinks.length;  i=i+1) {
-          const request = axios.get(arrayOfLinks[i], {
-            // headers: {
-            //   'X-API-KEY': 'ca6bb07f094744abb235defe478761f3'
-            // }
-          })
+          const request = axios.get(arrayOfLinks[i])
           opensea_requests.push(request)
         }
 
@@ -131,7 +131,7 @@ const NFTCards = () => {
           }
         })
         
-        // console.log("all OpenSea Responses ", opensea_responses.flat())
+        console.log("all OpenSea Responses ", opensea_responses.flat())
         dispatch(setOpenseaData(opensea_responses.flat()))
   
       }
@@ -144,16 +144,25 @@ const NFTCards = () => {
     console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
 
     dispatch(setProgress({action: "openseaFetch", status: "started"}));
-    const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
+    // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
+    dispatch(assignRank())
 
+    console.log("testingggg start")
     await fetchOpenseaData(1, 0, 3000);
+    console.log("testingggg ends")
     
     console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
     console.log("Test Open sea data fetching Ended - 0 to 3300")
-    dispatch(assignRank())
+    // dispatch(assignRank())
+    handleSort(0)
     dispatch(setProgress({action: "openseaFetch", status: "ended"}));
     
     // handleSort(0)
+    // handlePage(0,1);
+    // handleInputLength()
+    // dispatch(setIsSnipping({ action: "showNFTs" }));
+
+
     // await delayFn(20000)
     // await fetchOpenseaData(2, 1001, 2000);
     // await delayFn(20000)
@@ -218,8 +227,8 @@ const NFTCards = () => {
         // console.log("countOfAllAttribute2 average_trait_count",average_trait_count )
 
         let allValues: any = {};
-        let eachValues: any = {};
-        let allTraits: any = {};
+        // let eachValues: any = {};
+        // let allTraits: any = {};
 
           Object.values(countOfAllAttribute2).map((eachAttribute: any, key: number) => {
                       
@@ -335,10 +344,9 @@ const NFTCards = () => {
 
   useEffect(()=> {
    if(progress.openseaFetch.ended ){
-      handlePage(0,1);
-      handleInputLength()
-      dispatch(setIsSnipping({ action: "showNFTs" }));
-
+    handlePage(0,1);
+    handleInputLength()
+    dispatch(setIsSnipping({ action: "showNFTs" }));
     } 
   }, [progress.openseaFetch.ended])
 
