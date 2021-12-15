@@ -13,11 +13,6 @@ import * as yup from 'yup';
 import $ from 'jquery';
 import _ from 'underscore';
 
-
-import { wrapper } from 'axios-cookiejar-support';
-import { CookieJar } from 'tough-cookie';
-
-
 interface Data {
   contractInfo: {contractFunctions: any, contractAddrs: string},
   totalSupply: string | null, 
@@ -253,65 +248,53 @@ const checkURI = (rawURI: string) => {
 
     let directData: any;
 
-    try{
-      const fancyURL = `https://v2.raritysniffer.com/api/index.php?query=fetch&collection=${contractAdd.toLowerCase()}&taskId=any&norm=true&partial=false&traitCount=false&sortByLook=false`
 
-      // const jar = new CookieJar();
-      // const client = wrapper(axios.create({ jar }));
-      // directData = await client.get(fancyURL);
-      
+    dispatch(setProgress({action: "dataFetch", status: "started"}));
+
+    console.log("Test token data fetching starts")
+    console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+
+
+    try{
+      // const fancyURL = `https://v2.raritysniffer.com/api/index.php?query=fetch&collection=${contractAdd.toLowerCase()}&taskId=any&norm=true&partial=false&traitCount=false&sortByLook=false`
+
+      const fancyURL = `https://dev.nftninja.app/projects/tokens/${contractAdd.toLowerCase()}?limit=10000`
       directData = await axios.get(fancyURL)
+
+      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+      console.log("Test token data fetching ends")
+      dispatch(setProgress({action: "dataFetch", status: "ended"}));
+      console.log("=> ", directData);
+      
     }
     catch(e){
       console.log(e)
     }
     
-    console.log("=> ", directData);
-
-// /    return;
-    
-
-
+          
     if(directData?.data?.data && Array.isArray(directData?.data?.data)){
-
-      const fullData = directData.data.data;
-      console.log(fullData)
 
       let allTokens: AttributesOfEachToekn2 = {};
       let allAttributes: any = {};
 
-      dispatch(setProgress({action: "dataFetch", status: "started"}));
-      dispatch(setProgress({action: "dataFetch", status: "ended"}));
-
-
       dispatch(setProgress({action: "dataProcess", status: "started"}));
+      console.log("Test loop over all tokens starts")
+      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
 
-
-      fullData.forEach((token :any, key: number) => {
 
       let attributes:any = {}
       let values:any = {}
 
-      // console.log(token)
+      directData?.data?.data.map((token:any) => {
 
-      let rawAttributes: any = [];
+        let rawAttributes = token.attributes ? token.attributes : [];
+        let trait_count = token.attributes ? token.attributes.length : 0
+        
 
-      token.traits.map((trait: any) => {
-        rawAttributes.push({
-          "trait_type": trait.c,
-          "value": trait.n
-        })
-      })
-      
-      console.log(rawAttributes)
-      
-      // rawAttributes = token.value.data.attributes ? token.value.data.attributes : [];
-      let trait_count = rawAttributes.length
+        rawAttributes?.forEach((attribute: any)=> {     
   
-      rawAttributes?.forEach((attribute: any)=> {     
-  
-        // console.log(attribute)
-      
+          // console.log(attribute)
+          
           if( attribute.trait_type && attribute.value ){
             values["trait_type"] = attribute.trait_type
             values["trait_value"] = attribute.value
@@ -319,278 +302,357 @@ const checkURI = (rawURI: string) => {
             attributes[attribute.trait_type] = values
             values = {}
           }
-    
+  
           if( attribute.value && (String(attribute.value).toLowerCase() === "none" || String(attribute.value).toLowerCase() === "nothing")){
             if(trait_count > 0){
               trait_count--
             }
           }
         })
-    
-    
+
+
         values["trait_value"] = trait_count
         values["trait_type"] =  "trait_count"
         values[trait_count] = {trait_type: "trait_count", value: trait_count}
         attributes["trait_count"] = values
         values = {}
-    
-        // return;
+
 
         const newTokens: any = {
           rank: 0,
           normalized_rank: 0,
-          tokenID: token.id,
+          tokenID: token.tokenId,
           attributes: attributes,
-          opensea: {price: 0, permalink: ""},
+          opensea: {price: token.price? token.price : 0, permalink: ""},
           rarity_score: 0,
           normalized_rarity_score: 0,
-          image: token.imageUrl,
-          title: token.title? token.title: "",
-          name: token.name? token.name: `#${String(token.id)}`
+          image: token.image,
+          title: token.name? token.name: `#${String(token.tokenId)}`,
+          name: token.name? token.name: `#${String(token.tokenId)}`
         }
                       
           allAttributes[newTokens.tokenID] = newTokens.attributes;       
           allTokens[newTokens.tokenID] = newTokens;
 
+      })
+      
+        console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+        console.log("Test loop over all tokens ends")
 
-    })
-
+        console.log(allAttributes)
+        console.log(allTokens)
         
+        dispatch(addTokenInList3(allTokens))
+        dispatch(setCountOfAllAttribute3(allAttributes as Attribute2))
 
-    console.log(allAttributes)
-    console.log(allTokens)
+
+      //   const extra = () => {
+
+
+      //   // const fullData = directData.data.data;
+      //   // console.log(fullData)
+
+      //   // let allTokens: AttributesOfEachToekn2 = {};
+      //   // let allAttributes: any = {};
+
+      //   // dispatch(setProgress({action: "dataFetch", status: "started"}));
+      //   // dispatch(setProgress({action: "dataFetch", status: "ended"}));
+
+
+      //   // dispatch(setProgress({action: "dataProcess", status: "started"}));
+
+
+      //   // fullData.forEach((token :any, key: number) => {
+
+
+
+      // //   let attributes:any = {}
+      // //   let values:any = {}
+
+      // //   // console.log(token)
+
+      // //   let rawAttributes: any = [];
+
+      // //   token.traits.map((trait: any) => {
+      // //     rawAttributes.push({
+      // //       "trait_type": trait.c,
+      // //       "value": trait.n
+      // //     })
+      // //   })
+        
+      // //   console.log(rawAttributes)
+        
+      // //   // rawAttributes = token.value.data.attributes ? token.value.data.attributes : [];
+      // //   let trait_count = rawAttributes.length
     
-    dispatch(addTokenInList3(allTokens))
-    dispatch(setCountOfAllAttribute3(allAttributes as Attribute2))
+      // //   rawAttributes?.forEach((attribute: any)=> {     
+    
+      // //     // console.log(attribute)
+        
+      // //       if( attribute.trait_type && attribute.value ){
+      // //         values["trait_type"] = attribute.trait_type
+      // //         values["trait_value"] = attribute.value
+      // //         values[attribute.value] = {trait_type: attribute.trait_type, value: attribute.value}
+      // //         attributes[attribute.trait_type] = values
+      // //         values = {}
+      // //       }
+      
+      // //       if( attribute.value && (String(attribute.value).toLowerCase() === "none" || String(attribute.value).toLowerCase() === "nothing")){
+      // //         if(trait_count > 0){
+      // //           trait_count--
+      // //         }
+      // //       }
+      // //     })
+      
+      
+      // //     values["trait_value"] = trait_count
+      // //     values["trait_type"] =  "trait_count"
+      // //     values[trait_count] = {trait_type: "trait_count", value: trait_count}
+      // //     attributes["trait_count"] = values
+      // //     values = {}
+      
+      // //     // return;
 
+      // //     const newTokens: any = {
+      // //       rank: 0,
+      // //       normalized_rank: 0,
+      // //       tokenID: token.id,
+      // //       attributes: attributes,
+      // //       opensea: {price: 0, permalink: ""},
+      // //       rarity_score: 0,
+      // //       normalized_rarity_score: 0,
+      // //       image: token.imageUrl,
+      // //       title: token.title? token.title: "",
+      // //       name: token.name? token.name: `#${String(token.id)}`
+      // //     }
+                        
+      // //       allAttributes[newTokens.tokenID] = newTokens.attributes;       
+      // //       allTokens[newTokens.tokenID] = newTokens;
+
+
+      // // })
+
+          
+
+      // // console.log(allAttributes)
+      // // console.log(allTokens)
+      
+      // // dispatch(addTokenInList3(allTokens))
+      // // dispatch(setCountOfAllAttribute3(allAttributes as Attribute2))
+
+      //   }
 
       
     } else {
       
       console.log("data doesn't exists")
 
-    let tokenURI = URI
+      let tokenURI = URI
 
-    if(tokenURI.includes("ID")){
-      if(projectInfo.totalSupply === "Undifined"){
-        tokenURI = tokenURI.replace("ID", "123")
+      if(tokenURI.includes("ID")){
+        if(projectInfo.totalSupply === "Undifined"){
+          tokenURI = tokenURI.replace("ID", "123")
+        }
+        else{
+          console.log("tokenURI", String(Number(projectInfo.totalSupply) - 1));
+          tokenURI = tokenURI.replace("ID", String(Number(projectInfo.totalSupply) - 1))
+        }
       }
-      else{
-        console.log("tokenURI", String(Number(projectInfo.totalSupply) - 1));
-        tokenURI = tokenURI.replace("ID", String(Number(projectInfo.totalSupply) - 1))
+      
+      try{
+        let fetchAPI =  await axios.get( tokenURI ) as any
+        console.log("fetchAPI res", fetchAPI)    
+      } catch(e){
+        alert("Unable to fetch information. Make sure you have installed and enabled Moesif CORS extention and refresh the page")
+        dispatch(resetProgress());
+        dispatch(reSetSnipping());
+        throw("Aborting")
       }
-     }
-    
-    try{
-      let fetchAPI =  await axios.get( tokenURI ) as any
-      console.log("fetchAPI res", fetchAPI)    
-    } catch(e){
-      alert("Unable to fetch information. Make sure you have installed and enabled Moesif CORS extention and refresh the page")
-      dispatch(resetProgress());
-      dispatch(reSetSnipping());
-      throw("Aborting")
-    }
     
               
-    let url = tokenURI;    
-      
-    if(projectInfo?.totalSupply){
-      if(projectInfo.totalSupply === "Undifined"){
-        url = tokenURI.replace( "123", "extension");
-      } 
-      else {
-        url = tokenURI.replace( String(Number(projectInfo.totalSupply) - 1), "extension");
+      let url = tokenURI;    
+        
+      if(projectInfo?.totalSupply){
+        if(projectInfo.totalSupply === "Undifined"){
+          url = tokenURI.replace( "123", "extension");
+        } 
+        else {
+          url = tokenURI.replace( String(Number(projectInfo.totalSupply) - 1), "extension");
+        }
       }
-    }
 
-    const arrayEquals = (a: any, b:any) => {
-      return _.isEqual(a, b);
-    }
+      const arrayEquals = (a: any, b:any) => {
+        return _.isEqual(a, b);
+      }
 
-    const isRevealed = async () => {
+      const isRevealed = async () => {
 
-      let attributes_1: any;
-      let attributes_2: any;
-      let attributes_3: any;
-      
+        let attributes_1: any;
+        let attributes_2: any;
+        let attributes_3: any;
+        
+          try{
+            let freshTokenURI_1 = await data.contractInfo.contractFunctions.methods.tokenURI(1).call();
+            freshTokenURI_1 = checkURI(freshTokenURI_1);
+            console.log("freshTokenURI", freshTokenURI_1);
+            const res_test_1:any = await axios.get(freshTokenURI_1);
+            attributes_1 = res_test_1.data.attributes ? res_test_1.data.attributes : [];
+          } catch(e){
+            console.log(e)
+            let freshTokenURI_1 = await data.contractInfo.contractFunctions.methods.tokenURI(11).call();
+            freshTokenURI_1 = checkURI(freshTokenURI_1);
+            console.log("freshTokenURI", freshTokenURI_1);
+            const res_test_1:any = await axios.get(freshTokenURI_1);
+            attributes_1 = res_test_1.data.attributes ? res_test_1.data.attributes : [];        
+          }
+
+          
         try{
-          let freshTokenURI_1 = await data.contractInfo.contractFunctions.methods.tokenURI(1).call();
-          freshTokenURI_1 = checkURI(freshTokenURI_1);
-          console.log("freshTokenURI", freshTokenURI_1);
-          const res_test_1:any = await axios.get(freshTokenURI_1);
-          attributes_1 = res_test_1.data.attributes ? res_test_1.data.attributes : [];
+          let freshTokenURI_2 = await data.contractInfo.contractFunctions.methods.tokenURI(2).call();
+          freshTokenURI_2 = checkURI(freshTokenURI_2);
+          console.log("freshTokenURI_2", freshTokenURI_2);
+          const res_test_2:any = await axios.get(freshTokenURI_2);
+          attributes_2 = res_test_2.data.attributes ? res_test_2.data.attributes : [];
         } catch(e){
           console.log(e)
-          let freshTokenURI_1 = await data.contractInfo.contractFunctions.methods.tokenURI(11).call();
-          freshTokenURI_1 = checkURI(freshTokenURI_1);
-          console.log("freshTokenURI", freshTokenURI_1);
-          const res_test_1:any = await axios.get(freshTokenURI_1);
-          attributes_1 = res_test_1.data.attributes ? res_test_1.data.attributes : [];        
+          let freshTokenURI_2 = await data.contractInfo.contractFunctions.methods.tokenURI(12).call();
+          freshTokenURI_2 = checkURI(freshTokenURI_2);
+          console.log("freshTokenURI_2", freshTokenURI_2);
+          const res_test_2:any = await axios.get(freshTokenURI_2);
+          attributes_2 = res_test_2.data.attributes ? res_test_2.data.attributes : [];
         }
+          
+        try{
+          let freshTokenURI_3 = await data.contractInfo.contractFunctions.methods.tokenURI(3).call();
+          freshTokenURI_3 = checkURI(freshTokenURI_3);
+          console.log("freshTokenURI_3", freshTokenURI_3);
+          const res_test_3:any = await axios.get(freshTokenURI_3);
+          attributes_3 = res_test_3.data.attributes ? res_test_3.data.attributes : [];
+        } catch(e){
+          console.log(e)
+          let freshTokenURI_3 = await data.contractInfo.contractFunctions.methods.tokenURI(13).call();
+          freshTokenURI_3 = checkURI(freshTokenURI_3);
+          console.log("freshTokenURI_3", freshTokenURI_3);
+          const res_test_3:any = await axios.get(freshTokenURI_3);
+          attributes_3 = res_test_3.data.attributes ? res_test_3.data.attributes : [];
+        }
+          
+          console.log(attributes_1);
+          console.log(attributes_2);
+          console.log(attributes_3);
 
-        
-       try{
-        let freshTokenURI_2 = await data.contractInfo.contractFunctions.methods.tokenURI(2).call();
-        freshTokenURI_2 = checkURI(freshTokenURI_2);
-        console.log("freshTokenURI_2", freshTokenURI_2);
-        const res_test_2:any = await axios.get(freshTokenURI_2);
-        attributes_2 = res_test_2.data.attributes ? res_test_2.data.attributes : [];
-      } catch(e){
-        console.log(e)
-        let freshTokenURI_2 = await data.contractInfo.contractFunctions.methods.tokenURI(12).call();
-        freshTokenURI_2 = checkURI(freshTokenURI_2);
-        console.log("freshTokenURI_2", freshTokenURI_2);
-        const res_test_2:any = await axios.get(freshTokenURI_2);
-        attributes_2 = res_test_2.data.attributes ? res_test_2.data.attributes : [];
-      }
-        
-      try{
-        let freshTokenURI_3 = await data.contractInfo.contractFunctions.methods.tokenURI(3).call();
-        freshTokenURI_3 = checkURI(freshTokenURI_3);
-        console.log("freshTokenURI_3", freshTokenURI_3);
-        const res_test_3:any = await axios.get(freshTokenURI_3);
-        attributes_3 = res_test_3.data.attributes ? res_test_3.data.attributes : [];
-      } catch(e){
-        console.log(e)
-        let freshTokenURI_3 = await data.contractInfo.contractFunctions.methods.tokenURI(13).call();
-        freshTokenURI_3 = checkURI(freshTokenURI_3);
-        console.log("freshTokenURI_3", freshTokenURI_3);
-        const res_test_3:any = await axios.get(freshTokenURI_3);
-        attributes_3 = res_test_3.data.attributes ? res_test_3.data.attributes : [];
-      }
-        
-        console.log(attributes_1);
-        console.log(attributes_2);
-        console.log(attributes_3);
-
-        console.log("test 1", arrayEquals(attributes_1, attributes_2));
-        console.log("test 2", arrayEquals(attributes_2, attributes_3));
-        console.log("test 3", arrayEquals(attributes_1, attributes_3));
-        
-  
-  
-        const revealedd = !(arrayEquals(attributes_1, attributes_2) && arrayEquals(attributes_2, attributes_3) && arrayEquals(attributes_1, attributes_3))
-        return revealedd
-        
+          console.log("test 1", arrayEquals(attributes_1, attributes_2));
+          console.log("test 2", arrayEquals(attributes_2, attributes_3));
+          console.log("test 3", arrayEquals(attributes_1, attributes_3));
+          
+    
+    
+          const revealedd = !(arrayEquals(attributes_1, attributes_2) && arrayEquals(attributes_2, attributes_3) && arrayEquals(attributes_1, attributes_3))
+          return revealedd
+          
       }
             
       let rev:any;
-      
-      if(!terminate){
         
-        rev = await isRevealed();
-        console.log("=================================> ")
-        console.log("Project revealed status => ", rev)
-        console.log("=================================> ")
-    
+      if(!terminate){
+          
+          rev = await isRevealed();
+          console.log("=================================> ")
+          console.log("Project revealed status => ", rev)
+          console.log("=================================> ")
+      
 
-      if(!rev){
+        if(!rev){
 
-            const userDecisionnn = confirm("Not revealed yet. Want to continuesly try again n again to be the first one to see when it will unrevealed")
-            // console.log("userDecision => ", userDecisionnn)
-            
-            if(userDecisionnn){
+              const userDecisionnn = confirm("Not revealed yet. Want to continuesly try again n again to be the first one to see when it will unrevealed")
+              // console.log("userDecision => ", userDecisionnn)
+              
+              if(userDecisionnn){
 
-              dispatch(setProgress({action: "retrying", status: "started"}));
+                dispatch(setProgress({action: "retrying", status: "started"}));
 
-              console.log("terminate outsite => ", terminate)
+                console.log("terminate outsite => ", terminate)
 
-              const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
+                const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
-              while(!terminate){
-                await delayFn(500);
+                while(!terminate){
+                  await delayFn(500);
 
-                console.log("retrying")
+                  console.log("retrying")
 
-                let revv = await isRevealed();
+                  let revv = await isRevealed();
 
-                console.log("isRevealed => ", revv)
-                console.log("terminate => ", terminate)
-            
-                
+                  console.log("isRevealed => ", revv)
+                  console.log("terminate => ", terminate)
+              
                   
-                if(revv){
-                  let freshTokenURI = await data.contractInfo.contractFunctions.methods.tokenURI(String(Number(projectInfo.totalSupply) - 1)).call();
-                  url = freshTokenURI.replace( String(Number(projectInfo.totalSupply) - 1), "extension");
-                  dispatch(setProgress({action: "retrying", status: "ended"}));
-                  break;
-                }
+                    
+                  if(revv){
+                    let freshTokenURI = await data.contractInfo.contractFunctions.methods.tokenURI(String(Number(projectInfo.totalSupply) - 1)).call();
+                    url = freshTokenURI.replace( String(Number(projectInfo.totalSupply) - 1), "extension");
+                    dispatch(setProgress({action: "retrying", status: "ended"}));
+                    break;
+                  }
 
-                if(terminate){
-                  dispatch(resetProgress());
-                  dispatch(reSetSnipping());
-                  // throw("Aborting!!!!!")
-                  return;
-                  // break;
+                  if(terminate){
+                    dispatch(resetProgress());
+                    dispatch(reSetSnipping());
+                    // throw("Aborting!!!!!")
+                    return;
+                    // break;
+
+                  }
 
                 }
 
               }
-
-            }
-            else {
-              dispatch(resetProgress());
-              dispatch(reSetSnipping());
-              throw("Aborting!!!!!")
-            }
-       }
+              else {
+                dispatch(resetProgress());
+                dispatch(reSetSnipping());
+                throw("Aborting!!!!!")
+              }
+        }
       } 
       else {
-        return;
+          return;
       }
 
-    console.log("trying to go ahead")
+      console.log("trying to go ahead")
 
-    // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
+      let allRequests:any = [];
+      const requestingAllAPIs = async (iteration: number, url: string, _from: number, _to: number, from: number, to: number) => {
 
-    // await delayFn(5000);
-    // console.log("trying to go ahead")
-    // await delayFn(5000);
+        dispatch(setIsSnipping({action: "started"}))         
 
+        const need = to >= _from;
+        if(need){
+        
+          // console.log("==========================================================")
+          // console.log("iteration ",  iteration)
+          // console.log("==========================================================")
 
-    // return;
+          const start = iteration === 1 ? from : _from;
+          const end = to < _to ? to : _to;
+          let requests:any = [];
 
+          for(var i = start;  i <= end;  i=i+1) {         
+            let activeURL =  url.replace("extension" , String(i))
+            console.log("Loop #",  i, activeURL )
+            const request = axios.get( activeURL,  {data: i})
+            requests.push(request)              
+          }
 
-    let allRequests:any = [];
-    const requestingAllAPIs = async (iteration: number, url: string, 
-                                    _from: number, _to: number, from: number, to: number) => {
+          const responses:any = await Promise.allSettled(requests);
+          // console.log("Combined responses of opensea ", responses)
+          allRequests.push(responses)
 
-      dispatch(setIsSnipping({action: "started"}))         
-
-      const need = to >= _from;
-      if(need){
-      
-        // console.log("==========================================================")
-        // console.log("iteration ",  iteration)
-        // console.log("==========================================================")
-
-        const start = iteration === 1 ? from : _from;
-        const end = to < _to ? to : _to;
-        let requests:any = [];
-
-        for(var i = start;  i <= end;  i=i+1) {         
-          let activeURL =  url.replace("extension" , String(i))
-          console.log("Loop #",  i, activeURL )
-          const request = axios.get( activeURL,  {data: i})
-          requests.push(request)              
         }
 
-        const responses:any = await Promise.allSettled(requests);
-        // console.log("Combined responses of opensea ", responses)
-        allRequests.push(responses)
-
       }
-
-    }
-                  
-      // console.log("step 1: Snipping started with URL ", url)
+                    
       dispatch(setProgress({action: "dataFetch", status: "started"}));
-      // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
-
       console.log("Test token data fetching starts")
       console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
-      console.log("fetchAllTokenData url", url)
-
 
       await requestingAllAPIs(1, url, 0, 1000, from, to)
       await requestingAllAPIs(2, url, 1001, 2000, from, to)
@@ -610,16 +672,13 @@ const checkURI = (rawURI: string) => {
 
       console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
       console.log("Test token data fetching ends")
-
       dispatch(setProgress({action: "dataFetch", status: "ended"}));
-
 
 
       let allTokens: AttributesOfEachToekn2 = {};
       let allAttributes: any = {};
 
       dispatch(setProgress({action: "dataProcess", status: "started"}));
-
       console.log("Test loop over all tokens starts")
       console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
 
@@ -710,11 +769,7 @@ const checkURI = (rawURI: string) => {
     console.log("calling stopFunction  ===========================>")
     terminate = true;
   });
-
-  // $('#end').on('click', () => {
-  //     console.log("calling stopFunction  ===========================>")
-  //     terminate=true;
-  //   });                   
+                
 
   return (
    <div className="parent-container"> 
@@ -723,8 +778,7 @@ const checkURI = (rawURI: string) => {
 
     <Formik initialValues={{ address: ''}}
             validationSchema={schema1} 
-            onSubmit={async (values, { setFieldValue  }) => {
-                // dispatch(setUploadedContractAddress(values.address))
+            onSubmit={async (values) => {
                 fetchData(values.address)  
             }}>
 

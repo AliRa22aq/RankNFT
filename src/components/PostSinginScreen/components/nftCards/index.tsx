@@ -143,49 +143,45 @@ const NFTCards = () => {
     console.log("Test Open sea data fetching Started - 0 to 3300")
     console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
 
-
-
     dispatch(setProgress({action: "openseaFetch", status: "started"}));
-
     const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
-    await fetchOpenseaData(1, 0, 1000);
+    await fetchOpenseaData(1, 0, 3000);
     
     console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
     console.log("Test Open sea data fetching Ended - 0 to 3300")
-    
     dispatch(assignRank())
     dispatch(setProgress({action: "openseaFetch", status: "ended"}));
     
     // handleSort(0)
-    await delayFn(20000)
-    await fetchOpenseaData(2, 1001, 2000);
-    await delayFn(20000)
-    await fetchOpenseaData(3, 2001, 3000);
-    await delayFn(20000)
-    await fetchOpenseaData(4, 3001, 4000);
-    await delayFn(20000)
-    await fetchOpenseaData(5, 4001, 5000);
-    await delayFn(20000)
-    await fetchOpenseaData(6, 50001, 6000);
-    await delayFn(20000)
-    await fetchOpenseaData(7, 60001, 7000);
-    await delayFn(20000)
-    await fetchOpenseaData(8, 70001, 8000);
-    await delayFn(20000)
-    await fetchOpenseaData(9, 8001, 9000);
-    await delayFn(20000)
-    await fetchOpenseaData(10, 9001, 10000);
-    await delayFn(20000)
-    await fetchOpenseaData(11, 10001, 11000);
-    await delayFn(20000)
-    await fetchOpenseaData(12, 11001, 12000);
-    await delayFn(20000)
-    await fetchOpenseaData(13, 12001, 13000);
-    await delayFn(20000)
-    await fetchOpenseaData(14, 13001, 14000);
-    await delayFn(20000)
-    await fetchOpenseaData(15, 14001, 15000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(2, 1001, 2000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(3, 2001, 3000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(4, 3001, 4000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(5, 4001, 5000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(6, 50001, 6000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(7, 60001, 7000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(8, 70001, 8000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(9, 8001, 9000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(10, 9001, 10000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(11, 10001, 11000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(12, 11001, 12000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(13, 12001, 13000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(14, 13001, 14000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(15, 14001, 15000);
 
 
   }
@@ -286,10 +282,8 @@ const NFTCards = () => {
   const numberOfPages = Math.ceil(numberOfItems/numberPerPage)
 
   const handleInputLength = () => {
-    set_list_of_NFTs_for_currentPage( list_of_all_tokens && list_of_all_tokens
-                                        .slice((page-1)*numberPerPage, page*numberPerPage))
+    set_list_of_NFTs_for_currentPage( list_of_all_tokens && list_of_all_tokens.slice((page-1)*numberPerPage, page*numberPerPage))
   }
-
 
   useEffect(()=> {
     if(isSnipping.completed === true){
