@@ -28,8 +28,7 @@ const NFTCards = () => {
 
   const { progress, onlyOnSale, normalization, countOfAllAttribute2, list_of_all_tokens2, isSnipping, projectInfo, list_of_all_tokens } = useSelector((state: any) => state);
   
-  console.log("countOfAllAttribute2", countOfAllAttribute2)
-  console.log("list_of_all_tokens2 setRarityScore", list_of_all_tokens2)
+  console.log("ranking ", list_of_all_tokens)
 
   const handleSort = (e: number) => {
     // console.log(e)
@@ -89,8 +88,10 @@ const NFTCards = () => {
   
       const activeTokens = max? list_of_all_tokens.slice(min,max) : list_of_all_tokens.slice(min)
     
-      // console.log("top.length ", activeTokens.length)
+      console.log("top ", activeTokens)
       
+      // return;
+
       if(activeTokens.length > 0) {
   
       let link = initialLink;
@@ -145,16 +146,21 @@ const NFTCards = () => {
 
     dispatch(setProgress({action: "openseaFetch", status: "started"}));
     // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
-    dispatch(assignRank())
+
+    console.log("before ranking ")
+
+    // await dispatch(assignRank())
+
+    console.log("after ranking ")
 
     console.log("testingggg start")
-    await fetchOpenseaData(1, 0, 3000);
+    await fetchOpenseaData(1, 0, 1500);
     console.log("testingggg ends")
     
+    handleSort(0)
     console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
     console.log("Test Open sea data fetching Ended - 0 to 3300")
     // dispatch(assignRank())
-    handleSort(0)
     dispatch(setProgress({action: "openseaFetch", status: "ended"}));
     
     // handleSort(0)
@@ -273,7 +279,7 @@ const NFTCards = () => {
       // return;
     }
     // dispatch(assignNormalizedRank())
-    // dispatch(assignRank())
+    dispatch(assignRank())
 
     dispatch(setIsSnipping({action: "startTop20"}))
 

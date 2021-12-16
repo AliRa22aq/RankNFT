@@ -319,7 +319,6 @@ const dataSlice = createSlice({
     },
 
     setLoadingNFTs(state, { payload }: PayloadAction<boolean>) {
-      // Use a "state machine" approach for loading state instead of booleans
       state.loadingNFTS = payload;
     },
 
@@ -770,7 +769,7 @@ const dataSlice = createSlice({
 
       Object.keys(payload).forEach( (tokenID) => {
 
-        console.log(tokenID, payload[tokenID])
+        // console.log(tokenID, payload[tokenID])
 
         Object.values(payload[tokenID]).forEach((attribute) => {
 
