@@ -19,7 +19,7 @@ import undefined from '../../../assets/undefined.png'
 import NFTtable from './NFTtable';
 import Skeleton from '@mui/material/Skeleton';
 import error from '../../../assets/error.png';
-
+import notAvailable from '../../../assets/notAvailable.jpg';
 
 interface Props {
   token : AttributesOfEachToekn,
@@ -47,6 +47,10 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
   }
   else if(token.image.includes("https://gateway.pinata.cloud/ipfs/")){
     imageOfNFT = token.image.replace("https://gateway.pinata.cloud/ipfs/", gateway)
+  }
+
+  if(imageOfNFT === ""){
+    imageOfNFT = notAvailable
   }
 
   const [open, setOpen] = useState(false);

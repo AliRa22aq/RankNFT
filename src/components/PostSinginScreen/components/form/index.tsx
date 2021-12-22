@@ -247,6 +247,7 @@ const checkURI = (rawURI: string) => {
     console.log("=> ", contractAdd.toLowerCase());
 
     let directData: any;
+    let retry = 0;
 
 
     dispatch(setProgress({action: "dataFetch", status: "started"}));
@@ -258,20 +259,30 @@ const checkURI = (rawURI: string) => {
     try{
       // const fancyURL = `https://v2.raritysniffer.com/api/index.php?query=fetch&collection=${contractAdd.toLowerCase()}&taskId=any&norm=true&partial=false&traitCount=false&sortByLook=false`
 
-      const fancyURL = `https://dev.nftninja.app/projects/tokens/${contractAdd.toLowerCase()}?limit=${to}`
-      directData = await axios.get(fancyURL)
-
-      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
-      console.log("Test token data fetching ends")
-      dispatch(setProgress({action: "dataFetch", status: "ended"}));
-      console.log("=> ", directData);
+      do {
+        retry++
+        console.log("retry", retry)
+        
+        const fancyURL = `https://dev.nftninja.app/projects/tokens/${contractAdd.toLowerCase()}?limit=${to}`
+        directData = await axios.get(fancyURL)
+  
+        console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+        console.log("Test token data fetching ends")
+        dispatch(setProgress({action: "dataFetch", status: "ended"}));
+        if(directData?.data){
+          console.log("Message from the API", directData?.data?.message)
+          console.log("Data from the API", directData?.data)
+        }
+        
+      } while (retry < 5 && directData?.data?.message === "Please wait while we work our magic")
       
     }
     catch(e){
       console.log(e)
     }
     
-          
+    // return; 
+     
     if(directData?.data?.data && Array.isArray(directData?.data?.data)){
 
       let allTokens: AttributesOfEachToekn2 = {};

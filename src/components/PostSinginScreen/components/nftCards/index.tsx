@@ -147,11 +147,11 @@ const NFTCards = () => {
     dispatch(setProgress({action: "openseaFetch", status: "started"}));
     // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
-    console.log("before ranking ")
+    // console.log("before ranking ")
 
     // await dispatch(assignRank())
 
-    console.log("after ranking ")
+    // console.log("after ranking ")
 
     console.log("testingggg start")
     await fetchOpenseaData(1, 0, 1500);
