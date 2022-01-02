@@ -65,7 +65,7 @@ const NFTtable: FC<TableProps> = ({attributes, normalization}) => {
 
 
   return (
-    <TableContainer sx={{ width: 580, maxHeight: 380 }} component={Paper}>
+    <TableContainer sx={{ width: 580, maxHeight: 330 }} component={Paper}>
       <Table  aria-label="simple table">
         <TableHead>
           <TableRow>

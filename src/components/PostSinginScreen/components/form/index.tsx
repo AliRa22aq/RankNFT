@@ -245,19 +245,148 @@ const checkURI = (rawURI: string) => {
     const contractAdd = data.contractInfo.contractAddrs
 
     console.log("=> ", contractAdd.toLowerCase());
+    
+    dispatch(setProgress({action: "dataFetch", status: "started"}));
+    
+    console.log("Test token data fetching starts")
+    console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+    
+        
+    const checkIfAPIRevealed = async () => {
+      // const ex: any = await axios.get("https://dev.nftninja.app/projects/tokens/0xa5c0bd78d1667c13bfb403e2a3336871396713c5?limit=2&skip=9990");
+      const fancyURL: any = `https://dev.nftninja.app/projects/tokens/${contractAdd.toLowerCase()}?limit=2&skip=9990`
+
+      console.log(fancyURL.data.data);
+      
+      if(fancyURL.data?.data && Array.isArray(fancyURL.data.data) && fancyURL.data.data.length > 0){
+        // console.log(ex.data.data[0])
+        // console.log(ex.data.data[1])
+        
+        const result = _.isEqual(fancyURL.data.data[0], fancyURL.data.data[1]);
+        // console.log(result)
+        if(!result){
+          return true; 
+        }
+        else{
+          return false
+        }
+  
+      } else {
+        return false; 
+
+      }
+    }
+
+    const fetchDataWithAPI = async () => {
+        
+        let directData: any;
+        let retry = 0;
+
+        try{
+
+          do {
+            retry++
+            console.log("retry", retry)
+            
+            const fancyURL = `https://dev.nftninja.app/projects/tokens/${contractAdd.toLowerCase()}?limit=${to}`
+            directData = await axios.get(fancyURL)
+      
+            console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+            console.log("Test token data fetching ends")
+            dispatch(setProgress({action: "dataFetch", status: "ended"}));
+            if(directData?.data){
+              console.log("Message from the API", directData?.data?.message)
+              console.log("Data from the API", directData?.data)
+            }
+            
+          } while (retry < 4 && directData?.data?.message === "Please wait while we work our magic")
+          
+        }
+        catch(e){
+          console.log(e)
+        }
+    
+      if(directData?.data?.data && Array.isArray(directData?.data?.data)){
+
+          let allTokens: AttributesOfEachToekn2 = {};
+          let allAttributes: any = {};
+    
+          dispatch(setProgress({action: "dataProcess", status: "started"}));
+          console.log("Test loop over all tokens starts")
+          console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+    
+    
+          
+          directData?.data?.data.map((token:any) => {
+    
+            let attributes:any = {}
+            let values:any = {}
+            
+            let rawAttributes = token.attributes ? token.attributes : [];
+            let trait_count = token.attributes ? token.attributes.length : 0
+    
+            rawAttributes?.forEach((attribute: any)=> {
+                    
+              if( attribute.trait_type && attribute.value ){
+                values["trait_type"] = attribute.trait_type
+                values["trait_value"] = attribute.value
+                values[attribute.value] = {trait_type: attribute.trait_type, value: attribute.value}
+                attributes[attribute.trait_type] = values
+                values = {}
+              }
+      
+              if( attribute.value && (String(attribute.value).toLowerCase() === "none" || String(attribute.value).toLowerCase() === "nothing")){
+                if(trait_count > 0){
+                  trait_count--
+                }
+              }
+            })
+    
+    
+            values["trait_value"] = trait_count
+            values["trait_type"] =  "trait_count"
+            values[trait_count] = {trait_type: "trait_count", value: trait_count}
+            attributes["trait_count"] = values
+            values = {}
+    
+    
+            const newTokens: any = {
+              rank: 0,
+              normalized_rank: 0,
+              tokenID: token.tokenId,
+              attributes: attributes,
+              opensea: {price: token.price? token.price : 0, permalink: ""},
+              rarity_score: 0,
+              normalized_rarity_score: 0,
+              image: token.image,
+              title: token.name? token.name: `#${String(token.tokenId)}`,
+              name: token.name? token.name: `#${String(token.tokenId)}`
+            }
+                          
+              allAttributes[newTokens.tokenID] = newTokens.attributes;       
+              allTokens[newTokens.tokenID] = newTokens;
+    
+          })
+          
+            console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+            console.log("Test loop over all tokens ends")
+    
+            console.log(allAttributes)
+            console.log(allTokens)
+            
+            dispatch(addTokenInList3(allTokens))
+            dispatch(setCountOfAllAttribute3(allAttributes as Attribute2))
+
+
+      }
+
+    }
+
 
     let directData: any;
     let retry = 0;
 
-
-    dispatch(setProgress({action: "dataFetch", status: "started"}));
-
-    console.log("Test token data fetching starts")
-    console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
-
-
     try{
-      // const fancyURL = `https://v2.raritysniffer.com/api/index.php?query=fetch&collection=${contractAdd.toLowerCase()}&taskId=any&norm=true&partial=false&traitCount=false&sortByLook=false`
 
       do {
         retry++
@@ -280,9 +409,7 @@ const checkURI = (rawURI: string) => {
     catch(e){
       console.log(e)
     }
-    
-    // return; 
-     
+         
     if(directData?.data?.data && Array.isArray(directData?.data?.data)){
 
       let allTokens: AttributesOfEachToekn2 = {};
@@ -322,13 +449,11 @@ const checkURI = (rawURI: string) => {
           }
         })
 
-
         values["trait_value"] = trait_count
         values["trait_type"] =  "trait_count"
         values[trait_count] = {trait_type: "trait_count", value: trait_count}
         attributes["trait_count"] = values
         values = {}
-
 
         const newTokens: any = {
           rank: 0,
@@ -357,103 +482,6 @@ const checkURI = (rawURI: string) => {
         dispatch(addTokenInList3(allTokens))
         dispatch(setCountOfAllAttribute3(allAttributes as Attribute2))
 
-
-      //   const extra = () => {
-
-
-      //   // const fullData = directData.data.data;
-      //   // console.log(fullData)
-
-      //   // let allTokens: AttributesOfEachToekn2 = {};
-      //   // let allAttributes: any = {};
-
-      //   // dispatch(setProgress({action: "dataFetch", status: "started"}));
-      //   // dispatch(setProgress({action: "dataFetch", status: "ended"}));
-
-
-      //   // dispatch(setProgress({action: "dataProcess", status: "started"}));
-
-
-      //   // fullData.forEach((token :any, key: number) => {
-
-
-
-      // //   let attributes:any = {}
-      // //   let values:any = {}
-
-      // //   // console.log(token)
-
-      // //   let rawAttributes: any = [];
-
-      // //   token.traits.map((trait: any) => {
-      // //     rawAttributes.push({
-      // //       "trait_type": trait.c,
-      // //       "value": trait.n
-      // //     })
-      // //   })
-        
-      // //   console.log(rawAttributes)
-        
-      // //   // rawAttributes = token.value.data.attributes ? token.value.data.attributes : [];
-      // //   let trait_count = rawAttributes.length
-    
-      // //   rawAttributes?.forEach((attribute: any)=> {     
-    
-      // //     // console.log(attribute)
-        
-      // //       if( attribute.trait_type && attribute.value ){
-      // //         values["trait_type"] = attribute.trait_type
-      // //         values["trait_value"] = attribute.value
-      // //         values[attribute.value] = {trait_type: attribute.trait_type, value: attribute.value}
-      // //         attributes[attribute.trait_type] = values
-      // //         values = {}
-      // //       }
-      
-      // //       if( attribute.value && (String(attribute.value).toLowerCase() === "none" || String(attribute.value).toLowerCase() === "nothing")){
-      // //         if(trait_count > 0){
-      // //           trait_count--
-      // //         }
-      // //       }
-      // //     })
-      
-      
-      // //     values["trait_value"] = trait_count
-      // //     values["trait_type"] =  "trait_count"
-      // //     values[trait_count] = {trait_type: "trait_count", value: trait_count}
-      // //     attributes["trait_count"] = values
-      // //     values = {}
-      
-      // //     // return;
-
-      // //     const newTokens: any = {
-      // //       rank: 0,
-      // //       normalized_rank: 0,
-      // //       tokenID: token.id,
-      // //       attributes: attributes,
-      // //       opensea: {price: 0, permalink: ""},
-      // //       rarity_score: 0,
-      // //       normalized_rarity_score: 0,
-      // //       image: token.imageUrl,
-      // //       title: token.title? token.title: "",
-      // //       name: token.name? token.name: `#${String(token.id)}`
-      // //     }
-                        
-      // //       allAttributes[newTokens.tokenID] = newTokens.attributes;       
-      // //       allTokens[newTokens.tokenID] = newTokens;
-
-
-      // // })
-
-          
-
-      // // console.log(allAttributes)
-      // // console.log(allTokens)
-      
-      // // dispatch(addTokenInList3(allTokens))
-      // // dispatch(setCountOfAllAttribute3(allAttributes as Attribute2))
-
-      //   }
-
       
     } else {
       
@@ -480,8 +508,7 @@ const checkURI = (rawURI: string) => {
         dispatch(reSetSnipping());
         throw("Aborting")
       }
-    
-              
+         
       let url = tokenURI;    
         
       if(projectInfo?.totalSupply){
@@ -553,7 +580,7 @@ const checkURI = (rawURI: string) => {
           console.log(attributes_2);
           console.log(attributes_3);
 
-          console.log("test 1", arrayEquals(attributes_1, attributes_2));
+           console.log("test 1", arrayEquals(attributes_1, attributes_2));
           console.log("test 2", arrayEquals(attributes_2, attributes_3));
           console.log("test 3", arrayEquals(attributes_1, attributes_3));
           
@@ -661,21 +688,91 @@ const checkURI = (rawURI: string) => {
         }
 
       }
-                    
+
       dispatch(setProgress({action: "dataFetch", status: "started"}));
       console.log("Test token data fetching starts")
       console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
 
       await requestingAllAPIs(1, url, 0, 1000, from, to)
+      if(await checkIfAPIRevealed()){
+        await fetchDataWithAPI();
+        dispatch(setProgress({action: "dataProcess", status: "ended"}));
+        dispatch(setIsSnipping({action: "completed"}))
+        return;
+      }
+      
       await requestingAllAPIs(2, url, 1001, 2000, from, to)
+      if(await checkIfAPIRevealed()){
+        await fetchDataWithAPI();
+        dispatch(setProgress({action: "dataProcess", status: "ended"}));
+        dispatch(setIsSnipping({action: "completed"}))
+        return;
+      }
+
       await requestingAllAPIs(3, url, 2001, 3000, from, to)
+      if(await checkIfAPIRevealed()){
+        await fetchDataWithAPI();
+        dispatch(setProgress({action: "dataProcess", status: "ended"}));
+        dispatch(setIsSnipping({action: "completed"}))
+        return;
+      }
+
       await requestingAllAPIs(4, url, 3001, 4000, from, to)
+      if(await checkIfAPIRevealed()){
+        await fetchDataWithAPI();
+        dispatch(setProgress({action: "dataProcess", status: "ended"}));
+        dispatch(setIsSnipping({action: "completed"}))
+        return;
+      }
+
       await requestingAllAPIs(5, url, 4001, 5000, from, to)
+      if(await checkIfAPIRevealed()){
+        await fetchDataWithAPI();
+        dispatch(setProgress({action: "dataProcess", status: "ended"}));
+        dispatch(setIsSnipping({action: "completed"}))
+        return;
+      }
+
       await requestingAllAPIs(6, url, 5001, 6000, from, to)
+      if(await checkIfAPIRevealed()){
+        await fetchDataWithAPI();
+        dispatch(setProgress({action: "dataProcess", status: "ended"}));
+        dispatch(setIsSnipping({action: "completed"}))
+        return;
+      }
+
       await requestingAllAPIs(7, url, 6001, 7000, from, to)
+      if(await checkIfAPIRevealed()){
+        await fetchDataWithAPI();
+        dispatch(setProgress({action: "dataProcess", status: "ended"}));
+        dispatch(setIsSnipping({action: "completed"}))
+        return;
+      }
+
       await requestingAllAPIs(8, url, 7001, 8000, from, to)
+      if(await checkIfAPIRevealed()){
+        await fetchDataWithAPI();
+        dispatch(setProgress({action: "dataProcess", status: "ended"}));
+        dispatch(setIsSnipping({action: "completed"}))
+        return;
+      }
+
       await requestingAllAPIs(9, url, 8001, 9000, from, to)
+      if(await checkIfAPIRevealed()){
+        await fetchDataWithAPI();
+        dispatch(setProgress({action: "dataProcess", status: "ended"}));
+        dispatch(setIsSnipping({action: "completed"}))
+        return;
+      }
+
       await requestingAllAPIs(10, url, 9001, 10000, from, to)
+      if(await checkIfAPIRevealed()){
+        await fetchDataWithAPI();
+        dispatch(setProgress({action: "dataProcess", status: "ended"}));
+        dispatch(setIsSnipping({action: "completed"}))
+        return;
+      }
+
       await requestingAllAPIs(11, url, 10001, 11000, from, to)
       await requestingAllAPIs(12, url, 11001, 12000, from, to)
       await requestingAllAPIs(13, url, 12001, 13000, from, to)

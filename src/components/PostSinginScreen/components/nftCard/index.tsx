@@ -197,9 +197,9 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
 
               {
                 imageLoaded ?
-                  <img src={imageOfNFT} alt={token.name} height="400" width="400" /> :
+                  <img src={imageOfNFT} alt={token.name} height="500" width="400" /> :
                   <>
-                    <Skeleton variant="rectangular" width={400} height={400} animation="wave" />
+                    <Skeleton variant="rectangular" width={500} height={400} animation="wave" />
                     <img src={imageOfNFT} 
                           onLoad ={ () => imageLoading()}
                           onError ={ () =>console.log("Erorr Image loaded", token.name)} 
@@ -210,42 +210,49 @@ const NFTCard: FC<Props> = ({token, normalization}) => {
               }                              
 
             </div>
-            <div className="NFT-Opensea-Container">
-            <div> {onSale ? "Open to sale": "Not open to sale"} </div>
-            {
-              onSale? 
-              <div className="price-container"> 
-                Price: 
-                <span className="price">
-                <img src={ether} alt="ether" width="13px" height="13px" />
-                </span>
-                {token.opensea.price} 
-                </div>:
-              null 
-            }
-            {
-              token.opensea.permalink?
-              <a href={token.opensea.permalink}  target="_blank" > 
-                <img className="openseaSVG2" src={OpenSea}  alt="opensea"  width="150px" height="30px" /> 
-              </a>:
-              null
-            }
-            </div>
+
 
         </div>
         
-        <div className="NFT-rarity-detail">
+        <div className="NFT-rarity-detail" style={{border: "0px solid black"}}>
 
           <div className="NFT-rarity-details-header"> Rank # {token.rank} </div>
 
-          <div className="NFT-rarity-details-main"> 
-          {/* <div> Token ID: {token.tokenID} </div> */}
-          <div> Name: {token.name ? token.name : null} </div>
-          <div> Rarity Score: { 
-                normalization ? token.normalized_rarity_score.toFixed(2) : 
-                                token.rarity_score.toFixed(2) } 
+          <div className="NFT-rarity-details-main" style={{border: "0px solid black", display: "flex", }}>  
+
+            <div style={{border: "0px solid black", width: "70%"}}>
+                <div> Token ID: {token.tokenID} </div>
+                <div> Name: {token.name ? token.name : null} </div>
+                <div> Rarity Score: { 
+                      normalization ? token.normalized_rarity_score.toFixed(2) : 
+                                      token.rarity_score.toFixed(2) } 
+                </div>
+            </div>
+
+            <div style={{border: "0px solid black", width: "30%"}}>
+              <div> {onSale ? "Open to sale": "Not open to sale"} </div>
+                {
+                  onSale? 
+                  <div className="price-container"> 
+                    Price: 
+                    <span className="price">
+                    <img src={ether} alt="ether" width="13px" height="13px" />
+                    </span>
+                    {token.opensea.price} 
+                    </div>:
+                  null 
+                }
+                {
+                  token.opensea.permalink?
+                  <a href={token.opensea.permalink}  target="_blank" > 
+                    <img className="openseaSVG2" src={OpenSea}  alt="opensea"  width="150px" height="30px" /> 
+                  </a>:
+                  null
+                }
+            </div>
+          
           </div>
-          </div>
+
           
           <div className="NFT-rarity-details-attributes-heading"> Attributes and Scores</div>
           <div className="NFT-rarity-details-attributes"> 
