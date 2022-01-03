@@ -254,17 +254,19 @@ const checkURI = (rawURI: string) => {
         
     const checkIfAPIRevealed = async () => {
       // const ex: any = await axios.get("https://dev.nftninja.app/projects/tokens/0xa5c0bd78d1667c13bfb403e2a3336871396713c5?limit=2&skip=9990");
-      const fancyURL: any = `https://dev.nftninja.app/projects/tokens/${contractAdd.toLowerCase()}?limit=2&skip=9990`
+      console.log(Number(data?.totalSupply))
+      const fancyURL: any = await axios.get(`https://dev.nftninja.app/projects/tokens/${contractAdd.toLowerCase()}?limit=2&skip=${Number(data?.totalSupply) - 10}`);
 
-      console.log(fancyURL.data.data);
+      // console.log("fancyURL", fancyURL.data.data);
       
       if(fancyURL.data?.data && Array.isArray(fancyURL.data.data) && fancyURL.data.data.length > 0){
-        // console.log(ex.data.data[0])
-        // console.log(ex.data.data[1])
+        // console.log(fancyURL.data.data[0].attributes)
+        // console.log(fancyURL.data.data[1].attributes)
         
-        const result = _.isEqual(fancyURL.data.data[0], fancyURL.data.data[1]);
-        // console.log(result)
-        if(!result){
+        const result = _.isEqual(fancyURL.data.data[0].attributes, fancyURL.data.data[1].attributes);
+        // console.log("result", result)
+
+        if(result === false){
           return true; 
         }
         else{
@@ -383,104 +385,117 @@ const checkURI = (rawURI: string) => {
     }
 
 
-    let directData: any;
-    let retry = 0;
+    const isRevealvedByAPI = await checkIfAPIRevealed();
+    console.log("isRevealvedByAPI =>", isRevealvedByAPI);
 
-    try{
+    if(isRevealvedByAPI){
 
-      do {
-        retry++
-        console.log("retry", retry)
-        
-        const fancyURL = `https://dev.nftninja.app/projects/tokens/${contractAdd.toLowerCase()}?limit=${to}`
-        directData = await axios.get(fancyURL)
-  
-        console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
-        console.log("Test token data fetching ends")
-        dispatch(setProgress({action: "dataFetch", status: "ended"}));
-        if(directData?.data){
-          console.log("Message from the API", directData?.data?.message)
-          console.log("Data from the API", directData?.data)
-        }
-        
-      } while (retry < 5 && directData?.data?.message === "Please wait while we work our magic")
+      try{
+        await fetchDataWithAPI()
+      }
+      catch(error){
+        console.log(error)
+      }
       
-    }
-    catch(e){
-      console.log(e)
-    }
-         
-    if(directData?.data?.data && Array.isArray(directData?.data?.data)){
+      // let directData: any;
+      // let retry = 0;
 
-      let allTokens: AttributesOfEachToekn2 = {};
-      let allAttributes: any = {};
+      // try{
 
-      dispatch(setProgress({action: "dataProcess", status: "started"}));
-      console.log("Test loop over all tokens starts")
-      console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
-
-
-      
-      directData?.data?.data.map((token:any) => {
-
-        let attributes:any = {}
-        let values:any = {}
-        
-        let rawAttributes = token.attributes ? token.attributes : [];
-        let trait_count = token.attributes ? token.attributes.length : 0
-        
-
-        rawAttributes?.forEach((attribute: any)=> {     
-  
-          // console.log(attribute)
+      //   do {
+      //     retry++
+      //     console.log("retry", retry)
           
-          if( attribute.trait_type && attribute.value ){
-            values["trait_type"] = attribute.trait_type
-            values["trait_value"] = attribute.value
-            values[attribute.value] = {trait_type: attribute.trait_type, value: attribute.value}
-            attributes[attribute.trait_type] = values
-            values = {}
-          }
-  
-          if( attribute.value && (String(attribute.value).toLowerCase() === "none" || String(attribute.value).toLowerCase() === "nothing")){
-            if(trait_count > 0){
-              trait_count--
-            }
-          }
-        })
-
-        values["trait_value"] = trait_count
-        values["trait_type"] =  "trait_count"
-        values[trait_count] = {trait_type: "trait_count", value: trait_count}
-        attributes["trait_count"] = values
-        values = {}
-
-        const newTokens: any = {
-          rank: 0,
-          normalized_rank: 0,
-          tokenID: token.tokenId,
-          attributes: attributes,
-          opensea: {price: token.price? token.price : 0, permalink: ""},
-          rarity_score: 0,
-          normalized_rarity_score: 0,
-          image: token.image,
-          title: token.name? token.name: `#${String(token.tokenId)}`,
-          name: token.name? token.name: `#${String(token.tokenId)}`
-        }
-                      
-          allAttributes[newTokens.tokenID] = newTokens.attributes;       
-          allTokens[newTokens.tokenID] = newTokens;
-
-      })
-      
-        console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
-        console.log("Test loop over all tokens ends")
-
-        console.log(allAttributes)
-        console.log(allTokens)
+      //     const fancyURL = `https://dev.nftninja.app/projects/tokens/${contractAdd.toLowerCase()}?limit=${to}`
+      //     directData = await axios.get(fancyURL)
+    
+      //     console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+      //     console.log("Test token data fetching ends")
+      //     dispatch(setProgress({action: "dataFetch", status: "ended"}));
+      //     if(directData?.data){
+      //       console.log("Message from the API", directData?.data?.message)
+      //       console.log("Data from the API", directData?.data)
+      //     }
+          
+      //   } while (retry < 5 && directData?.data?.message === "Please wait while we work our magic")
         
-        dispatch(addTokenInList3(allTokens))
-        dispatch(setCountOfAllAttribute3(allAttributes as Attribute2))
+      // }
+      // catch(e){
+      //   console.log(e)
+      // }
+
+
+      // if(directData?.data?.data && Array.isArray(directData?.data?.data)){
+
+      // let allTokens: AttributesOfEachToekn2 = {};
+      // let allAttributes: any = {};
+
+      // dispatch(setProgress({action: "dataProcess", status: "started"}));
+      // console.log("Test loop over all tokens starts")
+      // console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+
+
+      
+      // directData?.data?.data.map((token:any) => {
+
+      //   let attributes:any = {}
+      //   let values:any = {}
+        
+      //   let rawAttributes = token.attributes ? token.attributes : [];
+      //   let trait_count = token.attributes ? token.attributes.length : 0
+        
+
+      //   rawAttributes?.forEach((attribute: any)=> {     
+  
+      //     // console.log(attribute)
+          
+      //     if( attribute.trait_type && attribute.value ){
+      //       values["trait_type"] = attribute.trait_type
+      //       values["trait_value"] = attribute.value
+      //       values[attribute.value] = {trait_type: attribute.trait_type, value: attribute.value}
+      //       attributes[attribute.trait_type] = values
+      //       values = {}
+      //     }
+  
+      //     if( attribute.value && (String(attribute.value).toLowerCase() === "none" || String(attribute.value).toLowerCase() === "nothing")){
+      //       if(trait_count > 0){
+      //         trait_count--
+      //       }
+      //     }
+      //   })
+
+      //   values["trait_value"] = trait_count
+      //   values["trait_type"] =  "trait_count"
+      //   values[trait_count] = {trait_type: "trait_count", value: trait_count}
+      //   attributes["trait_count"] = values
+      //   values = {}
+
+      //   const newTokens: any = {
+      //     rank: 0,
+      //     normalized_rank: 0,
+      //     tokenID: token.tokenId,
+      //     attributes: attributes,
+      //     opensea: {price: token.price? token.price : 0, permalink: ""},
+      //     rarity_score: 0,
+      //     normalized_rarity_score: 0,
+      //     image: token.image,
+      //     title: token.name? token.name: `#${String(token.tokenId)}`,
+      //     name: token.name? token.name: `#${String(token.tokenId)}`
+      //   }
+                      
+      //     allAttributes[newTokens.tokenID] = newTokens.attributes;       
+      //     allTokens[newTokens.tokenID] = newTokens;
+
+      // })
+      
+      //   console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
+      //   console.log("Test loop over all tokens ends")
+
+      //   console.log(allAttributes)
+      //   console.log(allTokens)
+        
+      //   dispatch(addTokenInList3(allTokens))
+      //   dispatch(setCountOfAllAttribute3(allAttributes as Attribute2))
 
       
     } else {
