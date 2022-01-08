@@ -5,25 +5,28 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import store from './components/store/store';
-import { getDefaultProvider, } from "ethers"
-import { NftProvider } from "use-nft"
+import {ThemeProvider, createTheme } from '@mui/material/styles';
 
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#000000",
+    },
+    secondary: {
+      main: "#6f6dff",
+    },
+  },
+});
 
-// We are using the "ethers" fetcher here.
-const ethersConfig = {
-  provider: getDefaultProvider("homestead"),
-}
 
 
 ReactDOM.render(
   <React.StrictMode>
-   <NftProvider fetcher={["ethers", ethersConfig]}>
-
-   <Provider store = {store}>
-    <App />
-   </Provider>
-   
-  </NftProvider>
+    <Provider store = {store}>
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

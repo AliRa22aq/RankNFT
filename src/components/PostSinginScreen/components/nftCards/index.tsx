@@ -28,8 +28,7 @@ const NFTCards = () => {
 
   const { progress, onlyOnSale, normalization, countOfAllAttribute2, list_of_all_tokens2, isSnipping, projectInfo, list_of_all_tokens } = useSelector((state: any) => state);
   
-  console.log("countOfAllAttribute2", countOfAllAttribute2)
-  console.log("list_of_all_tokens2 setRarityScore", list_of_all_tokens2)
+  console.log("ranking ", list_of_all_tokens)
 
   const handleSort = (e: number) => {
     // console.log(e)
@@ -61,32 +60,19 @@ const NFTCards = () => {
       
   const handleNormalization = () => {
     if(normalization === true){
-      // setNormalization(!normalization)
       dispatch(switchNormalization())
-      // setSortBy(sortBy);
-      // handlePage(0,1)
-
     }
     else if(normalization === false){
-      // setNormalization(!normalization)
       dispatch(switchNormalization())
-      // setSortBy(sortBy);
-      // handlePage(0,1)
-
     }
   }
 
   const handleOnSale = () => {
-
     if(onlyOnSale === false){
       dispatch(setOnlyOnSaleState())
-      // handleSort(sortBy)
-      // handlePage(0,1)
     }
     else if(onlyOnSale === true){
       dispatch(setOnlyOnSaleState())
-      // handleSort(sortBy)
-      // handlePage(0,1)      
     }
   }
 
@@ -102,14 +88,16 @@ const NFTCards = () => {
   
       const activeTokens = max? list_of_all_tokens.slice(min,max) : list_of_all_tokens.slice(min)
     
-      // console.log("top.length ", activeTokens.length)
+      console.log("top ", activeTokens)
       
+      // return;
+
       if(activeTokens.length > 0) {
   
       let link = initialLink;
   
       activeTokens.forEach((token: any, key: number) => {
-        // console.log(`${key+1} ---> ${token.tokenID} ->  ${token.rarity_score}`)
+        console.log(`${key+1} ---> ${token.tokenID} ->  ${token.rarity_score}`)
         link = link.concat(`&token_ids=${token.tokenID}`);
         if(count%30==0 || count === activeTokens.length){
           arrayOfLinks.push(link.concat("&limit=30"))
@@ -126,7 +114,11 @@ const NFTCards = () => {
       
         let opensea_requests: any = [];
         let opensea_responses: any = [];
-
+        
+        // headers: {
+        //   'X-API-KEY': 'ca6bb07f094744abb235defe478761f3'
+        // }
+        
         for(var i = 0;  i < arrayOfLinks.length;  i=i+1) {
           const request = axios.get(arrayOfLinks[i])
           opensea_requests.push(request)
@@ -140,7 +132,7 @@ const NFTCards = () => {
           }
         })
         
-        // console.log("all OpenSea Responses ", opensea_responses.flat())
+        console.log("all OpenSea Responses ", opensea_responses.flat())
         dispatch(setOpenseaData(opensea_responses.flat()))
   
       }
@@ -152,27 +144,59 @@ const NFTCards = () => {
     console.log("Test Open sea data fetching Started - 0 to 3300")
     console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
 
-
-
     dispatch(setProgress({action: "openseaFetch", status: "started"}));
+    // const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
 
-    const delayFn = (ms:number) => new Promise((r) => setTimeout(r, ms));
+    // console.log("before ranking ")
 
-    await fetchOpenseaData(1, 0, 3300);
+    // await dispatch(assignRank())
+
+    // console.log("after ranking ")
+
+    console.log("testingggg start")
+    await fetchOpenseaData(1, 0, 1500);
+    console.log("testingggg ends")
     
+    handleSort(0)
     console.log("Test", `${new Date().getMinutes()}:${new Date().getSeconds()}`)
     console.log("Test Open sea data fetching Ended - 0 to 3300")
-
-    dispatch(assignRank())
+    // dispatch(assignRank())
     dispatch(setProgress({action: "openseaFetch", status: "ended"}));
-
-
-
+    
     // handleSort(0)
-    await delayFn(20000)
-    await fetchOpenseaData(2, 3301, 6600);
-    await delayFn(20000)
-    await fetchOpenseaData(2, 6601, 10000);
+    // handlePage(0,1);
+    // handleInputLength()
+    // dispatch(setIsSnipping({ action: "showNFTs" }));
+
+
+    // await delayFn(20000)
+    // await fetchOpenseaData(2, 1001, 2000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(3, 2001, 3000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(4, 3001, 4000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(5, 4001, 5000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(6, 50001, 6000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(7, 60001, 7000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(8, 70001, 8000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(9, 8001, 9000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(10, 9001, 10000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(11, 10001, 11000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(12, 11001, 12000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(13, 12001, 13000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(14, 13001, 14000);
+    // await delayFn(20000)
+    // await fetchOpenseaData(15, 14001, 15000);
 
 
   }
@@ -209,8 +233,8 @@ const NFTCards = () => {
         // console.log("countOfAllAttribute2 average_trait_count",average_trait_count )
 
         let allValues: any = {};
-        let eachValues: any = {};
-        let allTraits: any = {};
+        // let eachValues: any = {};
+        // let allTraits: any = {};
 
           Object.values(countOfAllAttribute2).map((eachAttribute: any, key: number) => {
                       
@@ -255,7 +279,7 @@ const NFTCards = () => {
       // return;
     }
     // dispatch(assignNormalizedRank())
-    // dispatch(assignRank())
+    dispatch(assignRank())
 
     dispatch(setIsSnipping({action: "startTop20"}))
 
@@ -273,10 +297,8 @@ const NFTCards = () => {
   const numberOfPages = Math.ceil(numberOfItems/numberPerPage)
 
   const handleInputLength = () => {
-    set_list_of_NFTs_for_currentPage( list_of_all_tokens && list_of_all_tokens
-                                        .slice((page-1)*numberPerPage, page*numberPerPage))
+    set_list_of_NFTs_for_currentPage( list_of_all_tokens && list_of_all_tokens.slice((page-1)*numberPerPage, page*numberPerPage))
   }
-
 
   useEffect(()=> {
     if(isSnipping.completed === true){
@@ -328,29 +350,11 @@ const NFTCards = () => {
 
   useEffect(()=> {
    if(progress.openseaFetch.ended ){
-      handlePage(0,1);
-      handleInputLength()
-      dispatch(setIsSnipping({ action: "showNFTs" }));
-
+    handlePage(0,1);
+    handleInputLength()
+    dispatch(setIsSnipping({ action: "showNFTs" }));
     } 
   }, [progress.openseaFetch.ended])
-
-
-//   useEffect(()=> {
-//     handleInputLength()
-//   }, [page])
-
-//   useEffect(()=> {
-//     handleSort(sortBy)
-//     handlePage(0,1);
-//     handleInputLength()
-//   },[onlyOnSale])
-
-// useEffect(()=> {
-//   handleSort(sortBy)
-//   handlePage(0,1);
-//   handleInputLength()
-// },[normalization])
 
 
 
@@ -367,19 +371,6 @@ const NFTCards = () => {
                         Welcome to NFT Sniper. < br /> < br />
                         Enter an NFT contract address and load it to snip
                   </div>
-
-                  {/* <div className="before-NFT-welcome-Secreen-rules-header">
-                      Rules of snipping
-                  </div>
-
-                  <div className="before-NFT-welcome-Secreen-rules">
-                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-                      <div className="before-NFT-welcome-Secreen-rule">- Rule 1 </div>
-                  </div> */}
 
                  </div> :
                   !isSnipping.showNFTs? 
@@ -418,9 +409,6 @@ const NFTCards = () => {
                                   <MenuItem value={4}> {`Price (low -> high)`} </MenuItem>
                                   <MenuItem value={5}> {`Token ID (high -> low)`} </MenuItem>
                                   <MenuItem value={6}> {`Token ID (low -> high)`} </MenuItem>
-
-                                  
-
 
                                 </Select>
                               </FormControl>

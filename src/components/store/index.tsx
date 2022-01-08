@@ -95,6 +95,7 @@ export interface Loading {
 export interface Progress {
   snip : {started: boolean, ended: boolean},
   dataFetch : {started: boolean, ended: boolean},
+  retryingToCheckRevealing: {started: boolean, ended: boolean},
   dataProcess : {started: boolean, ended: boolean},
   raritiesAssign : {started: boolean, ended: boolean},
   openseaFetch : {started: boolean, ended: boolean},
@@ -192,6 +193,7 @@ const initialState: DataType = {
     progress : {
       snip : {started: false, ended: false},
       dataFetch : {started: false, ended: false},
+      retryingToCheckRevealing: {started: false, ended: false},
       dataProcess : {started: false, ended: false},
       raritiesAssign : {started: false, ended: false},
       openseaFetch : {started: false, ended: false},
@@ -317,7 +319,6 @@ const dataSlice = createSlice({
     },
 
     setLoadingNFTs(state, { payload }: PayloadAction<boolean>) {
-      // Use a "state machine" approach for loading state instead of booleans
       state.loadingNFTS = payload;
     },
 
@@ -768,7 +769,7 @@ const dataSlice = createSlice({
 
       Object.keys(payload).forEach( (tokenID) => {
 
-        console.log(tokenID, payload[tokenID])
+        // console.log(tokenID, payload[tokenID])
 
         Object.values(payload[tokenID]).forEach((attribute) => {
 
@@ -1074,6 +1075,7 @@ const dataSlice = createSlice({
       state.progress = {
         snip: { started: false, ended: false },
         dataFetch: { started: false, ended: false },
+        retryingToCheckRevealing: { started: false, ended: false },
         dataProcess: { started: false, ended: false },
         raritiesAssign: { started: false, ended: false },
         openseaFetch: { started: false, ended: false },
@@ -1088,9 +1090,10 @@ const dataSlice = createSlice({
         action:
           | "snip"
           | "dataFetch"
+          | "retrying"
           | "dataProcess"
           | "raritiesAssign"
-          | "openseaFetch";
+          | "openseaFetch",
         status: "started" | "ended";
       }>
     ) {
@@ -1135,7 +1138,18 @@ const dataSlice = createSlice({
         payload.status === "ended"
       ) {
         state.progress.openseaFetch.ended = true;
-      }
+      } else if (
+        payload.action === "retrying" &&
+        payload.status === "started"
+      ) {
+        state.progress.retryingToCheckRevealing.started = true;
+      } else if (
+        payload.action === "retrying" &&
+        payload.status === "ended"
+      ) {
+        console.log("Trying to stop");
+        state.progress.retryingToCheckRevealing.ended = true;
+      } 
     },
   },
 });

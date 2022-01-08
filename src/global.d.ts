@@ -4,3 +4,11 @@ export declare global {
       web3: any;
     }
   }
+
+// module.exports = config({
+//     entry: {
+//       vendor: [ 
+//         'jquery'
+//       ]
+//     }
+// })

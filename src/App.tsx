@@ -16,7 +16,7 @@ const App = () => {
   
   const { isDeveloper, isOwner, isWaletConnect, isWhiteListed, isSubscriber} = useSelector((state: any) => state);
   
-  const contractAddress = "0x659672bDAA2d7f30AAa709C8bcB12843E23AD442";
+  const contractAddress = "0xcC28dfE0cfe54C86AE725C8a8ae5598aE44e970C";
 
   dispatch(setContractAddress(contractAddress));
 
