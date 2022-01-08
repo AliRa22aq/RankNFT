@@ -55,9 +55,10 @@ const NFTForm = () => {
 
 
 
-// const gateway = "https://Ipfs.raritysniffer.com/ipfs/";
+// const gateway = "https://ipfs.raritysniffer.com/ipfs/";
 // const gateway = "https://ipfs.io/ipfs/";
-const gateway = "https://ipfs.infura.io/ipfs/";
+const gateway2 = "https://ipfs.infura.io/ipfs/";
+const gateway = "https://nftsnipers.mypinata.cloud/ipfs/";
 const regex = /.*ipfs\//;
 
 
@@ -75,6 +76,35 @@ const checkURI = (rawURI: string) => {
   }
   else if(rawURI.includes("https://gateway.pinata.cloud/ipfs/")){
     let url = rawURI.replace("https://gateway.pinata.cloud/ipfs/", gateway);
+    return url;
+  }
+  else if(rawURI.includes("http://")){
+    let url = rawURI.replace("http://", "https://")
+    return url;
+  }      
+  else if(rawURI.includes("https://")){
+    return rawURI;
+  }
+  else {
+    return rawURI;
+  }
+  
+}
+
+const checkURI2 = (rawURI: string) => {
+
+  if(rawURI.includes("ipfs://")) {
+    let url = rawURI.replace("ipfs://", gateway2);
+    return url;
+  }
+  else if(rawURI.includes("ipfs")) {
+    let url = rawURI.replace(regex, gateway2);
+    console.log("test url " + rawURI.replace(regex, gateway2))
+    return url;
+
+  }
+  else if(rawURI.includes("https://gateway.pinata.cloud/ipfs/")){
+    let url = rawURI.replace("https://gateway.pinata.cloud/ipfs/", gateway2);
     return url;
   }
   else if(rawURI.includes("http://")){
@@ -306,6 +336,18 @@ const checkURI = (rawURI: string) => {
         }
         catch(e){
           console.log(e)
+          let freshTokenURI_1 = await data.contractInfo.contractFunctions.methods.tokenURI(1).call();
+          freshTokenURI_1 = checkURI2(freshTokenURI_1);
+          console.log("freshTokenURI", freshTokenURI_1);
+          const res_test_1:any = await axios.get(freshTokenURI_1);
+          attributes_1 = res_test_1.data.attributes ? res_test_1.data.attributes : [];
+        } catch(e){
+          console.log(e)
+          let freshTokenURI_1 = await data.contractInfo.contractFunctions.methods.tokenURI(11).call();
+          freshTokenURI_1 = checkURI2(freshTokenURI_1);
+          console.log("freshTokenURI", freshTokenURI_1);
+          const res_test_1:any = await axios.get(freshTokenURI_1);
+          attributes_1 = res_test_1.data.attributes ? res_test_1.data.attributes : [];        
         }
     
       if(directData?.data?.data && Array.isArray(directData?.data?.data)){
@@ -380,6 +422,20 @@ const checkURI = (rawURI: string) => {
             dispatch(setCountOfAllAttribute3(allAttributes as Attribute2))
 
 
+        
+       try{
+        let freshTokenURI_2 = await data.contractInfo.contractFunctions.methods.tokenURI(2).call();
+        freshTokenURI_2 = checkURI2(freshTokenURI_2);
+        console.log("freshTokenURI_2", freshTokenURI_2);
+        const res_test_2:any = await axios.get(freshTokenURI_2);
+        attributes_2 = res_test_2.data.attributes ? res_test_2.data.attributes : [];
+      } catch(e){
+        console.log(e)
+        let freshTokenURI_2 = await data.contractInfo.contractFunctions.methods.tokenURI(12).call();
+        freshTokenURI_2 = checkURI2(freshTokenURI_2);
+        console.log("freshTokenURI_2", freshTokenURI_2);
+        const res_test_2:any = await axios.get(freshTokenURI_2);
+        attributes_2 = res_test_2.data.attributes ? res_test_2.data.attributes : [];
       }
 
     }
@@ -395,6 +451,18 @@ const checkURI = (rawURI: string) => {
       }
       catch(error){
         console.log(error)
+        let freshTokenURI_3 = await data.contractInfo.contractFunctions.methods.tokenURI(3).call();
+        freshTokenURI_3 = checkURI2(freshTokenURI_3);
+        console.log("freshTokenURI_3", freshTokenURI_3);
+        const res_test_3:any = await axios.get(freshTokenURI_3);
+        attributes_3 = res_test_3.data.attributes ? res_test_3.data.attributes : [];
+      } catch(e){
+        console.log(e)
+        let freshTokenURI_3 = await data.contractInfo.contractFunctions.methods.tokenURI(13).call();
+        freshTokenURI_3 = checkURI2(freshTokenURI_3);
+        console.log("freshTokenURI_3", freshTokenURI_3);
+        const res_test_3:any = await axios.get(freshTokenURI_3);
+        attributes_3 = res_test_3.data.attributes ? res_test_3.data.attributes : [];
       }
       
       // let directData: any;
